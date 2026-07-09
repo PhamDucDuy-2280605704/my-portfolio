@@ -1,0 +1,51 @@
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.hero-avatar {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hero h1 {
+  margin-top: 20px;
+  font-size: 42px;
+}
+
+.hero h2 {
+  color: #666;
+  margin-top: 10px;
+}
+
+.hero-quote {
+  margin-top: 20px;
+  font-style: italic;
+}
+
+.hero-description {
+  max-width: 700px;
+  margin: 20px auto;
+  line-height: 1.8;
+}
+
+.hero-buttons {
+  margin-top: 30px;
+}
+
+.hero-buttons button {
+  margin: 10px;
+  padding: 12px 28px;
+  cursor: pointer;
+}
+
+.hero-social {
+  margin-top: 30px;
+}
+
+.hero-social a {
+  margin: 0 10px;
+  text-decoration: none;
+}

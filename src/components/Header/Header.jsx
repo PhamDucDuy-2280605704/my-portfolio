@@ -1,8 +1,12 @@
 import "./Header.css";
 
+import logo from "../../assets/images/logo.jpg";
+
 function Header() {
   return (
-    <header>
+    <header className="header">
+      <img src={logo} alt="Logo" />
+
       <h2>My Portfolio</h2>
     </header>
   );
