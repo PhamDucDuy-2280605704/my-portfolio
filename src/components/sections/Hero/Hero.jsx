@@ -1,7 +1,7 @@
 import "./Hero.css";
 
-import profile from "../../data/profile";
-import social from "../../data/social";
+import profile from "../../../data/profile";
+import social from "../../../data/social";
 
 function Hero() {
   return (
