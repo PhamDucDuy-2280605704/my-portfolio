@@ -33,3 +33,7 @@
   flex-direction: column;
   gap: 16px;
 }
+
+.about-info a {
+  display: inline-block;
+}

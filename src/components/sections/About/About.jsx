@@ -1,8 +1,11 @@
+import { Link } from "react-router-dom";
+
 import "./About.css";
 
 import profile from "../../../data/profile";
 
 import SectionTitle from "../../common/SectionTitle/SectionTitle";
+import Button from "../../common/Button/Button";
 
 function About() {
   return (
@@ -30,21 +33,9 @@ function About() {
 
           <p>{profile.description}</p>
 
-          <ul>
-
-            <li>
-              <strong>Birthday:</strong> {profile.birthday}
-            </li>
-
-            <li>
-              <strong>Email:</strong> {profile.email}
-            </li>
-
-            <li>
-              <strong>Location:</strong> {profile.location}
-            </li>
-
-          </ul>
+          <Link to="/about">
+            <Button variant="outline">Tìm hiểu thêm</Button>
+          </Link>
 
         </div>
 

@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
+
 import Button from "../../common/Button/Button";
 import "./Hero.css";
 
 import profile from "../../../data/profile";
-import social from "../../../data/social";
 
 function Hero() {
   return (
@@ -17,21 +18,16 @@ function Hero() {
         <p className="quote">{profile.quote}</p>
 
         <div className="buttons">
-          <Button>
-            Download CV
-          </Button>
+          <a
+            href={profile.resume}
+            download
+          >
+            <Button>Download CV</Button>
+          </a>
 
-          <Button variant="outline">
-            Contact Me
-          </Button>
-        </div>
-
-        <div className="social">
-          <a href={social.github}>GitHub</a>
-
-          <a href={social.facebook}>Facebook</a>
-
-          <a href={social.zalo}>Zalo</a>
+          <Link to="/contact">
+            <Button variant="outline">Contact Me</Button>
+          </Link>
         </div>
       </div>
 

@@ -1,0 +1,148 @@
+.projects-page {
+  padding: 120px 10%;
+}
+
+.projects-block {
+  margin-bottom: 60px;
+}
+
+.projects-block-title {
+  font-size: 24px;
+  color: var(--color-primary);
+  margin-bottom: 30px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.project-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  transition: 0.3s;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
+
+.project-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.project-placeholder svg {
+  font-size: 32px;
+  opacity: 0.6;
+}
+
+.project-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.project-info {
+  padding: 22px;
+}
+
+.project-info h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.project-info p {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.project-tech span {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.project-links {
+  display: flex;
+  gap: 16px;
+}
+
+.project-links a,
+.project-link-disabled {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.project-links a {
+  color: var(--color-primary);
+}
+
+.project-links a:hover {
+  color: var(--color-primary-hover);
+}
+
+.project-link-disabled {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .projects-page {
+    padding: 80px 6%;
+  }
+}

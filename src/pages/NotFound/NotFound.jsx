@@ -1,5 +1,25 @@
+import { Link } from "react-router-dom";
+
+import "./NotFound.css";
+
+import Button from "../../components/common/Button/Button";
+
 function NotFound() {
-  return <h1>404 - Page Not Found</h1>;
+  return (
+    <section className="notfound-page">
+
+      <h1 className="notfound-code">404</h1>
+
+      <h2>Không tìm thấy trang</h2>
+
+      <p>Trang bạn đang tìm không tồn tại hoặc đã bị di chuyển.</p>
+
+      <Link to="/">
+        <Button variant="primary">Về Trang Chủ</Button>
+      </Link>
+
+    </section>
+  );
 }
 
 export default NotFound;
