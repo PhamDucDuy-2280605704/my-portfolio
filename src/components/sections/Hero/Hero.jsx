@@ -5,28 +5,34 @@ import "./Hero.css";
 
 import profile from "../../../data/profile";
 
+const highlights = ["Frontend", "Backend", "Mobile"];
+
 function Hero() {
   return (
     <section className="hero">
       <div className="hero-left">
-        <p className="hello">👋 Hello, I'm</p>
+        <p className="hello">👋 Xin chào, mình là</p>
 
         <h1>{profile.fullName}</h1>
 
         <h2>{profile.role}</h2>
 
-        <p className="quote">{profile.quote}</p>
+        <div className="hero-highlights">
+          {highlights.map((item, index) => (
+            <span key={item}>
+              {item}
+              {index < highlights.length - 1 && <i className="dot" />}
+            </span>
+          ))}
+        </div>
+
+        <p className="tagline">{profile.description}</p>
+
+        <p className="quote">“{profile.quote}”</p>
 
         <div className="buttons">
-          <a
-            href={profile.resume}
-            download
-          >
-            <Button>Download CV</Button>
-          </a>
-
           <Link to="/contact">
-            <Button variant="outline">Contact Me</Button>
+            <Button variant="primary">Liên Hệ Với Mình</Button>
           </Link>
         </div>
       </div>

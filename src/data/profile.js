@@ -4,7 +4,7 @@ import resume from "../assets/resume/cv.pdf";
 const profile = {
   fullName: "Phạm Đức Duy",
 
-  role: "Full Stack Developer",
+  role: "Lập Trình Viên Full Stack",
 
   birthday: "14/10/2004",
 
@@ -17,7 +17,7 @@ const profile = {
   quote: "Ngay cả trong bóng tối, con người vẫn có thể lựa chọn.",
 
   description:
-    "Mình là lập trình viên Full Stack, có thể tự tay xây dựng một sản phẩm hoàn chỉnh từ giao diện đến hệ thống phía sau.",
+    "Mình xây dựng sản phẩm hoàn chỉnh — từ giao diện mượt mà, trực quan đến hệ thống backend vững chắc phía sau, đảm bảo trải nghiệm liền mạch trên mọi nền tảng.",
 
   bio: [
     "Mình là Phạm Đức Duy, lập trình viên theo hướng Full Stack — có thể đảm nhận cả phần giao diện người dùng lẫn hệ thống backend đứng sau một sản phẩm.",

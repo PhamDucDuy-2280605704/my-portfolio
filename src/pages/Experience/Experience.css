@@ -1,15 +1,20 @@
 .experience-page {
-  padding: 120px 10%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 24px;
 }
 
 .experience-block {
-  margin-bottom: 70px;
+  margin-bottom: 50px;
 }
 
 .experience-block-title {
-  font-size: 24px;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
   color: var(--color-primary);
-  margin-bottom: 30px;
+  margin-bottom: 22px;
 }
 
 /* Timeline */
@@ -148,6 +153,6 @@
 
 @media (max-width: 640px) {
   .experience-page {
-    padding: 80px 6%;
+    padding: 80px 20px;
   }
 }

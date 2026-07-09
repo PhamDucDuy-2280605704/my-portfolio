@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import "./NotFound.css";
 
 import Button from "../../components/common/Button/Button";
+import usePageTitle from "../../hooks/usePageTitle";
 
 function NotFound() {
+  usePageTitle("Không Tìm Thấy Trang | Phạm Đức Duy");
+
   return (
     <section className="notfound-page">
 

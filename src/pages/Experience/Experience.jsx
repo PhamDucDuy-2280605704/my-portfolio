@@ -4,6 +4,7 @@ import "./Experience.css";
 
 import education from "../../data/education";
 import certificates from "../../data/certificates";
+import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
@@ -18,11 +19,13 @@ function StatusBadge({ status }) {
 }
 
 function Experience() {
+  usePageTitle("Kinh Nghiệm | Phạm Đức Duy");
+
   return (
     <section className="experience-page">
 
       <SectionTitle
-        subtitle="My Journey"
+        subtitle="Hành Trình Của Mình"
         title="Học Vấn & Chứng Chỉ"
       />
 

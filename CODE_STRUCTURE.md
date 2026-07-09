@@ -104,7 +104,8 @@ Nguyên tắc: **mọi thông tin cá nhân chỉ sửa 1 chỗ duy nhất trong
 - Mỗi component/page có **1 file `.jsx` + 1 file `.css` cùng tên**, import CSS ngay đầu file `.jsx`.
 - Không dùng màu/khoảng cách "chay" (hardcode) — luôn ưu tiên biến trong `styles/variables.css`:
   `--color-primary`, `--color-surface`, `--color-text-secondary`, `--radius-md`, `--shadow`,...
-- `components/common` = tái sử dụng nhiều nơi (Button, SectionTitle).
+- `components/common` = tái sử dụng nhiều nơi (Button, SectionTitle, ScrollToTop).
+- `hooks/usePageTitle.js` = đặt tiêu đề tab trình duyệt riêng cho từng trang.
 - `components/sections` = khối nội dung thuộc về 1 trang cụ thể (hiện chỉ có Hero, dùng trong Home).
 - `components/layout` = khung sườn hiển thị ở mọi trang (Navbar, Footer). Navbar có menu hamburger riêng cho mobile (≤900px) và logo bấm vào phóng to được.
 - Mỗi trang đều có breakpoint responsive riêng trong file `.css` của nó (thường ở `max-width: 640px` hoặc `900px`).

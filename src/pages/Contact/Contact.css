@@ -1,5 +1,7 @@
 .contact-page {
-  padding: 120px 10%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 24px;
 }
 
 .contact-intro {
@@ -56,6 +58,6 @@
 
 @media (max-width: 640px) {
   .contact-page {
-    padding: 80px 6%;
+    padding: 80px 20px;
   }
 }

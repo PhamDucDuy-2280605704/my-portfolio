@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { IoClose, IoMenu } from "react-icons/io5";
 import "./Navbar.css";
 
@@ -10,13 +10,16 @@ function Navbar() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
+
   const menus = [
-    { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Skills", path: "/skills" },
-    { name: "Projects", path: "/projects" },
-    { name: "Experience", path: "/experience" },
-    { name: "Contact", path: "/contact" },
+    { name: "Trang Chủ", path: "/" },
+    { name: "Giới Thiệu", path: "/about" },
+    { name: "Kỹ Năng", path: "/skills" },
+    { name: "Dự Án", path: "/projects" },
+    { name: "Kinh Nghiệm", path: "/experience" },
+    { name: "Liên Hệ", path: "/contact" },
   ];
 
   useEffect(() => {
@@ -44,8 +47,10 @@ function Navbar() {
       <nav className="navbar">
         <button
           type="button"
-          className="logo"
-          onClick={() => setIsZoomed(true)}
+          className={`logo ${isHome ? "" : "logo-hidden"}`}
+          onClick={() => isHome && setIsZoomed(true)}
+          tabIndex={isHome ? 0 : -1}
+          aria-hidden={!isHome}
         >
           <img
             src={logo}
@@ -99,7 +104,7 @@ function Navbar() {
         </div>
       )}
 
-      {isZoomed && (
+      {isZoomed && isHome && (
         <div
           className="logo-overlay"
           onClick={() => setIsZoomed(false)}

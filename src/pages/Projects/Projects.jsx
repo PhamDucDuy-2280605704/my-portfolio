@@ -1,12 +1,25 @@
-import { FaImage, FaGithub, FaExternalLinkAlt } from "react-icons/fa";
+import { useState } from "react";
+import {
+  FaImage,
+  FaGithub,
+  FaExternalLinkAlt,
+  FaCheckCircle,
+  FaHourglassHalf,
+} from "react-icons/fa";
 
 import "./Projects.css";
 
 import projects from "../../data/projects";
+import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
-function ProjectCard({ project, inProgress }) {
+const tabs = [
+  { key: "completed", label: "Đã hoàn thành", icon: FaCheckCircle },
+  { key: "inProgress", label: "Đang phát triển", icon: FaHourglassHalf },
+];
+
+function ProjectCard({ project }) {
   return (
     <div className="project-card">
 
@@ -22,8 +35,6 @@ function ProjectCard({ project, inProgress }) {
             <span>Sẽ cập nhật ảnh sau</span>
           </div>
         )}
-
-        {inProgress && <span className="project-tag">Đang phát triển</span>}
       </div>
 
       <div className="project-info">
@@ -46,11 +57,11 @@ function ProjectCard({ project, inProgress }) {
               target="_blank"
               rel="noreferrer"
             >
-              <FaExternalLinkAlt /> Demo
+              <FaExternalLinkAlt /> Xem trực tiếp
             </a>
           ) : (
             <span className="project-link-disabled">
-              <FaExternalLinkAlt /> Demo (sắp có)
+              <FaExternalLinkAlt /> Sắp ra mắt
             </span>
           )}
 
@@ -60,11 +71,11 @@ function ProjectCard({ project, inProgress }) {
               target="_blank"
               rel="noreferrer"
             >
-              <FaGithub /> Source
+              <FaGithub /> Mã nguồn
             </a>
           ) : (
             <span className="project-link-disabled">
-              <FaGithub /> Source (sắp có)
+              <FaGithub /> Đang cập nhật
             </span>
           )}
 
@@ -77,43 +88,43 @@ function ProjectCard({ project, inProgress }) {
 }
 
 function Projects() {
+  usePageTitle("Dự Án | Phạm Đức Duy");
+
+  const [activeTab, setActiveTab] = useState("completed");
+
+  const activeList = projects[activeTab] ?? [];
+
   return (
     <section className="projects-page">
 
       <SectionTitle
-        subtitle="My Work"
+        subtitle="Dự Án Của Mình"
         title="Dự Án"
       />
 
-      <div className="projects-block">
+      <div className="projects-tabs">
 
-        <h3 className="projects-block-title">Đã hoàn thành</h3>
-
-        <div className="projects-grid">
-          {projects.completed.map((project) => (
-            <ProjectCard
-              key={project.name}
-              project={project}
-            />
-          ))}
-        </div>
+        {tabs.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            type="button"
+            className={`projects-tab ${activeTab === key ? "active" : ""}`}
+            onClick={() => setActiveTab(key)}
+          >
+            <Icon />
+            {label}
+          </button>
+        ))}
 
       </div>
 
-      <div className="projects-block">
-
-        <h3 className="projects-block-title">Đang phát triển</h3>
-
-        <div className="projects-grid">
-          {projects.inProgress.map((project) => (
-            <ProjectCard
-              key={project.name}
-              project={project}
-              inProgress
-            />
-          ))}
-        </div>
-
+      <div className="projects-grid">
+        {activeList.map((project) => (
+          <ProjectCard
+            key={project.name}
+            project={project}
+          />
+        ))}
       </div>
 
     </section>

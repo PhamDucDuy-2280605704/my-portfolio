@@ -5,6 +5,7 @@ import "./Contact.css";
 
 import profile from "../../data/profile";
 import social from "../../data/social";
+import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
@@ -40,11 +41,13 @@ const contacts = [
 ];
 
 function Contact() {
+  usePageTitle("Liên Hệ | Phạm Đức Duy");
+
   return (
     <section className="contact-page">
 
       <SectionTitle
-        subtitle="Get In Touch"
+        subtitle="Kết Nối Với Mình"
         title="Liên Hệ"
       />
 

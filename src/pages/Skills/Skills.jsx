@@ -16,6 +16,7 @@ import {
 import "./Skills.css";
 
 import skills from "../../data/skills";
+import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
@@ -35,10 +36,10 @@ const iconMap = {
 };
 
 const groups = [
-  { key: "frontend", title: "Frontend" },
-  { key: "backend", title: "Backend" },
-  { key: "mobile", title: "Mobile" },
-  { key: "tools", title: "Tools" },
+  { key: "frontend", title: "Giao Diện" },
+  { key: "backend", title: "Hệ Thống" },
+  { key: "mobile", title: "Di Động" },
+  { key: "tools", title: "Công Cụ" },
 ];
 
 function SkillGrid({ items }) {
@@ -73,11 +74,13 @@ function SkillGrid({ items }) {
 }
 
 function Skills() {
+  usePageTitle("Kỹ Năng | Phạm Đức Duy");
+
   return (
     <section className="skills-page">
 
       <SectionTitle
-        subtitle="What I Know"
+        subtitle="Những Gì Mình Biết"
         title="Kỹ Năng"
       />
 

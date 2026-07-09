@@ -1,16 +1,19 @@
 import "./About.css";
 
 import profile from "../../data/profile";
+import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import Button from "../../components/common/Button/Button";
 
 function About() {
+  usePageTitle("Giới Thiệu | Phạm Đức Duy");
+
   return (
     <section className="about-page">
 
       <SectionTitle
-        subtitle="Get To Know Me"
+        subtitle="Tìm Hiểu Về Mình"
         title="Về Tôi"
       />
 

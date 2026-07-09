@@ -5,22 +5,13 @@
 const projects = {
   completed: [
     {
-      name: "Dự án mẫu 1",
+      name: "Portfolio Cá Nhân",
       description:
-        "Mô tả ngắn gọn về dự án: bài toán giải quyết, vai trò của bạn trong dự án, và điểm nổi bật nhất.",
-      tech: ["React", "Node.js"],
+        "Trang portfolio cá nhân xây dựng bằng React + Vite, giới thiệu thông tin, kỹ năng, học vấn/chứng chỉ, dự án và các kênh liên hệ.",
+      tech: ["React", "Vite", "React Router"],
       image: null,
-      demo: null,
-      source: null,
-    },
-    {
-      name: "Dự án mẫu 2",
-      description:
-        "Mô tả ngắn gọn về dự án: bài toán giải quyết, vai trò của bạn trong dự án, và điểm nổi bật nhất.",
-      tech: ["Vue.js", "PHP"],
-      image: null,
-      demo: null,
-      source: null,
+      demo: "https://phamducduy-thien9029.vercel.app/",
+      source: "https://github.com/PhamDucDuy-2280605704/my-portfolio",
     },
   ],
 
