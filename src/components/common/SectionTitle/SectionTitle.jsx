@@ -5,6 +5,7 @@ function SectionTitle({ title, subtitle }) {
     <div className="section-title">
       <p>{subtitle}</p>
       <h2>{title}</h2>
+      <span className="section-title-accent" />
     </div>
   );
 }

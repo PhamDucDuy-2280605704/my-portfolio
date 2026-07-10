@@ -1,10 +1,11 @@
 import { useState } from "react";
 import {
-  FaImage,
+  FaCode,
   FaGithub,
   FaExternalLinkAlt,
   FaCheckCircle,
   FaHourglassHalf,
+  FaFolderOpen,
 } from "react-icons/fa";
 
 import "./Projects.css";
@@ -31,8 +32,10 @@ function ProjectCard({ project }) {
           />
         ) : (
           <div className="project-placeholder">
-            <FaImage />
-            <span>Sẽ cập nhật ảnh sau</span>
+            <span className="project-placeholder-icon">
+              <FaCode />
+            </span>
+            <span className="project-placeholder-text">Ảnh xem trước sẽ cập nhật sau</span>
           </div>
         )}
       </div>
@@ -113,19 +116,27 @@ function Projects() {
           >
             <Icon />
             {label}
+            <span className="projects-tab-count">{projects[key]?.length ?? 0}</span>
           </button>
         ))}
 
       </div>
 
-      <div className="projects-grid">
-        {activeList.map((project) => (
-          <ProjectCard
-            key={project.name}
-            project={project}
-          />
-        ))}
-      </div>
+      {activeList.length > 0 ? (
+        <div className="projects-grid">
+          {activeList.map((project) => (
+            <ProjectCard
+              key={project.name}
+              project={project}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="projects-empty">
+          <FaFolderOpen />
+          <p>Chưa có dự án nào ở mục này.</p>
+        </div>
+      )}
 
     </section>
   );

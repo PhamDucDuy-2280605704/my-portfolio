@@ -8,6 +8,7 @@ import About from "../pages/About/About";
 import Projects from "../pages/Projects/Projects";
 import Skills from "../pages/Skills/Skills";
 import Experience from "../pages/Experience/Experience";
+import Journal from "../pages/Journal/Journal";
 import Contact from "../pages/Contact/Contact";
 import NotFound from "../pages/NotFound/NotFound";
 
@@ -23,6 +24,7 @@ function AppRoutes() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/skills" element={<Skills />} />
           <Route path="/experience" element={<Experience />} />
+          <Route path="/journal" element={<Journal />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
 

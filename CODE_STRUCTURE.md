@@ -25,6 +25,7 @@ my-portfolio/
 │  │  ├─ Skills/                # "/skills"  → kỹ năng theo nhóm Frontend/Backend/Mobile/Tools
 │  │  ├─ Projects/              # "/projects" → dự án, chia Đã hoàn thành / Đang phát triển
 │  │  ├─ Experience/            # "/experience" → học vấn (timeline) + chứng chỉ
+│  │  ├─ Journal/               # "/journal" → nhật ký/blog cá nhân, mở rộng đọc tiếp
 │  │  ├─ Contact/               # "/contact" → card Email/GitHub/Facebook/Zalo
 │  │  └─ NotFound/              # "*" → trang 404
 │  │
@@ -95,6 +96,7 @@ data/certificates.js ─> pages/Experience                 (grid chứng chỉ, 
 data/projects.js ──> pages/Projects                      (2 nhóm: completed / inProgress)
 
 data/social.js ────> pages/Contact                       (email/github/fb/zalo)
+data/journal.js ───> pages/Journal                        (danh sách bài nhật ký)
 ```
 
 Nguyên tắc: **mọi thông tin cá nhân chỉ sửa 1 chỗ duy nhất trong `src/data/*`**, các trang/section chỉ import và hiển thị, không hard-code lại thông tin.

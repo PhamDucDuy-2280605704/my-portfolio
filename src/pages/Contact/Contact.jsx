@@ -1,4 +1,4 @@
-import { FaGithub, FaFacebook, FaEnvelope } from "react-icons/fa";
+import { FaGithub, FaFacebook, FaEnvelope, FaArrowRight } from "react-icons/fa";
 import { SiZalo } from "react-icons/si";
 
 import "./Contact.css";
@@ -12,6 +12,7 @@ import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 const contacts = [
   {
     name: "Email",
+    hint: "Phản hồi trong vòng 24h",
     value: profile.email,
     href: social.email,
     icon: FaEnvelope,
@@ -19,6 +20,7 @@ const contacts = [
   },
   {
     name: "GitHub",
+    hint: "Xem các dự án của mình",
     value: "PhamDucDuy-2280605704",
     href: social.github,
     icon: FaGithub,
@@ -26,6 +28,7 @@ const contacts = [
   },
   {
     name: "Facebook",
+    hint: "Kết nối, trò chuyện nhanh",
     value: "Phạm Đức Duy",
     href: social.facebook,
     icon: FaFacebook,
@@ -33,6 +36,7 @@ const contacts = [
   },
   {
     name: "Zalo",
+    hint: "Nhắn tin trực tiếp",
     value: "0924 834 155",
     href: social.zalo,
     icon: SiZalo,
@@ -57,7 +61,7 @@ function Contact() {
 
       <div className="contact-grid">
 
-        {contacts.map(({ name, value, href, icon: Icon, color }) => (
+        {contacts.map(({ name, hint, value, href, icon: Icon, color }) => (
           <a
             key={name}
             href={href}
@@ -66,15 +70,25 @@ function Contact() {
             className="contact-card"
           >
 
-            <Icon
-              className="contact-icon"
-              style={{ color }}
-            />
+            <span
+              className="contact-icon-badge"
+              style={{ "--badge-color": color }}
+            >
+              <Icon className="contact-icon" />
+            </span>
 
             <div className="contact-text">
               <h3>{name}</h3>
-              <p>{value}</p>
+              <p
+                className="contact-value"
+                title={value}
+              >
+                {value}
+              </p>
+              <span className="contact-hint">{hint}</span>
             </div>
+
+            <FaArrowRight className="contact-arrow" />
 
           </a>
         ))}

@@ -1,0 +1,122 @@
+.app-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+
+  overflow: hidden;
+  pointer-events: none;
+
+  background:
+    linear-gradient(to bottom, rgba(59, 130, 246, 0.12), transparent 320px),
+    var(--color-bg);
+}
+
+.app-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+  will-change: transform;
+}
+
+.app-blob-1 {
+  top: -10%;
+  left: -8%;
+
+  width: 520px;
+  height: 520px;
+
+  background: radial-gradient(circle, #3b82f6, transparent 70%);
+
+  animation: drift-1 26s ease-in-out infinite;
+}
+
+.app-blob-2 {
+  bottom: -15%;
+  right: -10%;
+
+  width: 620px;
+  height: 620px;
+
+  background: radial-gradient(circle, #8b5cf6, transparent 70%);
+
+  animation: drift-2 32s ease-in-out infinite;
+}
+
+.app-blob-3 {
+  top: 35%;
+  left: 45%;
+  transform: translate(-50%, 0);
+
+  width: 420px;
+  height: 420px;
+
+  background: radial-gradient(circle, #06b6d4, transparent 70%);
+
+  animation: drift-3 22s ease-in-out infinite;
+}
+
+.app-grid {
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, #000 40%, transparent 100%);
+}
+
+@keyframes drift-1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(60px, 50px) scale(1.15);
+  }
+}
+
+@keyframes drift-2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-70px, -40px) scale(1.1);
+  }
+}
+
+@keyframes drift-3 {
+  0%,
+  100% {
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, 40px) scale(1.2);
+  }
+}
+
+@media (max-width: 640px) {
+  .app-blob {
+    filter: blur(60px);
+    opacity: 0.28;
+  }
+
+  .app-blob-1,
+  .app-blob-2,
+  .app-blob-3 {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-blob {
+    animation: none;
+  }
+}

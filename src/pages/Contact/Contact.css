@@ -5,32 +5,47 @@
 }
 
 .contact-intro {
-  max-width: 600px;
-  margin: 0 auto 60px;
+  max-width: 560px;
+  margin: -40px auto 56px;
   text-align: center;
   color: var(--color-text-secondary);
+  font-size: 15px;
   line-height: 1.8;
 }
 
 .contact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 22px;
 }
 
 .contact-card {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 
-  padding: 28px;
+  padding: 26px 24px;
 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
 
   text-decoration: none;
   color: var(--color-text);
+  overflow: hidden;
+
+  transition: 0.3s;
+}
+
+.contact-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+
+  background: var(--badge-color, var(--color-primary));
+  opacity: 0;
 
   transition: 0.3s;
 }
@@ -41,23 +56,87 @@
   box-shadow: var(--shadow);
 }
 
-.contact-icon {
-  font-size: 36px;
+.contact-card:hover::before {
+  opacity: 1;
+}
+
+.contact-icon-badge {
+  --badge-color: var(--color-primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+
+  background: color-mix(in srgb, var(--badge-color) 16%, transparent);
+
+  transition: 0.3s;
+}
+
+.contact-card:hover .contact-icon-badge {
+  background: color-mix(in srgb, var(--badge-color) 26%, transparent);
+}
+
+.contact-icon {
+  font-size: 24px;
+  color: var(--badge-color);
+}
+
+.contact-text {
+  min-width: 0;
+  flex: 1;
 }
 
 .contact-text h3 {
-  font-size: 18px;
-  margin-bottom: 6px;
+  font-size: 17px;
+  margin-bottom: 4px;
 }
 
-.contact-text p {
+.contact-value {
   color: var(--color-text-secondary);
+  font-size: 13px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contact-hint {
+  display: block;
+  margin-top: 4px;
+
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.contact-arrow {
+  flex-shrink: 0;
+
   font-size: 14px;
+  color: var(--color-text-secondary);
+  opacity: 0;
+
+  transform: translateX(-6px);
+  transition: 0.3s;
+}
+
+.contact-card:hover .contact-arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--color-primary);
 }
 
 @media (max-width: 640px) {
   .contact-page {
     padding: 80px 20px;
+  }
+
+  .contact-arrow {
+    display: none;
   }
 }

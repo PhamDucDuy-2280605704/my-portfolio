@@ -19,6 +19,7 @@ function Navbar() {
     { name: "Kỹ Năng", path: "/skills" },
     { name: "Dự Án", path: "/projects" },
     { name: "Kinh Nghiệm", path: "/experience" },
+    { name: "Nhật Ký", path: "/journal" },
     { name: "Liên Hệ", path: "/contact" },
   ];
 
