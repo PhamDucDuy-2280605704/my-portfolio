@@ -11,12 +11,19 @@
     var(--color-bg);
 }
 
+.app-blobs {
+  position: absolute;
+  inset: 0;
+
+  animation: hue-cycle 40s linear infinite;
+}
+
 .app-blob {
   position: absolute;
   border-radius: 50%;
   filter: blur(90px);
   opacity: 0.35;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
 .app-blob-1 {
@@ -28,7 +35,9 @@
 
   background: radial-gradient(circle, #3b82f6, transparent 70%);
 
-  animation: drift-1 26s ease-in-out infinite;
+  animation:
+    drift-1 26s ease-in-out infinite,
+    breathe 7s ease-in-out infinite;
 }
 
 .app-blob-2 {
@@ -40,7 +49,9 @@
 
   background: radial-gradient(circle, #8b5cf6, transparent 70%);
 
-  animation: drift-2 32s ease-in-out infinite;
+  animation:
+    drift-2 32s ease-in-out infinite,
+    breathe 9s ease-in-out infinite 1s;
 }
 
 .app-blob-3 {
@@ -53,7 +64,42 @@
 
   background: radial-gradient(circle, #06b6d4, transparent 70%);
 
-  animation: drift-3 22s ease-in-out infinite;
+  animation:
+    drift-3 22s ease-in-out infinite,
+    breathe 8s ease-in-out infinite 0.5s;
+}
+
+.app-blob-4 {
+  top: -12%;
+  right: -10%;
+
+  width: 380px;
+  height: 380px;
+
+  background: radial-gradient(circle, #ec4899, transparent 70%);
+
+  animation:
+    drift-4 28s ease-in-out infinite,
+    breathe 10s ease-in-out infinite 2s;
+}
+
+.app-particles {
+  position: absolute;
+  inset: 0;
+}
+
+.app-particle {
+  position: absolute;
+
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+
+  background: var(--color-primary);
+  box-shadow: 0 0 6px 1px var(--color-primary);
+
+  opacity: 0;
+  animation: twinkle 6s ease-in-out infinite;
 }
 
 .app-grid {
@@ -101,6 +147,51 @@
   }
 }
 
+@keyframes drift-4 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-50px, 60px) scale(1.12);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes hue-cycle {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.4);
+  }
+}
+
 @media (max-width: 640px) {
   .app-blob {
     filter: blur(60px);
@@ -109,14 +200,21 @@
 
   .app-blob-1,
   .app-blob-2,
-  .app-blob-3 {
-    width: 300px;
-    height: 300px;
+  .app-blob-3,
+  .app-blob-4 {
+    width: 280px;
+    height: 280px;
+  }
+
+  .app-particle {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app-blob {
+  .app-blob,
+  .app-blobs,
+  .app-particle {
     animation: none;
   }
 }

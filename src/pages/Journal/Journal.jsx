@@ -8,6 +8,8 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
+// Định dạng chuỗi ngày "YYYY-MM-DD" (trong data/journal.js) thành dạng
+// tiếng Việt dễ đọc, VD: "11 tháng 7, 2026".
 function formatDate(dateStr) {
   const date = new Date(dateStr);
 
@@ -18,9 +20,13 @@ function formatDate(dateStr) {
   });
 }
 
+// Trang "/journal" — danh sách bài viết cá nhân (data/journal.js).
+// Mỗi bài chỉ hiện đoạn tóm tắt (excerpt) trước; bấm "Đọc tiếp" mới render
+// toàn bộ nội dung (entry.content) — dùng state openId để chỉ mở 1 bài tại 1 lúc.
 function Journal() {
   usePageTitle("Nhật Ký | Phạm Đức Duy");
 
+  // id của bài đang được mở rộng (null = chưa mở bài nào).
   const [openId, setOpenId] = useState(null);
 
   return (
@@ -64,6 +70,7 @@ function Journal() {
 
               <p className="journal-excerpt">{entry.excerpt}</p>
 
+              {/* Chỉ render phần nội dung đầy đủ khi bài này đang được mở */}
               {isOpen && (
                 <div className="journal-content">
                   {entry.content.map((paragraph, index) => (

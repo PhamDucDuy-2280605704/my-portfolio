@@ -5,8 +5,12 @@ import "./Hero.css";
 
 import profile from "../../../data/profile";
 
+// Nhãn nhấn mạnh 3 mảng kỹ năng chính, hiện dạng "FRONTEND • BACKEND • MOBILE"
+// ngay dưới vai trò, giúp người xem nắm phạm vi kỹ năng chỉ trong 1 giây.
 const highlights = ["Frontend", "Backend", "Mobile"];
 
+// Section giới thiệu ở trang Home — toàn bộ nội dung lấy từ data/profile.js,
+// nên muốn đổi tên/vai trò/câu quote... chỉ cần sửa file đó, không cần sửa ở đây.
 function Hero() {
   return (
     <section className="hero">
@@ -21,6 +25,7 @@ function Hero() {
           {highlights.map((item, index) => (
             <span key={item}>
               {item}
+              {/* Chấm phân cách "•" giữa các mục, trừ mục cuối cùng */}
               {index < highlights.length - 1 && <i className="dot" />}
             </span>
           ))}

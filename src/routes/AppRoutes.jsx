@@ -12,6 +12,13 @@ import Journal from "../pages/Journal/Journal";
 import Contact from "../pages/Contact/Contact";
 import NotFound from "../pages/NotFound/NotFound";
 
+// Toàn bộ định tuyến (routing) của app.
+// - Các route bên trong <Route element={<MainLayout />}> đều dùng chung layout
+//   (Navbar + Footer bao quanh), MainLayout render nội dung riêng qua <Outlet />.
+// - Route "*" (404) nằm NGOÀI MainLayout vì trang NotFound tự thiết kế riêng,
+//   không cần Navbar/Footer bao quanh.
+// - <ScrollToTop /> đặt ngay trong <BrowserRouter> để theo dõi mọi lần đổi route
+//   và tự cuộn mượt lên đầu trang (xem thêm ScrollToTop.jsx).
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -28,6 +35,7 @@ function AppRoutes() {
           <Route path="/contact" element={<Contact />} />
         </Route>
 
+        {/* Bắt mọi đường dẫn không khớp -> trang 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

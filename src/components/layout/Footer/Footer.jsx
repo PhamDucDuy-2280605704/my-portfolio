@@ -1,5 +1,6 @@
 import "./Footer.css";
 
+// Chân trang đơn giản, hiện ở mọi trang qua MainLayout.
 function Footer() {
   return (
     <footer>

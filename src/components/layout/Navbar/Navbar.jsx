@@ -6,10 +6,17 @@ import "./Navbar.css";
 import logo from "../../../assets/images/logo.jpg";
 import profile from "../../../data/profile";
 
+// Thanh điều hướng chung cho mọi trang. Gồm 3 phần:
+//   1. Logo (chỉ hiện ở trang Home, bấm vào phóng to xem toàn màn hình)
+//   2. Menu ngang (desktop) — tự ẩn thành nút hamburger khi màn hình hẹp (≤1080px)
+//   3. Menu full-screen (mobile) — hiện khi bấm nút hamburger
 function Navbar() {
+  // isZoomed: đang mở overlay phóng to logo hay không.
   const [isZoomed, setIsZoomed] = useState(false);
+  // isMenuOpen: đang mở menu full-screen trên mobile hay không.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Biết đang ở trang nào để quyết định có hiện logo hay không.
   const { pathname } = useLocation();
   const isHome = pathname === "/";
 
@@ -23,6 +30,9 @@ function Navbar() {
     { name: "Liên Hệ", path: "/contact" },
   ];
 
+  // Khi 1 trong 2 overlay (phóng to logo / menu mobile) đang mở:
+  // - khoá cuộn trang nền (tránh cuộn nền trong khi xem overlay)
+  // - cho phép nhấn phím Esc để đóng overlay
   useEffect(() => {
     if (!isZoomed && !isMenuOpen) return;
 
@@ -37,6 +47,7 @@ function Navbar() {
 
     window.addEventListener("keydown", handleKeyDown);
 
+    // Dọn dẹp: mở lại cuộn trang + gỡ listener khi overlay đóng hoặc unmount.
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
@@ -46,6 +57,9 @@ function Navbar() {
   return (
     <>
       <nav className="navbar">
+        {/* Logo: chỉ hiện ở trang Home (class "logo-hidden" ẩn nhưng vẫn giữ
+            chỗ bằng visibility:hidden, để menu bên cạnh không bị lệch vị trí
+            khi chuyển qua lại giữa Home và các trang khác). */}
         <button
           type="button"
           className={`logo ${isHome ? "" : "logo-hidden"}`}
@@ -59,6 +73,7 @@ function Navbar() {
           />
         </button>
 
+        {/* Menu ngang — ẩn qua CSS (display:none) khi màn hình ≤1080px */}
         <ul className="menu">
           {menus.map((item) => (
             <li key={item.path}>
@@ -69,6 +84,7 @@ function Navbar() {
           ))}
         </ul>
 
+        {/* Nút hamburger — chỉ hiện qua CSS khi màn hình ≤1080px */}
         <button
           type="button"
           className="menu-toggle"
@@ -79,6 +95,7 @@ function Navbar() {
         </button>
       </nav>
 
+      {/* Menu full-screen cho mobile, đóng lại ngay khi bấm 1 mục để điều hướng */}
       {isMenuOpen && (
         <div className="mobile-menu">
           <button
@@ -105,6 +122,7 @@ function Navbar() {
         </div>
       )}
 
+      {/* Overlay phóng to logo — chỉ có thể mở khi đang ở Home (isHome) */}
       {isZoomed && isHome && (
         <div
           className="logo-overlay"

@@ -6,6 +6,8 @@ import usePageTitle from "../../hooks/usePageTitle";
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import Button from "../../components/common/Button/Button";
 
+// Trang "/about" — bio đầy đủ (khác với Hero ở Home, vốn chỉ có mô tả ngắn).
+// Toàn bộ nội dung (bio, ngày sinh, email, CV...) lấy từ data/profile.js.
 function About() {
   usePageTitle("Giới Thiệu | Phạm Đức Duy");
 
@@ -34,6 +36,7 @@ function About() {
 
           <p className="about-page-role">{profile.role}</p>
 
+          {/* profile.bio là mảng nhiều đoạn văn -> mỗi đoạn render thành 1 thẻ <p> */}
           {profile.bio.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
@@ -54,6 +57,7 @@ function About() {
 
           </ul>
 
+          {/* Tải file CV thật (profile.resume import từ assets/resume/cv.pdf) */}
           <a
             href={profile.resume}
             download

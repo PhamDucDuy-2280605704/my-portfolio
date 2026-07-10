@@ -15,11 +15,16 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
+// 2 tab lọc dự án: "Đã hoàn thành" và "Đang phát triển".
+// key phải khớp với tên field trong data/projects.js (completed/inProgress).
 const tabs = [
   { key: "completed", label: "Đã hoàn thành", icon: FaCheckCircle },
   { key: "inProgress", label: "Đang phát triển", icon: FaHourglassHalf },
 ];
 
+// Card hiển thị 1 dự án: ảnh (hoặc placeholder gradient+icon nếu chưa có ảnh),
+// tên, mô tả, danh sách công nghệ, và 2 link Demo/Mã nguồn (tự vô hiệu hoá
+// hiển thị "sắp ra mắt"/"đang cập nhật" nếu project.demo hoặc project.source là null).
 function ProjectCard({ project }) {
   return (
     <div className="project-card">
@@ -90,11 +95,14 @@ function ProjectCard({ project }) {
   );
 }
 
+// Trang "/projects" — dùng tab để chuyển qua lại giữa 2 danh sách dự án,
+// chỉ 1 danh sách hiển thị tại 1 thời điểm (activeTab quyết định).
 function Projects() {
   usePageTitle("Dự Án | Phạm Đức Duy");
 
   const [activeTab, setActiveTab] = useState("completed");
 
+  // Danh sách dự án đang hiển thị, ứng với tab đang chọn.
   const activeList = projects[activeTab] ?? [];
 
   return (
@@ -116,12 +124,14 @@ function Projects() {
           >
             <Icon />
             {label}
+            {/* Số lượng dự án trong nhóm, hiện ngay trên nút tab */}
             <span className="projects-tab-count">{projects[key]?.length ?? 0}</span>
           </button>
         ))}
 
       </div>
 
+      {/* Nếu nhóm đang chọn chưa có dự án nào -> hiện trạng thái rỗng thay vì để trống trơn */}
       {activeList.length > 0 ? (
         <div className="projects-grid">
           {activeList.map((project) => (

@@ -1,4 +1,4 @@
-import { FaGithub, FaFacebook, FaEnvelope, FaArrowRight } from "react-icons/fa";
+import { FaGithub, FaFacebook, FaEnvelope, FaArrowRight, FaDiscord, FaTiktok } from "react-icons/fa";
 import { SiZalo } from "react-icons/si";
 
 import "./Contact.css";
@@ -9,6 +9,10 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
+// Danh sách kênh liên hệ hiển thị dạng card. href lấy từ data/social.js,
+// còn name/hint/value/icon/color khai báo trực tiếp ở đây vì gắn liền với
+// cách hiển thị (mỗi kênh 1 icon + màu thương hiệu riêng).
+// Thêm kênh mới: thêm link vào data/social.js rồi thêm 1 object vào mảng này.
 const contacts = [
   {
     name: "Email",
@@ -42,8 +46,25 @@ const contacts = [
     icon: SiZalo,
     color: "#0068ff",
   },
+  {
+    name: "Discord",
+    hint: "Chat, cùng chơi game",
+    value: "phamduy1410",
+    href: social.discord,
+    icon: FaDiscord,
+    color: "#5865f2",
+  },
+  {
+    name: "TikTok",
+    hint: "Xem video của mình",
+    value: "@phamduy1410",
+    href: social.tiktok,
+    icon: FaTiktok,
+    color: "#f8fafc",
+  },
 ];
 
+// Trang "/contact" — lưới card liên kết tới các kênh liên hệ.
 function Contact() {
   usePageTitle("Liên Hệ | Phạm Đức Duy");
 
@@ -70,6 +91,8 @@ function Contact() {
             className="contact-card"
           >
 
+            {/* --badge-color: CSS variable truyền màu động cho từng kênh
+                (dùng trong Contact.css để tô icon + vạch accent khi hover) */}
             <span
               className="contact-icon-badge"
               style={{ "--badge-color": color }}

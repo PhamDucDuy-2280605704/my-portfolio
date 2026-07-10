@@ -5,6 +5,8 @@ import "./NotFound.css";
 import Button from "../../components/common/Button/Button";
 import usePageTitle from "../../hooks/usePageTitle";
 
+// Trang 404 — khớp với route "*" trong AppRoutes.jsx.
+// Cố ý KHÔNG dùng MainLayout (không có Navbar/Footer) để có toàn quyền tự thiết kế trang.
 function NotFound() {
   usePageTitle("Không Tìm Thấy Trang | Phạm Đức Duy");
 

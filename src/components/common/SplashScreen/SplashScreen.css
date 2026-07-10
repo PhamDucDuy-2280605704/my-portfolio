@@ -1,0 +1,152 @@
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+
+  background: #05070d;
+
+  animation: splash-fade-in 0.4s ease;
+}
+
+.splash-screen.leaving {
+  animation: splash-fade-out 0.5s ease forwards;
+}
+
+.splash-logo img {
+  width: 96px;
+  height: auto;
+  border-radius: var(--radius-sm);
+
+  animation: splash-pulse 2s ease-in-out infinite;
+}
+
+.splash-terminal {
+  width: 90%;
+  max-width: 480px;
+  min-height: 130px;
+
+  padding: 20px 22px;
+
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #4ade80;
+}
+
+.splash-terminal p {
+  opacity: 0;
+  animation: splash-line-in 0.3s ease forwards;
+}
+
+.splash-cursor {
+  display: inline-block;
+  animation: splash-blink 0.8s step-end infinite;
+}
+
+.splash-progress {
+  width: 220px;
+  height: 4px;
+
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.splash-progress-bar {
+  width: 0%;
+  height: 100%;
+
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+
+  animation: splash-fill 5s linear forwards;
+}
+
+@keyframes splash-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes splash-fade-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes splash-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes splash-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes splash-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes splash-fill {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo img {
+    animation: none;
+  }
+
+  .splash-terminal p {
+    opacity: 1;
+    animation: none;
+  }
+
+  .splash-cursor {
+    display: none;
+  }
+}

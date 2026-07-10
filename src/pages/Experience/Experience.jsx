@@ -8,6 +8,7 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
+// Nhãn trạng thái nhỏ cho mỗi chứng chỉ: "Đã hoàn thành" (xanh lá) hoặc "Đang học" (xanh dương).
 function StatusBadge({ status }) {
   const isDone = status === "completed";
 
@@ -18,6 +19,8 @@ function StatusBadge({ status }) {
   );
 }
 
+// Trang "/experience" — gồm 2 khối: timeline Học vấn (data/education.js)
+// và lưới Chứng chỉ & Kỹ năng (data/certificates.js).
 function Experience() {
   usePageTitle("Kinh Nghiệm | Phạm Đức Duy");
 
@@ -66,6 +69,8 @@ function Experience() {
               className="certificate-card"
             >
 
+              {/* cert.image = null -> hiện khung chờ (placeholder), sau này chỉ cần
+                  import ảnh thật rồi gán vào field image trong data/certificates.js */}
               <div className="certificate-image">
                 {cert.image ? (
                   <img
