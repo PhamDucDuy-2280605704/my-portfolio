@@ -8,6 +8,7 @@ import social from "../../data/social";
 import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
+import ContactForm from "./ContactForm";
 
 // Danh sách kênh liên hệ hiển thị dạng card. href lấy từ data/social.js,
 // còn name/hint/value/icon/color khai báo trực tiếp ở đây vì gắn liền với
@@ -28,7 +29,10 @@ const contacts = [
     value: "PhamDucDuy-2280605704",
     href: social.github,
     icon: FaGithub,
-    color: "#f8fafc",
+    // Icon GitHub gốc là trắng/đen, nhưng dùng màu tím đặc trưng (Octicons)
+    // để nổi bật trên nền tối và đồng bộ với các icon màu khác — dùng trắng
+    // sẽ bị "chìm" vào nền badge mờ, không nhìn rõ như Facebook/Zalo/Discord.
+    color: "#a78bfa",
   },
   {
     name: "Facebook",
@@ -60,7 +64,8 @@ const contacts = [
     value: "@phamduy1410",
     href: social.tiktok,
     icon: FaTiktok,
-    color: "#f8fafc",
+    // Tương tự GitHub — dùng màu hồng đặc trưng của TikTok thay vì trắng.
+    color: "#fe2c55",
   },
 ];
 
@@ -117,6 +122,8 @@ function Contact() {
         ))}
 
       </div>
+
+      <ContactForm />
 
     </section>
   );

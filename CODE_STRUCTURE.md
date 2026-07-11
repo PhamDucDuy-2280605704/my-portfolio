@@ -112,7 +112,16 @@ Nguyên tắc: **mọi thông tin cá nhân chỉ sửa 1 chỗ duy nhất trong
 - `components/layout` = khung sườn hiển thị ở mọi trang (Navbar, Footer). Navbar có menu hamburger riêng cho mobile (≤900px) và logo bấm vào phóng to được.
 - Mỗi trang đều có breakpoint responsive riêng trong file `.css` của nó (thường ở `max-width: 640px` hoặc `900px`).
 
-## 5. Việc còn dang dở
+## 5. Testing
+
+Dùng **Vitest** (chạy nhanh, tích hợp sẵn với Vite) + **React Testing Library** (test theo hành vi người dùng thấy được, không test chi tiết cài đặt bên trong).
+
+- Cấu hình ở `vite.config.js` (mục `test`), file setup dùng chung ở `src/test/setup.js`.
+- Test đặt cạnh file component, hậu tố `.test.jsx` — VD: `Navbar.jsx` + `Navbar.test.jsx`.
+- Chạy `npm test` (chạy 1 lần) hoặc `npm run test:watch` (tự chạy lại khi sửa code).
+- **Không dùng `globals: true`** của Vitest (để tránh ESLint báo lỗi `no-undef` với `describe/it/expect`) — mọi test đều `import { describe, it, expect } from "vitest"` tường minh. Vì vậy React Testing Library cũng không tự nhận diện được `afterEach` để tự dọn DOM, nên `src/test/setup.js` phải tự gọi `cleanup()` thủ công sau mỗi test.
+
+## 6. Việc còn dang dở
 
 - `data/projects.js` đang là **dữ liệu mẫu** (3 dự án giả) — cần thay bằng dự án thật, kèm ảnh (`image`), link demo/source khi có.
 - `data/certificates.js` đang thiếu ảnh chứng chỉ thật (`image: null`) — UI đã có sẵn khung chờ, chỉ cần import ảnh và gán vào field `image`.

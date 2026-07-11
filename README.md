@@ -69,7 +69,21 @@ npm run preview
 
 # Kiểm tra lint
 npm run lint
+
+# Chạy toàn bộ test (Vitest + React Testing Library)
+npm test
+
+# Chạy test ở chế độ theo dõi (tự chạy lại khi sửa code)
+npm run test:watch
 ```
+
+## Testing
+
+Project dùng **Vitest** + **React Testing Library** để test component. Các file test nằm cạnh file component tương ứng, đặt tên `*.test.jsx` (VD: `Button.jsx` đi cùng `Button.test.jsx`).
+
+Đã có test cho: `Button`, `SectionTitle`, hook `usePageTitle`, `Navbar` (logic ẩn/hiện logo theo route), trang `Projects` (chuyển tab), `Contact` (đủ kênh liên hệ, link đúng), `Journal` (mở/thu gọn bài viết), `NotFound`.
+
+Test file không bị đóng gói vào bản build production (`npm run build`), chỉ chạy khi gọi `npm test`.
 
 ## Cập nhật nội dung
 
@@ -80,7 +94,18 @@ Không cần sửa component, chỉ cần sửa các file trong `src/data/`:
 - `education.js` — học vấn.
 - `certificates.js` — chứng chỉ (có thể gắn thêm ảnh khi có).
 - `projects.js` — dự án, chia `completed` / `inProgress`.
-- `social.js` — link Email/GitHub/Facebook/Zalo.
+- `social.js` — link Email/GitHub/Facebook/Zalo/Discord/TikTok + endpoint Formspree.
+
+## Thiết lập form liên hệ (Formspree)
+
+Trang `/contact` có form gửi tin nhắn thật qua [Formspree](https://formspree.io) (miễn phí, không cần tự viết backend):
+
+1. Vào [formspree.io](https://formspree.io) → đăng ký bằng email của bạn.
+2. Tạo 1 **Form** mới → Formspree cho 1 link dạng `https://formspree.io/f/xxxxabcd`.
+3. Mở `src/data/social.js`, thay giá trị `formspree` bằng link vừa tạo.
+4. Build/deploy lại — form sẽ gửi thẳng vào email bạn đã đăng ký.
+
+Trước khi thay link thật, form vẫn hiển thị bình thường nhưng bấm "Gửi Tin Nhắn" sẽ báo lỗi (vì endpoint mặc định `YOUR_FORM_ID` không tồn tại).
 
 ## Việc còn dang dở
 
