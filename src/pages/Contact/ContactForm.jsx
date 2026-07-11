@@ -108,7 +108,7 @@ function ContactForm() {
 
       {status === STATUS.ERROR && (
         <p className="contact-form-error">
-          Gửi thất bại — có thể do endpoint Formspree chưa được cấu hình đúng. Bạn thử liên hệ qua các kênh phía trên nhé.
+          Gửi thất bại — có thể do mất kết nối mạng. Bạn thử lại hoặc liên hệ qua các kênh phía trên nhé.
         </p>
       )}
 

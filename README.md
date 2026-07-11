@@ -96,16 +96,13 @@ Không cần sửa component, chỉ cần sửa các file trong `src/data/`:
 - `projects.js` — dự án, chia `completed` / `inProgress`.
 - `social.js` — link Email/GitHub/Facebook/Zalo/Discord/TikTok + endpoint Formspree.
 
-## Thiết lập form liên hệ (Formspree)
+## Form liên hệ (Formspree)
 
-Trang `/contact` có form gửi tin nhắn thật qua [Formspree](https://formspree.io) (miễn phí, không cần tự viết backend):
+Trang `/contact` có form gửi tin nhắn thật qua [Formspree](https://formspree.io) (miễn phí, không cần tự viết backend) — endpoint đã cấu hình sẵn ở `src/data/social.js` (`formspree: "https://formspree.io/f/xvzjejjo"`).
 
-1. Vào [formspree.io](https://formspree.io) → đăng ký bằng email của bạn.
-2. Tạo 1 **Form** mới → Formspree cho 1 link dạng `https://formspree.io/f/xxxxabcd`.
-3. Mở `src/data/social.js`, thay giá trị `formspree` bằng link vừa tạo.
-4. Build/deploy lại — form sẽ gửi thẳng vào email bạn đã đăng ký.
+Form submit qua `fetch()` (không dùng `<form action="...">` mặc định của trình duyệt), kèm header `Accept: application/json` — nhờ vậy **Formspree trả JSON thay vì chuyển hướng (redirect) sang trang khác**. Kết quả: gửi thành công hay lỗi đều hiện ngay tại chỗ (`ContactForm.jsx`), người dùng không bị rời khỏi trang.
 
-Trước khi thay link thật, form vẫn hiển thị bình thường nhưng bấm "Gửi Tin Nhắn" sẽ báo lỗi (vì endpoint mặc định `YOUR_FORM_ID` không tồn tại).
+Muốn đổi sang endpoint Formspree khác (VD: dùng tài khoản riêng của bạn): vào [formspree.io](https://formspree.io) → tạo Form mới → copy link `https://formspree.io/f/xxxxabcd` → dán đè vào giá trị `formspree` trong `src/data/social.js`.
 
 ## Việc còn dang dở
 
