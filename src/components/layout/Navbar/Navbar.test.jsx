@@ -59,4 +59,36 @@ describe("Navbar", () => {
     // Sau khi bấm, nút "Đóng menu" (chỉ có trong menu mobile) phải xuất hiện
     expect(screen.getByLabelText("Đóng menu")).toBeInTheDocument();
   });
+
+  it("bấm vào logo ở Home sẽ mở overlay phóng to, bấm nút Đóng sẽ tắt overlay", async () => {
+    const user = userEvent.setup();
+    const { container } = renderAt("/");
+
+    expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
+
+    await user.click(container.querySelector(".logo"));
+    expect(container.querySelector(".logo-overlay")).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText("Đóng"));
+    expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
+  });
+
+  it("nhấn phím Esc sẽ đóng overlay phóng to logo đang mở", async () => {
+    const user = userEvent.setup();
+    const { container } = renderAt("/");
+
+    await user.click(container.querySelector(".logo"));
+    expect(container.querySelector(".logo-overlay")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
+  });
+
+  it("bấm vào logo ở trang khác (không phải Home) sẽ KHÔNG mở overlay", async () => {
+    const user = userEvent.setup();
+    const { container } = renderAt("/about");
+
+    await user.click(container.querySelector(".logo"));
+    expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
+  });
 });

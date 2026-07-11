@@ -1,0 +1,37 @@
+name: CI
+
+# Tự động chạy kiểm tra mỗi khi push hoặc mở Pull Request vào nhánh main.
+# Gồm 3 bước: lint (ESLint) -> test (Vitest) -> build (Vite).
+# Nếu bước nào fail, GitHub sẽ đánh dấu đỏ ngay trên commit/PR đó.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Lint, Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cài đặt Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Cài đặt dependencies
+        run: npm ci
+
+      - name: Kiểm tra lint (ESLint)
+        run: npm run lint
+
+      - name: Chạy test (Vitest)
+        run: npm test
+
+      - name: Build production
+        run: npm run build

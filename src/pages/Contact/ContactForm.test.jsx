@@ -1,72 +1,60 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { describe, it, expect, afterEach } from "vitest";
+import { render, screen } from "@testing-library/react";
 
 import ContactForm from "./ContactForm";
 
-// Điền nhanh 3 trường bắt buộc rồi bấm nút Gửi.
-async function fillAndSubmit(user) {
-  await user.type(screen.getByLabelText("Họ tên"), "Nguyễn Văn A");
-  await user.type(screen.getByLabelText("Email"), "test@example.com");
-  await user.type(screen.getByLabelText("Lời nhắn"), "Xin chào, mình muốn trao đổi công việc.");
-  await user.click(screen.getByRole("button", { name: /Gửi Tin Nhắn/ }));
-}
+// Dọn sạch thẻ <script> Tally sau mỗi test, vì ContactForm tự thêm nó vào
+// document.body (nằm ngoài phạm vi mà cleanup() của Testing Library quản lý),
+// nếu không các test sau sẽ thấy "script đã tồn tại" một cách sai lệch.
+afterEach(() => {
+  document
+    .querySelectorAll(`script[src="https://tally.so/widgets/embed.js"]`)
+    .forEach((el) => el.remove());
+  delete window.Tally;
+});
 
-describe("ContactForm", () => {
-  beforeEach(() => {
-    // Giả lập fetch toàn cục — test không được gọi ra Formspree thật.
-    globalThis.fetch = vi.fn();
+describe("ContactForm (Tally embed)", () => {
+  it("hiện tiêu đề và mô tả tiếng Việt phía trên iframe", () => {
+    render(<ContactForm />);
+
+    expect(screen.getByText("Gửi Tin Nhắn Trực Tiếp")).toBeInTheDocument();
+    expect(
+      screen.getByText("Điền vài thông tin bên dưới, mình sẽ đọc và phản hồi sớm nhất có thể."),
+    ).toBeInTheDocument();
   });
 
-  it("hiện thông báo thành công sau khi Formspree phản hồi ok", async () => {
-    globalThis.fetch.mockResolvedValueOnce({ ok: true });
-    const user = userEvent.setup();
+  it("render đúng 1 iframe với data-tally-src trỏ tới đúng form Tally", () => {
+    const { container } = render(<ContactForm />);
 
-    render(<ContactForm />);
-    await fillAndSubmit(user);
-
-    await waitFor(() => {
-      expect(screen.getByText("Đã gửi thành công!")).toBeInTheDocument();
-    });
+    const iframe = container.querySelector("iframe");
+    expect(iframe).toBeInTheDocument();
+    expect(iframe.getAttribute("data-tally-src")).toContain("https://tally.so/embed/b5y9DZ");
+    expect(iframe).toHaveAttribute("title", "Form Liên Hệ");
   });
 
-  it("hiện thông báo lỗi nếu Formspree trả về response không ok", async () => {
-    globalThis.fetch.mockResolvedValueOnce({ ok: false });
-    const user = userEvent.setup();
-
+  it("tự thêm script embed.js của Tally vào trang khi mount lần đầu", () => {
     render(<ContactForm />);
-    await fillAndSubmit(user);
 
-    await waitFor(() => {
-      expect(screen.getByText(/Gửi thất bại/)).toBeInTheDocument();
-    });
+    const script = document.querySelector('script[src="https://tally.so/widgets/embed.js"]');
+    expect(script).not.toBeNull();
   });
 
-  it("hiện thông báo lỗi nếu fetch bị reject (mất mạng...)", async () => {
-    globalThis.fetch.mockRejectedValueOnce(new Error("Network error"));
-    const user = userEvent.setup();
+  it("không thêm script trùng lặp nếu mount lần thứ 2 (script đã có sẵn)", () => {
+    const { unmount } = render(<ContactForm />);
+    unmount();
 
     render(<ContactForm />);
-    await fillAndSubmit(user);
 
-    await waitFor(() => {
-      expect(screen.getByText(/Gửi thất bại/)).toBeInTheDocument();
-    });
+    const scripts = document.querySelectorAll('script[src="https://tally.so/widgets/embed.js"]');
+    expect(scripts.length).toBe(1);
   });
 
-  it("bấm 'Gửi tin nhắn khác' sau khi thành công sẽ quay lại form trống", async () => {
-    globalThis.fetch.mockResolvedValueOnce({ ok: true });
-    const user = userEvent.setup();
+  it("nếu window.Tally đã tồn tại sẵn (mount lần 2), gọi ngay Tally.loadEmbeds()", () => {
+    let loadEmbedsCalled = false;
+    window.Tally = { loadEmbeds: () => { loadEmbedsCalled = true; } };
 
     render(<ContactForm />);
-    await fillAndSubmit(user);
 
-    await waitFor(() => {
-      expect(screen.getByText("Đã gửi thành công!")).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByText("Gửi tin nhắn khác"));
-
-    expect(screen.getByLabelText("Họ tên")).toBeInTheDocument();
+    expect(loadEmbedsCalled).toBe(true);
   });
 });

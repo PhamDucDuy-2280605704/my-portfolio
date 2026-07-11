@@ -46,12 +46,10 @@ describe("Contact page", () => {
     expect(emailCard).toHaveAttribute("rel", "noreferrer");
   });
 
-  it("hiện form liên hệ với đủ 3 trường: Họ tên, Email, Lời nhắn", () => {
-    renderContact();
+  it("hiện form liên hệ dạng iframe nhúng từ Tally", () => {
+    const { container } = renderContact();
 
-    expect(screen.getByLabelText("Họ tên")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email")).toBeInTheDocument();
-    expect(screen.getByLabelText("Lời nhắn")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Gửi Tin Nhắn/ })).toBeInTheDocument();
+    const iframe = container.querySelector("iframe[data-tally-src]");
+    expect(iframe).toBeInTheDocument();
   });
 });

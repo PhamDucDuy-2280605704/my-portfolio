@@ -19,6 +19,32 @@ body{
 
 }
 
+/* Skip-to-content: đưa ra ngoài màn hình bằng transform, không dùng display:none
+   (vì display:none sẽ khiến trình đọc màn hình bỏ qua hẳn, mất tác dụng).
+   Khi được Tab tới (focus), đưa hẳn vào khung hình để người dùng thấy rõ. */
+.skip-to-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+
+  transform: translateY(-100%);
+
+  padding: 14px 24px;
+
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-sm) 0;
+
+  transition: transform 0.2s;
+}
+
+.skip-to-content:focus {
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

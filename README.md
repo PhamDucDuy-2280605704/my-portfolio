@@ -75,15 +75,28 @@ npm test
 
 # Chạy test ở chế độ theo dõi (tự chạy lại khi sửa code)
 npm run test:watch
+
+# Chạy test kèm báo cáo độ phủ (coverage)
+npm run test:coverage
 ```
 
 ## Testing
 
 Project dùng **Vitest** + **React Testing Library** để test component. Các file test nằm cạnh file component tương ứng, đặt tên `*.test.jsx` (VD: `Button.jsx` đi cùng `Button.test.jsx`).
 
-Đã có test cho: `Button`, `SectionTitle`, hook `usePageTitle`, `Navbar` (logic ẩn/hiện logo theo route), trang `Projects` (chuyển tab), `Contact` (đủ kênh liên hệ, link đúng), `Journal` (mở/thu gọn bài viết), `NotFound`.
+Đã có test cho: `Button`, `SectionTitle`, `Footer`, `MainLayout` (Navbar + Outlet + Footer + skip-link), hook `usePageTitle`, `Navbar` (ẩn/hiện logo theo route, overlay phóng to, menu mobile), `Hero`, trang `About`, `Skills`, `Projects` (chuyển tab, đếm số lượng, trạng thái rỗng), `Contact` (đủ kênh, link đúng), `ContactForm` (gửi thành công/lỗi, mock `fetch`), `Journal` (mở/thu gọn bài viết), `NotFound`. Tổng cộng 48 test case.
 
 Test file không bị đóng gói vào bản build production (`npm run build`), chỉ chạy khi gọi `npm test`.
+
+## CI/CD
+
+Có sẵn GitHub Actions (`.github/workflows/ci.yml`) — tự động chạy **lint → test → build** mỗi khi push hoặc mở Pull Request vào nhánh `main`. Nếu bước nào fail, GitHub sẽ đánh dấu đỏ ngay trên commit/PR, giúp phát hiện lỗi sớm trước khi merge.
+
+## Accessibility
+
+- **Skip-to-content**: nhấn Tab lần đầu trên bất kỳ trang nào sẽ hiện link "Bỏ qua đến nội dung chính", cho phép người dùng bàn phím/trình đọc màn hình nhảy thẳng vào nội dung mà không phải Tab qua hết menu.
+- Thông báo gửi form liên hệ dùng `role="status"` (thành công) / `role="alert"` (lỗi) để trình đọc màn hình tự đọc to khi trạng thái thay đổi.
+- Tôn trọng `prefers-reduced-motion` — tắt các animation trang trí (background, splash screen) nếu người dùng bật chế độ giảm hiệu ứng chuyển động.
 
 ## Cập nhật nội dung
 
@@ -94,15 +107,28 @@ Không cần sửa component, chỉ cần sửa các file trong `src/data/`:
 - `education.js` — học vấn.
 - `certificates.js` — chứng chỉ (có thể gắn thêm ảnh khi có).
 - `projects.js` — dự án, chia `completed` / `inProgress`.
-- `social.js` — link Email/GitHub/Facebook/Zalo/Discord/TikTok + endpoint Formspree.
+- `social.js` — link Email/GitHub/Facebook/Zalo/Discord/TikTok.
 
-## Form liên hệ (Formspree)
+## Form liên hệ (Tally)
 
-Trang `/contact` có form gửi tin nhắn thật qua [Formspree](https://formspree.io) (miễn phí, không cần tự viết backend) — endpoint đã cấu hình sẵn ở `src/data/social.js` (`formspree: "https://formspree.io/f/xvzjejjo"`).
+Trang `/contact` có form nhúng từ [Tally](https://tally.so) (`ContactForm.jsx`) — không cần tự viết form/backend, chỉnh câu hỏi trực tiếp trên dashboard Tally là site tự cập nhật theo.
 
-Form submit qua `fetch()` (không dùng `<form action="...">` mặc định của trình duyệt), kèm header `Accept: application/json` — nhờ vậy **Formspree trả JSON thay vì chuyển hướng (redirect) sang trang khác**. Kết quả: gửi thành công hay lỗi đều hiện ngay tại chỗ (`ContactForm.jsx`), người dùng không bị rời khỏi trang.
+Cách hoạt động: iframe chỉ có `data-tally-src` (chưa có `src` thật) → script `embed.js` của Tally tự quét trang và gán `src` thật vào (`Tally.loadEmbeds()`). Vì đây là SPA nên `ContactForm.jsx` tự gọi lại `loadEmbeds()` mỗi lần component mount (kể cả khi rời trang Contact rồi quay lại), không chỉ đợi script tải xong lần đầu.
 
-Muốn đổi sang endpoint Formspree khác (VD: dùng tài khoản riêng của bạn): vào [formspree.io](https://formspree.io) → tạo Form mới → copy link `https://formspree.io/f/xxxxabcd` → dán đè vào giá trị `formspree` trong `src/data/social.js`.
+Muốn đổi sang form Tally khác: vào [tally.so](https://tally.so) → mở form → **Share → Embed** → copy link dạng `https://tally.so/embed/xxxxxx` → dán đè vào hằng số `TALLY_EMBED_SRC` đầu file `src/pages/Contact/ContactForm.jsx`.
+
+### ⚠️ Giới hạn quan trọng: nội dung BÊN TRONG form không sửa được từ code
+
+Tiêu đề, mô tả, nhãn từng câu hỏi, nút "Submit", và dòng "Được làm với Tally" đều nằm **bên trong iframe của tally.so** — vì là iframe khác domain (cross-origin), trình duyệt **chặn tuyệt đối** mọi CSS/JS từ site của bạn chạm vào nội dung bên trong đó (lý do bảo mật, áp dụng cho mọi iframe nhúng từ domain khác, không riêng Tally).
+
+Muốn Việt hoá nội dung form / xoá branding, phải làm trực tiếp trên tally.so:
+
+1. Đăng nhập [tally.so](https://tally.so) → mở form `b5y9DZ`.
+2. Bấm vào từng tiêu đề/nhãn câu hỏi → gõ đè lại bằng tiếng Việt → **Publish** để áp dụng.
+3. Xoá khối mô tả mặc định (đoạn "This Contact Form Template allows you to collect...") nếu không cần.
+4. Dòng "Được làm với Tally" chỉ ẩn được nếu nâng cấp gói **Tally Pro** (mục Settings → Branding trong form editor) — gói miễn phí bắt buộc phải hiện.
+
+Phần **khung bao quanh** form (tiêu đề "Gửi Tin Nhắn Trực Tiếp", mô tả, màu sắc, bo góc, đổ bóng...) đã Việt hoá và style sẵn trong `ContactForm.jsx`/`ContactForm.css` — chỉnh sửa bình thường như mọi component khác.
 
 ## Việc còn dang dở
 

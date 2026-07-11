@@ -26,7 +26,7 @@ my-portfolio/
 │  │  ├─ Projects/              # "/projects" → dự án, chia Đã hoàn thành / Đang phát triển
 │  │  ├─ Experience/            # "/experience" → học vấn (timeline) + chứng chỉ
 │  │  ├─ Journal/               # "/journal" → nhật ký/blog cá nhân, mở rộng đọc tiếp
-│  │  ├─ Contact/               # "/contact" → card Email/GitHub/Facebook/Zalo
+│  │  ├─ Contact/               # "/contact" → card Email/GitHub/Facebook/Zalo/Discord/TikTok + form nhúng Tally
 │  │  └─ NotFound/              # "*" → trang 404
 │  │
 │  ├─ components/
@@ -120,8 +120,19 @@ Dùng **Vitest** (chạy nhanh, tích hợp sẵn với Vite) + **React Testing 
 - Test đặt cạnh file component, hậu tố `.test.jsx` — VD: `Navbar.jsx` + `Navbar.test.jsx`.
 - Chạy `npm test` (chạy 1 lần) hoặc `npm run test:watch` (tự chạy lại khi sửa code).
 - **Không dùng `globals: true`** của Vitest (để tránh ESLint báo lỗi `no-undef` với `describe/it/expect`) — mọi test đều `import { describe, it, expect } from "vitest"` tường minh. Vì vậy React Testing Library cũng không tự nhận diện được `afterEach` để tự dọn DOM, nên `src/test/setup.js` phải tự gọi `cleanup()` thủ công sau mỗi test.
+- Coverage report: `npm run test:coverage` (provider `v8`, loại trừ `src/data`, CSS, ảnh — những phần không có logic để test).
+- File mock data (VD: `Projects.empty.test.jsx` mock `data/projects.js` rỗng) tách file riêng, không chung với test dùng data thật, vì `vi.mock()` áp dụng cho toàn bộ file.
 
-## 6. Việc còn dang dở
+## 6. CI/CD
+
+`.github/workflows/ci.yml` — GitHub Actions tự chạy `lint` → `test` → `build` mỗi khi push/PR vào `main`.
+
+## 7. Accessibility
+
+- Skip-to-content link (`MainLayout.jsx`) — ẩn bằng `transform: translateY(-100%)` (không dùng `display:none` để trình đọc màn hình vẫn nhận diện được), hiện ra khi focus.
+- `prefers-reduced-motion` được tôn trọng ở `Background`, `SplashScreen`, `globals.css`.
+
+## 8. Việc còn dang dở
 
 - `data/projects.js` đang là **dữ liệu mẫu** (3 dự án giả) — cần thay bằng dự án thật, kèm ảnh (`image`), link demo/source khi có.
 - `data/certificates.js` đang thiếu ảnh chứng chỉ thật (`image: null`) — UI đã có sẵn khung chờ, chỉ cần import ảnh và gán vào field `image`.
