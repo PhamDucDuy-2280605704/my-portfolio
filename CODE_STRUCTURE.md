@@ -26,7 +26,7 @@ my-portfolio/
 │  │  ├─ Projects/              # "/projects" → dự án, chia Đã hoàn thành / Đang phát triển
 │  │  ├─ Experience/            # "/experience" → học vấn (timeline) + chứng chỉ
 │  │  ├─ Journal/               # "/journal" → nhật ký/blog cá nhân, mở rộng đọc tiếp
-│  │  ├─ Contact/               # "/contact" → card Email/GitHub/Facebook/Zalo/Discord/TikTok + form nhúng Tally
+│  │  ├─ Contact/               # "/contact" → card Email/GitHub/Facebook/Zalo/Discord/TikTok + form Formspree
 │  │  └─ NotFound/              # "*" → trang 404
 │  │
 │  ├─ components/
@@ -130,6 +130,7 @@ Dùng **Vitest** (chạy nhanh, tích hợp sẵn với Vite) + **React Testing 
 ## 7. Accessibility
 
 - Skip-to-content link (`MainLayout.jsx`) — ẩn bằng `transform: translateY(-100%)` (không dùng `display:none` để trình đọc màn hình vẫn nhận diện được), hiện ra khi focus.
+- `role="status"` / `role="alert"` cho kết quả gửi `ContactForm`.
 - `prefers-reduced-motion` được tôn trọng ở `Background`, `SplashScreen`, `globals.css`.
 
 ## 8. Việc còn dang dở

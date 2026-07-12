@@ -1,65 +1,196 @@
-.contact-form-embed {
-  position: relative;
+.contact-form {
   max-width: 640px;
   margin: 56px auto 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  padding: 32px;
 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
-
   box-shadow: var(--shadow);
+
+  position: relative;
+  overflow: hidden;
 }
 
-/* Vạch màu trang trí phía trên card, đồng bộ phong cách với contact-card khi hover */
-.contact-form-embed::before {
+/* Vạch màu trang trí phía trên card */
+.contact-form::before {
   content: "";
-  display: block;
+  position: absolute;
+  inset: 0 0 auto 0;
   height: 4px;
 
-  background: linear-gradient(
-    90deg,
-    var(--color-primary),
-    #8b5cf6
-  );
+  background: linear-gradient(90deg, var(--color-primary), #8b5cf6);
 }
 
-.contact-form-embed-header {
-  padding: 28px 28px 4px;
+.contact-form-header {
   text-align: center;
+  margin-bottom: 4px;
 }
 
-.contact-form-embed-header h3 {
+.contact-form-header h3 {
   font-size: 20px;
   margin-bottom: 8px;
 }
 
-.contact-form-embed-header p {
+.contact-form-header p {
   color: var(--color-text-secondary);
   font-size: 14px;
   line-height: 1.7;
 }
 
-.contact-form-embed-frame {
-  padding: 12px 20px 20px;
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.contact-form-embed-frame iframe {
-  display: block;
-  width: 100%;
+.contact-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.contact-form-field input,
+.contact-form-field textarea {
+  padding: 12px 14px;
+
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 14px;
+
+  resize: vertical;
+
+  transition: 0.25s;
+}
+
+.contact-form-field input:focus,
+.contact-form-field textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.contact-form-field input::placeholder,
+.contact-form-field textarea::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+.contact-form-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 14px;
+
+  background: var(--color-primary);
   border: none;
+  border-radius: var(--radius-sm);
+
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.contact-form-submit:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.contact-form-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.contact-form-error {
+  color: #f87171;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Trạng thái gửi thành công */
+
+.contact-form-success {
+  max-width: 640px;
+  margin: 56px auto 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+
+  padding: 48px 32px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.contact-form-success svg {
+  font-size: 40px;
+  color: #4ade80;
+  margin-bottom: 8px;
+}
+
+.contact-form-success h3 {
+  font-size: 20px;
+}
+
+.contact-form-success p {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.contact-form-reset {
+  margin-top: 12px;
+
+  padding: 10px 22px;
+
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.contact-form-reset:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 @media (max-width: 640px) {
-  .contact-form-embed {
+  .contact-form,
+  .contact-form-success {
     margin-top: 40px;
+    padding: 24px 20px;
   }
 
-  .contact-form-embed-header {
-    padding: 22px 20px 4px;
-  }
-
-  .contact-form-embed-frame {
-    padding: 10px 12px 16px;
+  .contact-form-row {
+    grid-template-columns: 1fr;
   }
 }

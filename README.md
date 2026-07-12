@@ -107,28 +107,15 @@ Không cần sửa component, chỉ cần sửa các file trong `src/data/`:
 - `education.js` — học vấn.
 - `certificates.js` — chứng chỉ (có thể gắn thêm ảnh khi có).
 - `projects.js` — dự án, chia `completed` / `inProgress`.
-- `social.js` — link Email/GitHub/Facebook/Zalo/Discord/TikTok.
+- `social.js` — link Email/GitHub/Facebook/Zalo/Discord/TikTok + endpoint Formspree.
 
-## Form liên hệ (Tally)
+## Form liên hệ (Formspree)
 
-Trang `/contact` có form nhúng từ [Tally](https://tally.so) (`ContactForm.jsx`) — không cần tự viết form/backend, chỉnh câu hỏi trực tiếp trên dashboard Tally là site tự cập nhật theo.
+Trang `/contact` có form gửi tin nhắn thật qua [Formspree](https://formspree.io) (miễn phí, không cần tự viết backend) — endpoint đã cấu hình sẵn ở `src/data/social.js` (`formspree: "https://formspree.io/f/mpqvawwn"`).
 
-Cách hoạt động: iframe chỉ có `data-tally-src` (chưa có `src` thật) → script `embed.js` của Tally tự quét trang và gán `src` thật vào (`Tally.loadEmbeds()`). Vì đây là SPA nên `ContactForm.jsx` tự gọi lại `loadEmbeds()` mỗi lần component mount (kể cả khi rời trang Contact rồi quay lại), không chỉ đợi script tải xong lần đầu.
+Form submit qua `fetch()` (không dùng `<form action="...">` mặc định của trình duyệt), kèm header `Accept: application/json` — nhờ vậy **Formspree trả JSON thay vì chuyển hướng (redirect) sang trang khác**. Kết quả: gửi thành công hay lỗi đều hiện ngay tại chỗ (`ContactForm.jsx`), người dùng không bị rời khỏi trang.
 
-Muốn đổi sang form Tally khác: vào [tally.so](https://tally.so) → mở form → **Share → Embed** → copy link dạng `https://tally.so/embed/xxxxxx` → dán đè vào hằng số `TALLY_EMBED_SRC` đầu file `src/pages/Contact/ContactForm.jsx`.
-
-### ⚠️ Giới hạn quan trọng: nội dung BÊN TRONG form không sửa được từ code
-
-Tiêu đề, mô tả, nhãn từng câu hỏi, nút "Submit", và dòng "Được làm với Tally" đều nằm **bên trong iframe của tally.so** — vì là iframe khác domain (cross-origin), trình duyệt **chặn tuyệt đối** mọi CSS/JS từ site của bạn chạm vào nội dung bên trong đó (lý do bảo mật, áp dụng cho mọi iframe nhúng từ domain khác, không riêng Tally).
-
-Muốn Việt hoá nội dung form / xoá branding, phải làm trực tiếp trên tally.so:
-
-1. Đăng nhập [tally.so](https://tally.so) → mở form `b5y9DZ`.
-2. Bấm vào từng tiêu đề/nhãn câu hỏi → gõ đè lại bằng tiếng Việt → **Publish** để áp dụng.
-3. Xoá khối mô tả mặc định (đoạn "This Contact Form Template allows you to collect...") nếu không cần.
-4. Dòng "Được làm với Tally" chỉ ẩn được nếu nâng cấp gói **Tally Pro** (mục Settings → Branding trong form editor) — gói miễn phí bắt buộc phải hiện.
-
-Phần **khung bao quanh** form (tiêu đề "Gửi Tin Nhắn Trực Tiếp", mô tả, màu sắc, bo góc, đổ bóng...) đã Việt hoá và style sẵn trong `ContactForm.jsx`/`ContactForm.css` — chỉnh sửa bình thường như mọi component khác.
+Muốn đổi sang endpoint Formspree khác (VD: dùng tài khoản riêng của bạn): vào [formspree.io](https://formspree.io) → tạo Form mới → copy link `https://formspree.io/f/xxxxabcd` → dán đè vào giá trị `formspree` trong `src/data/social.js`.
 
 ## Việc còn dang dở
 
