@@ -5,6 +5,7 @@ import "./Navbar.css";
 
 import logo from "../../../assets/images/logo.jpg";
 import profile from "../../../data/profile";
+import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
 
 // Thanh điều hướng chung cho mọi trang. Gồm 3 phần:
 //   1. Logo (chỉ hiện ở trang Home, bấm vào phóng to xem toàn màn hình)
@@ -73,26 +74,37 @@ function Navbar() {
           />
         </button>
 
-        {/* Menu ngang — ẩn qua CSS (display:none) khi màn hình ≤1080px */}
-        <ul className="menu">
-          {menus.map((item) => (
-            <li key={item.path}>
-              <NavLink to={item.path}>
-                {item.name}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+        {/* Gom nhóm bên phải (menu + toggle theme + hamburger) vào 1 wrapper,
+            để .navbar chỉ còn 2 "khối" chính (logo | navbar-right) — logo luôn
+            bám sát trái, cả nhóm bên phải luôn bám sát phải, không bị
+            justify-content:space-between dàn cách đều sai lệch khi thêm/bớt
+            phần tử bên trong. */}
+        <div className="navbar-right">
 
-        {/* Nút hamburger — chỉ hiện qua CSS khi màn hình ≤1080px */}
-        <button
-          type="button"
-          className="menu-toggle"
-          onClick={() => setIsMenuOpen(true)}
-          aria-label="Mở menu"
-        >
-          <IoMenu />
-        </button>
+          {/* Menu ngang — ẩn qua CSS (display:none) khi màn hình ≤1080px */}
+          <ul className="menu">
+            {menus.map((item) => (
+              <li key={item.path}>
+                <NavLink to={item.path}>
+                  {item.name}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+
+          <ThemeToggle />
+
+          {/* Nút hamburger — chỉ hiện qua CSS khi màn hình ≤1080px */}
+          <button
+            type="button"
+            className="menu-toggle"
+            onClick={() => setIsMenuOpen(true)}
+            aria-label="Mở menu"
+          >
+            <IoMenu />
+          </button>
+
+        </div>
       </nav>
 
       {/* Menu full-screen cho mobile, đóng lại ngay khi bấm 1 mục để điều hướng */}

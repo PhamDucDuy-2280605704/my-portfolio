@@ -1,5 +1,7 @@
 .hero{
 
+    position:relative;
+
     max-width:1200px;
 
     margin:auto;
@@ -16,6 +18,32 @@
 
     padding:0 40px;
 
+}
+
+/* 4 góc hoa văn trang trí — lùi vào trong 24px, dùng lại component
+   CornerFlourish (mặc định 56px, opacity 0.4, màu --color-accent). */
+.hero .corner-flourish-svg {
+  top: 24px;
+  left: 24px;
+}
+
+.hero .corner-flourish-svg:nth-of-type(2) {
+  top: 24px;
+  left: auto;
+  right: 24px;
+}
+
+.hero .corner-flourish-svg:nth-of-type(3) {
+  top: auto;
+  bottom: 24px;
+  left: 24px;
+}
+
+.hero .corner-flourish-svg:nth-of-type(4) {
+  top: auto;
+  left: auto;
+  bottom: 24px;
+  right: 24px;
 }
 
 .hero-left{
@@ -137,6 +165,10 @@
 }
 
 @media (max-width: 900px) {
+  .hero .corner-flourish-svg {
+    display: none;
+  }
+
   .hero {
     flex-direction: column-reverse;
     text-align: center;

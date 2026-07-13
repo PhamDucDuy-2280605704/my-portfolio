@@ -11,6 +11,9 @@ body{
 
     line-height:1.6;
 
+    /* Đổi màu mượt khi bấm nút chuyển theme sáng/tối, tránh giật màu đột ngột */
+    transition: background-color 0.3s ease, color 0.3s ease;
+
 }
 
 #root{

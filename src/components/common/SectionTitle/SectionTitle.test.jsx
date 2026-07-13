@@ -16,7 +16,7 @@ describe("SectionTitle", () => {
     expect(screen.getByText("Kết Nối Với Mình")).toBeInTheDocument();
   });
 
-  it("luôn render vạch nhấn trang trí (section-title-accent)", () => {
+  it("luôn render vạch chia trang trí kiểu line-dot-line (section-title-divider)", () => {
     const { container } = render(
       <SectionTitle
         subtitle="Test"
@@ -24,6 +24,7 @@ describe("SectionTitle", () => {
       />,
     );
 
-    expect(container.querySelector(".section-title-accent")).toBeInTheDocument();
+    expect(container.querySelector(".section-title-divider")).toBeInTheDocument();
+    expect(container.querySelector(".section-title-divider-dot")).toBeInTheDocument();
   });
 });

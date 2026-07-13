@@ -121,7 +121,7 @@
 }
 
 .contact-form-error {
-  color: #f87171;
+  color: var(--color-danger-text);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -148,7 +148,7 @@
 
 .contact-form-success svg {
   font-size: 40px;
-  color: #4ade80;
+  color: var(--color-success-text);
   margin-bottom: 8px;
 }
 

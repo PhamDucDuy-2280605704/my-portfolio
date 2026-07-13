@@ -1,12 +1,15 @@
-import { FaImage } from "react-icons/fa";
+import { useState } from "react";
+import { FaImage, FaBriefcase, FaFileAlt } from "react-icons/fa";
 
 import "./Experience.css";
 
 import education from "../../data/education";
+import workExperience from "../../data/workExperience";
 import certificates from "../../data/certificates";
 import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
+import PdfViewerModal from "../../components/common/PdfViewerModal/PdfViewerModal";
 
 // Nhãn trạng thái nhỏ cho mỗi chứng chỉ: "Đã hoàn thành" (xanh lá) hoặc "Đang học" (xanh dương).
 function StatusBadge({ status }) {
@@ -24,12 +27,15 @@ function StatusBadge({ status }) {
 function Experience() {
   usePageTitle("Kinh Nghiệm | Phạm Đức Duy");
 
+  // Lưu job đang được xem báo cáo (null = chưa mở modal nào).
+  const [reportOpen, setReportOpen] = useState(null);
+
   return (
     <section className="experience-page">
 
       <SectionTitle
         subtitle="Hành Trình Của Mình"
-        title="Học Vấn & Chứng Chỉ"
+        title="Học Vấn & Kinh Nghiệm"
       />
 
       <div className="experience-block">
@@ -50,6 +56,68 @@ function Experience() {
                 <h4>{item.school}</h4>
                 <p>{item.major}</p>
               </div>
+            </div>
+          ))}
+
+        </div>
+
+      </div>
+
+      <div className="experience-block">
+
+        <h3 className="experience-block-title">Kinh nghiệm làm việc</h3>
+
+        <div className="work-list">
+
+          {workExperience.map((job) => (
+            <div
+              key={job.company}
+              className="work-card"
+            >
+
+              <div className="work-card-header">
+                <span className="work-card-icon">
+                  <FaBriefcase />
+                </span>
+
+                <div>
+                  <h4>{job.role}</h4>
+                  <p className="work-card-company">{job.company}</p>
+                </div>
+
+                <span className="work-card-period">{job.period}</span>
+              </div>
+
+              <ul className="work-card-highlights">
+                {job.highlights.map((point, index) => (
+                  <li key={index}>{point}</li>
+                ))}
+              </ul>
+
+              <div className="work-card-footer">
+                <div className="work-card-tech">
+                  {job.tech.map((tech) => (
+                    <span key={tech}>{tech}</span>
+                  ))}
+                </div>
+
+                <div className="work-card-footer-right">
+                  {job.report && (
+                    <button
+                      type="button"
+                      className="work-card-report"
+                      onClick={() => setReportOpen(job)}
+                    >
+                      <FaFileAlt /> Xem Báo Cáo Thực Tập
+                    </button>
+                  )}
+
+                  {job.score && (
+                    <span className="work-card-score">Đánh giá: {job.score}</span>
+                  )}
+                </div>
+              </div>
+
             </div>
           ))}
 
@@ -96,6 +164,14 @@ function Experience() {
         </div>
 
       </div>
+
+      {reportOpen && (
+        <PdfViewerModal
+          src={reportOpen.report}
+          title={`Báo cáo thực tập - ${reportOpen.company}`}
+          onClose={() => setReportOpen(null)}
+        />
+      )}
 
     </section>
   );

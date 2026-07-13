@@ -1,0 +1,35 @@
+.corner-flourish-svg {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+
+  color: var(--color-accent);
+  opacity: 0.4;
+
+  pointer-events: none;
+}
+
+/* 4 instance liên tiếp trong cùng 1 container -> mỗi cái tự định vị 1 góc,
+   3 góc còn lại chỉ lật hướng bằng transform, không cần vẽ lại SVG. */
+.corner-flourish-svg:nth-of-type(1) {
+  top: 0;
+  left: 0;
+}
+
+.corner-flourish-svg:nth-of-type(2) {
+  top: 0;
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.corner-flourish-svg:nth-of-type(3) {
+  bottom: 0;
+  left: 0;
+  transform: scaleY(-1);
+}
+
+.corner-flourish-svg:nth-of-type(4) {
+  bottom: 0;
+  right: 0;
+  transform: scale(-1, -1);
+}

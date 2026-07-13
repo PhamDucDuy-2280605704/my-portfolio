@@ -43,6 +43,7 @@ my-portfolio/
 │  │  ├─ profile.js             # tên, vai trò, avatar, bio, quote, resume...
 │  │  ├─ skills.js               # kỹ năng theo nhóm: frontend/backend/mobile/tools
 │  │  ├─ education.js            # học vấn (trường, chuyên ngành, thời gian)
+│  │  ├─ workExperience.js       # kinh nghiệm làm việc/thực tập thật (công ty, vai trò, việc đã làm)
 │  │  ├─ certificates.js         # chứng chỉ (tên, trạng thái, ảnh - có thể null)
 │  │  ├─ projects.js             # dự án, chia completed / inProgress
 │  │  └─ social.js               # link GitHub / Facebook / Zalo / email
@@ -91,6 +92,7 @@ data/profile.js ──┬──> components/sections/Hero      (tên, quote, ava
 data/skills.js ────> pages/Skills                       (nhóm Frontend/Backend/Mobile/Tools → icon)
 
 data/education.js ─> pages/Experience                    (timeline học vấn)
+data/workExperience.js ─> pages/Experience               (card kinh nghiệm làm việc/thực tập)
 data/certificates.js ─> pages/Experience                 (grid chứng chỉ, có khung chờ ảnh)
 
 data/projects.js ──> pages/Projects                      (2 nhóm: completed / inProgress)
@@ -106,11 +108,14 @@ Nguyên tắc: **mọi thông tin cá nhân chỉ sửa 1 chỗ duy nhất trong
 - Mỗi component/page có **1 file `.jsx` + 1 file `.css` cùng tên**, import CSS ngay đầu file `.jsx`.
 - Không dùng màu/khoảng cách "chay" (hardcode) — luôn ưu tiên biến trong `styles/variables.css`:
   `--color-primary`, `--color-surface`, `--color-text-secondary`, `--radius-md`, `--shadow`,...
-- `components/common` = tái sử dụng nhiều nơi (Button, SectionTitle, ScrollToTop).
+  **Đặc biệt quan trọng từ khi có theme sáng/tối**: hardcode màu trực tiếp (VD: `color: #4ade80`) sẽ KHÔNG tự đổi khi người dùng chuyển theme, dễ bị vỡ độ tương phản ở theme còn lại. Cần trạng thái màu mới (success/warning/danger...) thì thêm biến vào `variables.css` (cả `:root` và `[data-theme="light"]`), không viết thẳng mã màu trong file CSS của component.
+- `components/common` = tái sử dụng nhiều nơi (Button, SectionTitle, ScrollToTop, Background, SplashScreen, ThemeToggle, PageLoader, ErrorBoundary, CornerFlourish, PdfViewerModal).
 - `hooks/usePageTitle.js` = đặt tiêu đề tab trình duyệt riêng cho từng trang.
+- `hooks/useTheme.js` = quản lý theme sáng/tối (gán `data-theme` lên `<html>`, lưu `localStorage`, mặc định theo `prefers-color-scheme`).
 - `components/sections` = khối nội dung thuộc về 1 trang cụ thể (hiện chỉ có Hero, dùng trong Home).
 - `components/layout` = khung sườn hiển thị ở mọi trang (Navbar, Footer). Navbar có menu hamburger riêng cho mobile (≤900px) và logo bấm vào phóng to được.
 - Mỗi trang đều có breakpoint responsive riêng trong file `.css` của nó (thường ở `max-width: 640px` hoặc `900px`).
+- **Ngôn ngữ thiết kế "vàng đồng" (`--color-accent`)**: dùng CHỈ cho chi tiết trang trí — vạch chia kiểu *line–dot–line* (`SectionTitle`), khung hoạ tiết góc (`CornerFlourish`, dùng ở `SplashScreen` + `Hero`), quầng sáng khi hover (`Button`). KHÔNG dùng accent cho nút/link tương tác chính — `--color-primary` (xanh) vẫn đảm nhiệm việc đó, để người dùng luôn phân biệt được "cái gì bấm được" (xanh) và "cái gì chỉ trang trí" (vàng đồng).
 
 ## 5. Testing
 
@@ -123,17 +128,23 @@ Dùng **Vitest** (chạy nhanh, tích hợp sẵn với Vite) + **React Testing 
 - Coverage report: `npm run test:coverage` (provider `v8`, loại trừ `src/data`, CSS, ảnh — những phần không có logic để test).
 - File mock data (VD: `Projects.empty.test.jsx` mock `data/projects.js` rỗng) tách file riêng, không chung với test dùng data thật, vì `vi.mock()` áp dụng cho toàn bộ file.
 
-## 6. CI/CD
+## 6. Performance & Độ ổn định
+
+- **Code-splitting**: `routes/AppRoutes.jsx` dùng `React.lazy()` cho mọi trang trừ Home (Home tải ngay vì luôn là điểm vào đầu tiên). Bọc trong `<Suspense fallback={<PageLoader />}>`.
+- **Error Boundary**: `App.jsx` bọc `<AppRoutes />` trong `<ErrorBoundary>` (bắt buộc là class component — React chưa có hook tương đương cho `getDerivedStateFromError`/`componentDidCatch`).
+- `public/sitemap.xml` + `public/robots.txt` (có tham chiếu sitemap) + `public/manifest.json` (cho phép "Thêm vào Màn hình chính" trên mobile).
+
+## 7. CI/CD
 
 `.github/workflows/ci.yml` — GitHub Actions tự chạy `lint` → `test` → `build` mỗi khi push/PR vào `main`.
 
-## 7. Accessibility
+## 8. Accessibility
 
 - Skip-to-content link (`MainLayout.jsx`) — ẩn bằng `transform: translateY(-100%)` (không dùng `display:none` để trình đọc màn hình vẫn nhận diện được), hiện ra khi focus.
 - `role="status"` / `role="alert"` cho kết quả gửi `ContactForm`.
 - `prefers-reduced-motion` được tôn trọng ở `Background`, `SplashScreen`, `globals.css`.
 
-## 8. Việc còn dang dở
+## 9. Việc còn dang dở
 
 - `data/projects.js` đang là **dữ liệu mẫu** (3 dự án giả) — cần thay bằng dự án thật, kèm ảnh (`image`), link demo/source khi có.
 - `data/certificates.js` đang thiếu ảnh chứng chỉ thật (`image: null`) — UI đã có sẵn khung chờ, chỉ cần import ảnh và gán vào field `image`.

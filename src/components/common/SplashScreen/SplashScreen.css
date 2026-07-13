@@ -7,57 +7,167 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: 32px;
 
-  background: #05070d;
+  background:
+    radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1), transparent 60%),
+    linear-gradient(160deg, #05070d, #0a0f1c 55%, #05070d);
 
-  animation: splash-fade-in 0.4s ease;
+  animation: splash-fade-in 0.5s ease;
 }
 
 .splash-screen.leaving {
   animation: splash-fade-out 0.5s ease forwards;
 }
 
-.splash-logo img {
-  width: 96px;
-  height: auto;
-  border-radius: var(--radius-sm);
+/* Khung viền hoa văn cổ điển */
 
-  animation: splash-pulse 2s ease-in-out infinite;
+.splash-frame {
+  position: relative;
+
+  width: min(560px, 88vw);
+  padding: 56px 32px;
+
+  border: 1px solid rgba(212, 175, 116, 0.35);
+  border-radius: var(--radius-lg);
+
+  text-align: center;
 }
 
-.splash-terminal {
-  width: 90%;
-  max-width: 480px;
-  min-height: 130px;
+/* Vạch viền kép mỏng, lùi vào trong 1 chút để tạo cảm giác "khung thiệp" */
+.splash-frame::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
 
-  padding: 20px 22px;
+  border: 1px solid rgba(212, 175, 116, 0.18);
+  border-radius: calc(var(--radius-lg) - 4px);
 
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  pointer-events: none;
+}
 
-  font-family: "Courier New", monospace;
+/* Override lại kích thước/màu riêng cho Splash — component CornerFlourish
+   dùng chung có style mặc định nhạt hơn (dùng cho Hero), ở đây cần đậm và to
+   hơn 1 chút cho hợp không khí "trang bìa" của màn hình loading. */
+.splash-frame .corner-flourish-svg {
+  width: 64px;
+  height: 64px;
+  top: 10px;
+  left: 10px;
+
+  color: rgba(212, 175, 116, 0.55);
+  opacity: 1;
+}
+
+.splash-frame .corner-flourish-svg:nth-of-type(2) {
+  left: auto;
+  right: 10px;
+}
+
+.splash-frame .corner-flourish-svg:nth-of-type(3) {
+  top: auto;
+  bottom: 10px;
+}
+
+.splash-frame .corner-flourish-svg:nth-of-type(4) {
+  top: auto;
+  left: auto;
+  bottom: 10px;
+  right: 10px;
+}
+
+/* Nội dung chính giữa khung */
+
+.splash-eyebrow {
+  color: #d4af74;
   font-size: 13px;
-  line-height: 1.9;
-  color: #4ade80;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+
+  animation: splash-line-in 0.5s ease 0.1s both;
 }
 
-.splash-terminal p {
-  opacity: 0;
-  animation: splash-line-in 0.3s ease forwards;
+.splash-title {
+  margin: 14px 0 20px;
+
+  font-family: "Georgia", "Times New Roman", serif;
+  font-style: italic;
+  font-size: clamp(40px, 8vw, 56px);
+  font-weight: 600;
+
+  color: #f8fafc;
+  text-shadow: 0 0 30px rgba(212, 175, 116, 0.35);
+
+  animation: splash-line-in 0.6s ease 0.25s both;
 }
 
-.splash-cursor {
-  display: inline-block;
-  animation: splash-blink 0.8s step-end infinite;
+.splash-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin: 0 auto 22px;
+  max-width: 260px;
+
+  animation: splash-line-in 0.5s ease 0.4s both;
 }
+
+.splash-divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 116, 0.6));
+}
+
+.splash-divider span:last-child {
+  background: linear-gradient(90deg, rgba(212, 175, 116, 0.6), transparent);
+}
+
+.splash-divider-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d4af74;
+  flex-shrink: 0;
+}
+
+.splash-subtitle {
+  color: var(--color-text-secondary, #94a3b8);
+  font-size: 16px;
+
+  animation: splash-line-in 0.5s ease 0.5s both;
+}
+
+.splash-subtitle-en {
+  margin-top: 6px;
+
+  color: #d4af74;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+
+  animation: splash-line-in 0.5s ease 0.6s both;
+}
+
+.splash-sparkle {
+  display: block;
+  margin: 24px auto 0;
+
+  font-size: 26px;
+  color: #d4af74;
+
+  animation:
+    splash-line-in 0.5s ease 0.7s both,
+    splash-twinkle 2s ease-in-out 1.2s infinite;
+}
+
+/* Thanh tiến trình mỏng phía dưới, thay cho terminal progress bar trước đây */
 
 .splash-progress {
   width: 220px;
-  height: 4px;
+  height: 3px;
 
-  background: var(--color-surface);
+  background: rgba(212, 175, 116, 0.15);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -66,7 +176,7 @@
   width: 0%;
   height: 100%;
 
-  background: var(--color-primary);
+  background: #d4af74;
   border-radius: var(--radius-full);
 
   animation: splash-fill 5s linear forwards;
@@ -89,23 +199,10 @@
   }
 }
 
-@keyframes splash-pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.04);
-  }
-}
-
 @keyframes splash-line-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(8px);
   }
 
   to {
@@ -114,15 +211,16 @@
   }
 }
 
-@keyframes splash-blink {
+@keyframes splash-twinkle {
   0%,
-  50% {
-    opacity: 1;
+  100% {
+    opacity: 0.6;
+    transform: scale(1) rotate(0deg);
   }
 
-  51%,
-  100% {
-    opacity: 0;
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
   }
 }
 
@@ -136,17 +234,24 @@
   }
 }
 
+@media (max-width: 480px) {
+  .splash-frame {
+    padding: 40px 20px;
+  }
+
+  .splash-frame .corner-flourish-svg {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .splash-logo img {
+  .splash-eyebrow,
+  .splash-title,
+  .splash-divider,
+  .splash-subtitle,
+  .splash-subtitle-en,
+  .splash-sparkle {
     animation: none;
-  }
-
-  .splash-terminal p {
-    opacity: 1;
-    animation: none;
-  }
-
-  .splash-cursor {
-    display: none;
   }
 }

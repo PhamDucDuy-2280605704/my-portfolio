@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import Button from "../../common/Button/Button";
+import CornerFlourish from "../../common/CornerFlourish/CornerFlourish";
 import "./Hero.css";
 
 import profile from "../../../data/profile";
@@ -14,6 +15,15 @@ const highlights = ["Frontend", "Backend", "Mobile"];
 function Hero() {
   return (
     <section className="hero">
+
+      {/* 4 góc hoa văn trang trí rất nhẹ, đồng bộ hoạ tiết với SplashScreen —
+          chỉ mang tính trang trí (aria-hidden ở CornerFlourish), không ảnh
+          hưởng nội dung/accessibility. */}
+      <CornerFlourish />
+      <CornerFlourish />
+      <CornerFlourish />
+      <CornerFlourish />
+
       <div className="hero-left">
         <p className="hello">👋 Xin chào, mình là</p>
 

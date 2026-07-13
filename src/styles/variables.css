@@ -1,6 +1,6 @@
 :root {
 
-  /* ===== Colors ===== */
+  /* ===== Colors (mặc định: Dark) ===== */
 
   --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
@@ -12,6 +12,27 @@
   --color-text-secondary: #94a3b8;
 
   --color-border: #334155;
+
+  /* Nền kính mờ (glassmorphism) cho Navbar + các overlay toàn màn hình */
+  --color-navbar-bg: rgba(15, 23, 42, 0.65);
+  --color-overlay-bg: rgba(15, 23, 42, 0.85);
+
+  /* Màu trạng thái (badge chứng chỉ, thông báo form...) — tách riêng theo theme
+     vì tông màu sáng (VD: #4ade80) đủ tương phản trên nền tối nhưng lại quá mờ,
+     KHÔNG đạt chuẩn tương phản trên nền sáng. */
+  --color-success-bg: rgba(34, 197, 94, 0.15);
+  --color-success-text: #4ade80;
+
+  --color-info-bg: rgba(59, 130, 246, 0.15);
+  --color-info-text: #60a5fa;
+
+  --color-danger-text: #f87171;
+
+  /* Màu nhấn trang trí (accent) — vàng đồng thanh lịch, lấy cảm hứng từ
+     SplashScreen. CHỈ dùng cho chi tiết trang trí (vạch chia, hoạ tiết, gạch
+     chân mục đang chọn...), KHÔNG dùng cho nút/link tương tác — --color-primary
+     vẫn là màu tương tác chính để giữ thống nhất & dễ nhận biết. */
+  --color-accent: #d4af74;
 
   /* ===== Typography ===== */
 
@@ -36,5 +57,42 @@
 
   --shadow:
     0 10px 30px rgba(0,0,0,.25);
+
+}
+
+/* ===== Theme Sáng =====
+   Kích hoạt bằng thuộc tính data-theme="light" trên thẻ <html>
+   (xem src/hooks/useTheme.js). Chỉ cần override lại các biến màu ở trên —
+   toàn bộ component đã dùng var(--color-*) nên tự động đổi theo, không cần
+   sửa CSS ở từng file riêng lẻ. */
+[data-theme="light"] {
+
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+
+  --color-bg: #f1f5f9;
+  --color-surface: #ffffff;
+
+  --color-text: #0f172a;
+  --color-text-secondary: #64748b;
+
+  --color-border: #e2e8f0;
+
+  --color-navbar-bg: rgba(255, 255, 255, 0.75);
+  --color-overlay-bg: rgba(255, 255, 255, 0.9);
+
+  --color-success-bg: rgba(22, 163, 74, 0.12);
+  --color-success-text: #16a34a;
+
+  --color-info-bg: rgba(37, 99, 235, 0.12);
+  --color-info-text: #2563eb;
+
+  --color-danger-text: #dc2626;
+
+  /* Vàng đồng đậm hơn 1 chút để đủ tương phản trên nền sáng */
+  --color-accent: #a97a2f;
+
+  --shadow:
+    0 10px 30px rgba(15, 23, 42, .08);
 
 }

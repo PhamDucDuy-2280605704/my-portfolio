@@ -61,6 +61,159 @@
   color: var(--color-text-secondary);
 }
 
+/* Work Experience */
+
+.work-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.work-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+
+  transition: 0.3s;
+}
+
+.work-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
+
+.work-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.work-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+
+  background: var(--color-info-bg);
+  color: var(--color-primary);
+  font-size: 18px;
+}
+
+.work-card-header > div {
+  flex: 1;
+}
+
+.work-card-header h4 {
+  font-size: 18px;
+}
+
+.work-card-company {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.work-card-period {
+  flex-shrink: 0;
+
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.work-card-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.work-card-highlights li {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.work-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.work-card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.work-card-tech span {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.work-card-score {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.work-card-footer-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.work-card-report {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: none;
+
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition: 0.25s;
+}
+
+.work-card-report:hover {
+  color: var(--color-primary-hover);
+}
+
 /* Certificates */
 
 .certificate-grid {
@@ -132,13 +285,13 @@
 }
 
 .status-badge.done {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .status-badge.progress {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
 }
 
 @media (max-width: 640px) {
@@ -154,5 +307,13 @@
 @media (max-width: 640px) {
   .experience-page {
     padding: 80px 20px;
+  }
+
+  .work-card-header {
+    flex-direction: column;
+  }
+
+  .work-card-period {
+    align-self: flex-start;
   }
 }

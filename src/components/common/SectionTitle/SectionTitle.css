@@ -19,16 +19,38 @@
   font-size: 54px;
   font-weight: 800;
   line-height: 1.15;
+
+  /* Phát sáng vàng đồng rất nhẹ, đồng bộ hiệu ứng chữ ở SplashScreen */
+  text-shadow: 0 0 40px rgba(212, 175, 116, 0.18);
 }
 
-.section-title-accent {
-  display: block;
-  width: 56px;
-  height: 4px;
-  margin: 22px auto 0;
+.section-title-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 
-  background: var(--color-primary);
-  border-radius: var(--radius-full);
+  width: 140px;
+  margin: 22px auto 0;
+}
+
+.section-title-divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-accent));
+}
+
+.section-title-divider span:last-child {
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+}
+
+.section-title-divider-dot {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  border-radius: 50%;
+
+  background: var(--color-accent);
 }
 
 @media (max-width: 640px) {
@@ -44,7 +66,7 @@
     font-size: 13px;
   }
 
-  .section-title-accent {
+  .section-title-divider {
     margin-top: 16px;
   }
 }

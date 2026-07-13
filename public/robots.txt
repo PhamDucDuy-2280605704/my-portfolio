@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://phamducduy-thien9029.vercel.app/sitemap.xml

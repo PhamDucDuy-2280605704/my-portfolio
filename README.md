@@ -8,7 +8,7 @@ Trang portfolio cá nhân của **Phạm Đức Duy** — giới thiệu bản t
 
 Đây là một **portfolio cá nhân** dạng Single Page Application (SPA), xây dựng bằng React, dùng để giới thiệu:
 
-- Thông tin cá nhân, vai trò (Full Stack Developer) và CV tải về.
+- Thông tin cá nhân, vai trò (Full Stack Developer) và CV xem trực tiếp (không cần tải về).
 - Kỹ năng theo từng mảng: Frontend, Backend, Mobile, Tools.
 - Học vấn và chứng chỉ đã có / đang học.
 - Các dự án cá nhân, chia theo trạng thái **đã hoàn thành** và **đang phát triển**.
@@ -84,9 +84,21 @@ npm run test:coverage
 
 Project dùng **Vitest** + **React Testing Library** để test component. Các file test nằm cạnh file component tương ứng, đặt tên `*.test.jsx` (VD: `Button.jsx` đi cùng `Button.test.jsx`).
 
-Đã có test cho: `Button`, `SectionTitle`, `Footer`, `MainLayout` (Navbar + Outlet + Footer + skip-link), hook `usePageTitle`, `Navbar` (ẩn/hiện logo theo route, overlay phóng to, menu mobile), `Hero`, trang `About`, `Skills`, `Projects` (chuyển tab, đếm số lượng, trạng thái rỗng), `Contact` (đủ kênh, link đúng), `ContactForm` (gửi thành công/lỗi, mock `fetch`), `Journal` (mở/thu gọn bài viết), `NotFound`. Tổng cộng 48 test case.
+Đã có test cho: `Button`, `SectionTitle`, `Footer`, `MainLayout` (Navbar + Outlet + Footer + skip-link), hook `usePageTitle`, hook `useTheme`, `ThemeToggle`, `Navbar` (ẩn/hiện logo theo route, overlay phóng to, menu mobile), `Hero`, trang `About`, `Skills`, `Projects` (chuyển tab, đếm số lượng, trạng thái rỗng), `Contact` (đủ kênh, link đúng), `ContactForm` (gửi thành công/lỗi, mock `fetch`), `Journal` (mở/thu gọn bài viết), `NotFound`. Tổng cộng 71 test case.
 
 Test file không bị đóng gói vào bản build production (`npm run build`), chỉ chạy khi gọi `npm test`.
+
+## Theme Sáng / Tối
+
+Bấm icon ☀️/🌙 trên Navbar để chuyển theme — lựa chọn được lưu vào `localStorage` nên vẫn giữ nguyên ở lần ghé thăm sau. Nếu chưa từng chọn (lần đầu ghé site), tự nhận theme theo cài đặt hệ điều hành (`prefers-color-scheme`).
+
+Cách hoạt động (`src/hooks/useTheme.js`): gán thuộc tính `data-theme="light"` lên thẻ `<html>`, các biến màu trong `src/styles/variables.css` tự đổi theo — **mọi component đã dùng `var(--color-*)` nên không cần sửa gì thêm** khi thêm trang/component mới, cứ dùng đúng biến màu là tự tương thích cả 2 theme.
+
+## Performance & Độ ổn định
+
+- **Code-splitting theo route**: mỗi trang (trừ Home) tự tách thành 1 file JS/CSS riêng (`React.lazy` + `Suspense`, xem `routes/AppRoutes.jsx`), chỉ tải khi người dùng thực sự vào trang đó. `<PageLoader />` hiện spinner ngắn trong lúc chờ tải (thường chỉ vài chục-trăm ms).
+- **Error Boundary** (`ErrorBoundary.jsx`): nếu 1 trang bị lỗi runtime bất ngờ, hiện màn hình lỗi thân thiện + nút "Tải Lại Trang" thay vì cả site bị trắng trơn.
+- **Xem PDF trực tiếp trong trang** (`PdfViewerModal.jsx`): CV (trang About) và báo cáo thực tập (trang Experience) mở trong modal nhúng ngay trong trang, không mở tab mới và không phụ thuộc cài đặt "tự động tải PDF" của từng trình duyệt/người dùng.
 
 ## CI/CD
 
@@ -105,6 +117,7 @@ Không cần sửa component, chỉ cần sửa các file trong `src/data/`:
 - `profile.js` — tên, vai trò, avatar, quote, mô tả, CV.
 - `skills.js` — danh sách kỹ năng theo nhóm.
 - `education.js` — học vấn.
+- `workExperience.js` — kinh nghiệm làm việc/thực tập (công ty, vai trò, việc đã làm, điểm đánh giá).
 - `certificates.js` — chứng chỉ (có thể gắn thêm ảnh khi có).
 - `projects.js` — dự án, chia `completed` / `inProgress`.
 - `social.js` — link Email/GitHub/Facebook/Zalo/Discord/TikTok + endpoint Formspree.

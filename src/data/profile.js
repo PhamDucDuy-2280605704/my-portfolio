@@ -31,7 +31,7 @@ const profile = {
     "Mình thích tự tay hoàn thiện một sản phẩm từ đầu đến cuối, không ngại tìm hiểu công nghệ mới, và luôn đặt trải nghiệm người dùng lên hàng đầu trong mọi thứ mình xây dựng.",
   ],
 
-  // File CV thật (src/assets/resume/cv.pdf) — dùng cho nút "Tải CV" ở trang About.
+  // File CV thật (src/assets/resume/cv.pdf) — dùng cho nút "Xem CV" ở trang About.
   resume,
 };
 
