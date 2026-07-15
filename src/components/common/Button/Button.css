@@ -56,3 +56,21 @@
 
   box-shadow: 0 8px 24px -6px rgba(212, 175, 116, 0.45);
 }
+
+/* Disabled — dùng khi hành động chưa khả dụng (VD: chưa có file để tải) */
+
+.btn-disabled,
+.btn-disabled:hover {
+
+  background: var(--color-border);
+
+  color: var(--color-text-secondary);
+
+  border: none;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
+}

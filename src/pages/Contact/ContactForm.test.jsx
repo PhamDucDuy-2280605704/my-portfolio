@@ -78,4 +78,18 @@ describe("ContactForm", () => {
 
     expect(screen.getByLabelText("Họ tên")).toBeInTheDocument();
   });
+
+  it("nếu trường honeypot (_gotcha) có giá trị -> coi là bot, KHÔNG gọi fetch tới Formspree", async () => {
+    const { container } = render(<ContactForm />);
+    const user = userEvent.setup();
+
+    // Honeypot ẩn với người dùng thật (CSS), nhưng vẫn tồn tại trong DOM để
+    // test giả lập trường hợp bot điền vào.
+    const honeypot = container.querySelector('input[name="_gotcha"]');
+    await user.type(honeypot, "tôi là bot");
+
+    await fillAndSubmit(user);
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
 });

@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 import Experience from "./Experience";
@@ -47,21 +46,14 @@ describe("Experience page", () => {
     }
   });
 
-  it("bấm nút 'Xem Báo Cáo Thực Tập' sẽ mở modal xem PDF ngay trong trang (không mở tab mới)", async () => {
-    const user = userEvent.setup();
+  it("hiển thị link 'Tải Báo Cáo Thực Tập' đúng href và có thuộc tính download", () => {
     renderExperience();
 
     const jobWithReport = workExperience.find((job) => job.report);
     if (jobWithReport) {
-      const expectedTitle = `Báo cáo thực tập - ${jobWithReport.company}`;
-
-      expect(screen.queryByTitle(expectedTitle)).not.toBeInTheDocument();
-
-      await user.click(screen.getByText(/Xem Báo Cáo Thực Tập/));
-
-      const iframe = screen.getByTitle(expectedTitle);
-      expect(iframe).toBeInTheDocument();
-      expect(iframe).toHaveAttribute("src", jobWithReport.report);
+      const reportLink = screen.getByText(/Tải Báo Cáo Thực Tập/).closest("a");
+      expect(reportLink).toHaveAttribute("href", jobWithReport.report);
+      expect(reportLink).toHaveAttribute("download");
     }
   });
 

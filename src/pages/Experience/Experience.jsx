@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FaImage, FaBriefcase, FaFileAlt } from "react-icons/fa";
 
 import "./Experience.css";
@@ -9,7 +8,6 @@ import certificates from "../../data/certificates";
 import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
-import PdfViewerModal from "../../components/common/PdfViewerModal/PdfViewerModal";
 
 // Nhãn trạng thái nhỏ cho mỗi chứng chỉ: "Đã hoàn thành" (xanh lá) hoặc "Đang học" (xanh dương).
 function StatusBadge({ status }) {
@@ -26,9 +24,6 @@ function StatusBadge({ status }) {
 // và lưới Chứng chỉ & Kỹ năng (data/certificates.js).
 function Experience() {
   usePageTitle("Kinh Nghiệm | Phạm Đức Duy");
-
-  // Lưu job đang được xem báo cáo (null = chưa mở modal nào).
-  const [reportOpen, setReportOpen] = useState(null);
 
   return (
     <section className="experience-page">
@@ -102,14 +97,18 @@ function Experience() {
                 </div>
 
                 <div className="work-card-footer-right">
-                  {job.report && (
-                    <button
-                      type="button"
+                  {job.report ? (
+                    <a
+                      href={job.report}
+                      download
                       className="work-card-report"
-                      onClick={() => setReportOpen(job)}
                     >
-                      <FaFileAlt /> Xem Báo Cáo Thực Tập
-                    </button>
+                      <FaFileAlt /> Tải Báo Cáo Thực Tập
+                    </a>
+                  ) : (
+                    <span className="work-card-report work-card-report-disabled">
+                      <FaFileAlt /> Báo cáo sẽ cập nhật sau
+                    </span>
                   )}
 
                   {job.score && (
@@ -164,14 +163,6 @@ function Experience() {
         </div>
 
       </div>
-
-      {reportOpen && (
-        <PdfViewerModal
-          src={reportOpen.report}
-          title={`Báo cáo thực tập - ${reportOpen.company}`}
-          onClose={() => setReportOpen(null)}
-        />
-      )}
 
     </section>
   );

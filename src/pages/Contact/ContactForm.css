@@ -6,7 +6,7 @@
   flex-direction: column;
   gap: 20px;
 
-  padding: 32px;
+  padding: 36px;
 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -17,14 +17,15 @@
   overflow: hidden;
 }
 
-/* Vạch màu trang trí phía trên card */
+/* Vạch màu trang trí phía trên card — xanh chuyển sang vàng đồng, đồng bộ
+   ngôn ngữ thiết kế accent của toàn site (SplashScreen/SectionTitle/Button). */
 .contact-form::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
   height: 4px;
 
-  background: linear-gradient(90deg, var(--color-primary), #8b5cf6);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
 }
 
 .contact-form-header {
@@ -41,6 +42,16 @@
   color: var(--color-text-secondary);
   font-size: 14px;
   line-height: 1.7;
+}
+
+/* Honeypot chống spam — ẩn hoàn toàn khỏi người dùng thật, chỉ bot điền
+   form tự động (không đọc CSS) mới điền vào trường này. */
+.contact-form-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }
 
 .contact-form-row {
@@ -113,6 +124,8 @@
 
 .contact-form-submit:hover:not(:disabled) {
   background: var(--color-primary-hover);
+  box-shadow: 0 8px 24px -6px rgba(212, 175, 116, 0.45);
+  transform: translateY(-2px);
 }
 
 .contact-form-submit:disabled {
@@ -124,6 +137,15 @@
   color: var(--color-danger-text);
   font-size: 13px;
   line-height: 1.6;
+}
+
+.contact-form-note {
+  text-align: center;
+
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+  opacity: 0.85;
 }
 
 /* Trạng thái gửi thành công */
@@ -144,6 +166,18 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
+
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-form-success::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+
+  background: linear-gradient(90deg, var(--color-success-text), var(--color-accent));
 }
 
 .contact-form-success svg {

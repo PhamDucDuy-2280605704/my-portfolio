@@ -21,10 +21,20 @@ function ContactForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setStatus(STATUS.SENDING);
 
     const form = e.target;
     const data = new FormData(form);
+
+    // Honeypot chống spam: trường "_gotcha" ẩn khỏi mắt người dùng thật (CSS
+    // display:none) nhưng bot điền form tự động thường điền vào MỌI input nó
+    // thấy trong DOM, kể cả trường ẩn. Nếu có giá trị -> chắc chắn là bot,
+    // Formspree sẽ tự động huỷ submit này (không tính vào số lượt gửi free).
+    if (data.get("_gotcha")) {
+      form.reset();
+      return;
+    }
+
+    setStatus(STATUS.SENDING);
 
     try {
       const response = await fetch(social.formspree, {
@@ -78,6 +88,27 @@ function ContactForm() {
         <h3>Gửi Tin Nhắn Trực Tiếp</h3>
         <p>Điền vài thông tin bên dưới, mình sẽ đọc và phản hồi sớm nhất có thể.</p>
       </div>
+
+      {/* Hidden field: đặt tiêu đề email rõ ràng thay vì Formspree tự đặt
+          tiêu đề chung chung mặc định. */}
+      <input
+        type="hidden"
+        name="_subject"
+        value="📬 Tin nhắn mới từ Portfolio"
+      />
+
+      {/* Honeypot chống spam bot — xem giải thích ở handleSubmit(). Ẩn hoàn
+          toàn khỏi người dùng thật bằng CSS (không dùng type="hidden" vì
+          Formspree khuyến nghị dùng input text ẩn qua CSS để bot khó nhận
+          diện và bỏ qua hơn so với type="hidden"). */}
+      <input
+        type="text"
+        name="_gotcha"
+        className="contact-form-honeypot"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+      />
 
       <div className="contact-form-row">
         <div className="contact-form-field">
@@ -134,6 +165,10 @@ function ContactForm() {
           </>
         )}
       </button>
+
+      <p className="contact-form-note">
+        ✉️ Tin nhắn được gửi thẳng đến email của mình qua Formspree — không lưu trữ hay chia sẻ cho bên thứ ba nào khác.
+      </p>
     </form>
   );
 }

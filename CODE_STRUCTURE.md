@@ -109,7 +109,7 @@ Nguyên tắc: **mọi thông tin cá nhân chỉ sửa 1 chỗ duy nhất trong
 - Không dùng màu/khoảng cách "chay" (hardcode) — luôn ưu tiên biến trong `styles/variables.css`:
   `--color-primary`, `--color-surface`, `--color-text-secondary`, `--radius-md`, `--shadow`,...
   **Đặc biệt quan trọng từ khi có theme sáng/tối**: hardcode màu trực tiếp (VD: `color: #4ade80`) sẽ KHÔNG tự đổi khi người dùng chuyển theme, dễ bị vỡ độ tương phản ở theme còn lại. Cần trạng thái màu mới (success/warning/danger...) thì thêm biến vào `variables.css` (cả `:root` và `[data-theme="light"]`), không viết thẳng mã màu trong file CSS của component.
-- `components/common` = tái sử dụng nhiều nơi (Button, SectionTitle, ScrollToTop, Background, SplashScreen, ThemeToggle, PageLoader, ErrorBoundary, CornerFlourish, PdfViewerModal).
+- `components/common` = tái sử dụng nhiều nơi (Button, SectionTitle, ScrollToTop, Background, SplashScreen, ThemeToggle, PageLoader, ErrorBoundary, CornerFlourish).
 - `hooks/usePageTitle.js` = đặt tiêu đề tab trình duyệt riêng cho từng trang.
 - `hooks/useTheme.js` = quản lý theme sáng/tối (gán `data-theme` lên `<html>`, lưu `localStorage`, mặc định theo `prefers-color-scheme`).
 - `components/sections` = khối nội dung thuộc về 1 trang cụ thể (hiện chỉ có Hero, dùng trong Home).
