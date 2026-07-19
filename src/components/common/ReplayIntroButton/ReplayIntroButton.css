@@ -1,0 +1,61 @@
+/* Nút "Xem lại intro" — dùng đúng token màu/bo góc/font của site
+   (--color-*, --radius-full, --font-family) thay vì màu riêng của intro,
+   để không bị lạc tông với Navbar/Button khi hiện ở trang chủ. */
+
+.replay-intro-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 16px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.replay-intro-btn:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+
+  /* Cùng quầng sáng vàng đồng dùng khi hover Button/SectionTitle, giữ đồng bộ toàn site */
+  box-shadow: 0 8px 24px -6px rgba(212, 175, 116, 0.45);
+}
+
+.replay-intro-icon {
+  display: inline-block;
+  font-size: var(--fs-md);
+  line-height: 1;
+  transform: translateY(-1px);
+
+  transition: transform 0.4s ease;
+}
+
+.replay-intro-btn:hover .replay-intro-icon {
+  transform: translateY(-1px) rotate(-90deg);
+}
+
+@media (max-width: 480px) {
+  .replay-intro-btn {
+    right: 12px;
+    bottom: 12px;
+    padding: 8px 13px;
+  }
+}

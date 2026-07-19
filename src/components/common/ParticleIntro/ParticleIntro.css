@@ -1,0 +1,272 @@
+.particle-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  overflow: hidden;
+  background: #020604;
+
+  transition: opacity 0.2s ease;
+}
+
+.particle-intro-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== Scanlines + vignette — cảm giác màn hình CRT/HUD giám sát ===== */
+
+.particle-intro-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(56, 248, 197, 0.05) 0px,
+    rgba(56, 248, 197, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+
+  mix-blend-mode: screen;
+  animation: scan-drift 9s linear infinite;
+}
+
+.particle-intro-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+@keyframes scan-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 120px;
+  }
+}
+
+/* ===== Reticle 4 góc — quét từ mép màn hình vào giữa rồi khoá lại ===== */
+
+.particle-intro-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 340px;
+  height: 180px;
+  transform: translate(-50%, -50%);
+
+  pointer-events: none;
+}
+
+.particle-intro-reticle .corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+
+  border: 2px solid rgba(56, 248, 197, 0.85);
+  filter: drop-shadow(0 0 6px rgba(56, 248, 197, 0.6));
+
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
+}
+
+.corner.tl {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+.corner.tr {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+.corner.bl {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+.corner.br {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+/* Pha "scan": 4 góc bắt đầu xa (ngoài rìa) rồi bay vào vị trí gốc */
+.particle-intro-reticle.phase-scan .corner.tl {
+  transform: translate(-160px, -160px);
+  opacity: 0;
+}
+.particle-intro-reticle.phase-scan .corner.tr {
+  transform: translate(160px, -160px);
+  opacity: 0;
+}
+.particle-intro-reticle.phase-scan .corner.bl {
+  transform: translate(-160px, 160px);
+  opacity: 0;
+}
+.particle-intro-reticle.phase-scan .corner.br {
+  transform: translate(160px, 160px);
+  opacity: 0;
+}
+
+/* Pha "hold": khoá sát lại quanh chữ + nhấp nháy nhẹ */
+.particle-intro-reticle.phase-hold .corner,
+.particle-intro-reticle.phase-fade .corner {
+  animation: reticle-flicker 2.4s ease-in-out infinite;
+}
+
+@keyframes reticle-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.4;
+  }
+  96% {
+    opacity: 1;
+  }
+}
+
+/* ===== HUD góc màn hình — mã trang trí kiểu terminal ===== */
+
+.particle-intro-hud {
+  position: absolute;
+  z-index: 2;
+
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+
+  color: rgba(56, 248, 197, 0.75);
+  text-shadow: 0 0 6px rgba(56, 248, 197, 0.5);
+
+  pointer-events: none;
+}
+
+.hud-tl {
+  top: 20px;
+  left: 20px;
+}
+
+.hud-tr {
+  top: 20px;
+  right: 20px;
+  color: rgba(255, 62, 122, 0.75);
+  text-shadow: 0 0 6px rgba(255, 62, 122, 0.5);
+}
+
+/* ===== Terminal — dòng chữ hiện dần kiểu "ACCESS GRANTED" ===== */
+
+.particle-intro-terminal {
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+
+  text-align: center;
+}
+
+.term-line {
+  opacity: 0;
+  color: rgba(56, 248, 197, 0.9);
+  animation: term-reveal 0.4s ease forwards;
+}
+
+.term-access {
+  font-weight: 700;
+  color: #38f8c5;
+  text-shadow: 0 0 8px rgba(56, 248, 197, 0.7);
+  animation: term-reveal 0.4s ease forwards, term-glitch 2.6s ease-in-out 0.5s infinite;
+}
+
+.term-delay-1 {
+  animation-delay: 0.35s;
+  color: rgba(230, 255, 250, 0.75);
+}
+
+.term-delay-2 {
+  animation-delay: 0.65s;
+  color: rgba(230, 255, 250, 0.75);
+}
+
+@keyframes term-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tách kênh màu đỏ/lục nhẹ, chỉ trên dòng "ACCESS GRANTED" */
+@keyframes term-glitch {
+  0%,
+  96%,
+  100% {
+    text-shadow: 0 0 8px rgba(56, 248, 197, 0.7);
+    transform: translate(0, 0);
+  }
+  97% {
+    text-shadow: -2px 0 rgba(255, 62, 122, 0.8), 2px 0 rgba(56, 248, 197, 0.8);
+    transform: translate(-1px, 0);
+  }
+  98% {
+    text-shadow: 2px 0 rgba(255, 62, 122, 0.8), -2px 0 rgba(56, 248, 197, 0.8);
+    transform: translate(1px, 0);
+  }
+}
+
+@media (max-width: 480px) {
+  .particle-intro-reticle {
+    width: 260px;
+    height: 140px;
+  }
+
+  .particle-intro-terminal {
+    font-size: 11px;
+    bottom: 10%;
+    padding: 0 16px;
+  }
+
+  .particle-intro-hud {
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-intro-scanlines,
+  .term-access,
+  .particle-intro-reticle .corner {
+    animation: none;
+  }
+
+  .particle-intro-reticle.phase-scan .corner {
+    transform: none;
+    opacity: 1;
+  }
+}

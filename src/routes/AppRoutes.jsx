@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ScrollToTop from "../components/common/ScrollToTop/ScrollToTop";
 import PageLoader from "../components/common/PageLoader/PageLoader";
+import ReplayIntroButton from "../components/common/ReplayIntroButton/ReplayIntroButton";
 
 // Home tải ngay (không lazy) vì luôn là trang đầu tiên hầu hết người dùng thấy —
 // lazy-load nó sẽ chỉ làm chậm lần tải đầu mà không tiết kiệm được gì.
@@ -27,12 +28,15 @@ const NotFound = lazy(() => import("../pages/NotFound/NotFound"));
 //   không cần Navbar/Footer bao quanh.
 // - <ScrollToTop /> đặt ngay trong <BrowserRouter> để theo dõi mọi lần đổi route
 //   và tự cuộn mượt lên đầu trang (xem thêm ScrollToTop.jsx).
+// - <ReplayIntroButton /> cũng đặt ngay trong <BrowserRouter> (không phụ thuộc
+//   route nào cụ thể) vì bản thân nó tự dùng useLocation để CHỈ hiện ở "/".
 // - <Suspense> bọc ngoài <Routes> để hiện <PageLoader /> trong lúc chờ file JS
 //   của trang lazy tải xong (thường chỉ vài chục-trăm ms, gần như không thấy).
 function AppRoutes() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <ReplayIntroButton />
 
       <Suspense fallback={<PageLoader />}>
         <Routes>

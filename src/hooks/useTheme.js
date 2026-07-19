@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 const STORAGE_KEY = "theme";
 
 // Đọc theme đã chọn từ lần trước (localStorage). Nếu chưa từng chọn (lần đầu
-// ghé site), dùng theo cài đặt hệ điều hành/trình duyệt (prefers-color-scheme);
-// mặc định về "dark" nếu trình duyệt không hỗ trợ media query này.
+// ghé site), MẶC ĐỊNH LUÔN LÀ "dark" — đồng bộ với tông tối của ParticleIntro
+// thay vì đi theo prefers-color-scheme của hệ điều hành (trước đây nếu máy
+// người dùng để chế độ sáng thì site sẽ mở ra sáng, lệch tông với intro tối
+// ngay phía trước).
 function getInitialTheme() {
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored === "light" || stored === "dark") return stored;
 
-  const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)").matches;
-  return prefersLight ? "light" : "dark";
+  return "dark";
 }
 
 // Quản lý theme sáng/tối cho toàn site.
