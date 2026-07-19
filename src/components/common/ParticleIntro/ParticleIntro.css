@@ -1,79 +1,117 @@
+/* ParticleIntro.css - Person of Interest / Watch Dogs Style - Dark & Cold */
+
 .particle-intro {
   position: fixed;
   inset: 0;
   z-index: 9999;
-
   overflow: hidden;
-  background: #020604;
-
-  transition: opacity 0.2s ease;
+  background: #05080f;
+  transition: opacity 0.4s ease;
+  font-family: "Courier New", monospace;
+  color: #7a9bb5;
 }
 
 .particle-intro-canvas {
   display: block;
   width: 100%;
   height: 100%;
+  position: absolute;
+  inset: 0;
 }
 
-/* ===== Scanlines + vignette — cảm giác màn hình CRT/HUD giám sát ===== */
+/* ===== Matrix / Data Stream (The Machine style - colder, dimmer) ===== */
+.particle-intro-matrix {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  color: #4a7a9c;
+  overflow: hidden;
+  line-height: 1.2;
+}
 
+.matrix-char {
+  position: absolute;
+  font-family: "Courier New", monospace;
+  color: rgba(60, 120, 160, 0.08);
+  pointer-events: none;
+  animation: matrix-fall linear infinite;
+}
+
+@keyframes matrix-fall {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* ===== Scanlines (cold, subtle) ===== */
 .particle-intro-scanlines {
   position: absolute;
   inset: 0;
   pointer-events: none;
-
   background: repeating-linear-gradient(
     to bottom,
-    rgba(56, 248, 197, 0.05) 0px,
-    rgba(56, 248, 197, 0.05) 1px,
-    transparent 1px,
-    transparent 3px
+    transparent 0px,
+    transparent 2px,
+    rgba(60, 120, 160, 0.02) 2px,
+    rgba(60, 120, 160, 0.02) 4px
   );
-
-  mix-blend-mode: screen;
-  animation: scan-drift 9s linear infinite;
+  animation: scan-drift 12s linear infinite;
 }
 
+@keyframes scan-drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+/* ===== Vignette (deeper, colder) ===== */
 .particle-intro-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
-
-  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.65) 100%);
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(5, 8, 15, 0.95) 100%);
 }
 
-@keyframes scan-drift {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 0 120px;
-  }
+/* ===== Glitch Overlay (very subtle, cold) ===== */
+.particle-intro-glitch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(60, 120, 160, 0.01);
+  animation: glitch-flash 6s ease-in-out infinite;
 }
 
-/* ===== Reticle 4 góc — quét từ mép màn hình vào giữa rồi khoá lại ===== */
+@keyframes glitch-flash {
+  0%, 92%, 100% { opacity: 0; }
+  94% { opacity: 0.08; }
+  96% { opacity: 0; }
+  98% { opacity: 0.04; }
+}
 
-.particle-intro-reticle {
+/* ===== Machine Frame (cold, minimal, no neon) ===== */
+.particle-intro-frame {
   position: absolute;
   top: 50%;
   left: 50%;
-
-  width: 340px;
-  height: 180px;
+  width: 500px;
+  height: 220px;
   transform: translate(-50%, -50%);
-
   pointer-events: none;
+  z-index: 2;
 }
 
-.particle-intro-reticle .corner {
+.particle-intro-frame .corner {
   position: absolute;
-  width: 26px;
-  height: 26px;
-
-  border: 2px solid rgba(56, 248, 197, 0.85);
-  filter: drop-shadow(0 0 6px rgba(56, 248, 197, 0.6));
-
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid rgba(60, 120, 160, 0.4);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.6s ease,
+              border-color 0.6s ease;
 }
 
 .corner.tl {
@@ -101,172 +139,432 @@
   border-top: none;
 }
 
-/* Pha "scan": 4 góc bắt đầu xa (ngoài rìa) rồi bay vào vị trí gốc */
-.particle-intro-reticle.phase-scan .corner.tl {
-  transform: translate(-160px, -160px);
+/* ===== Frame Cross Lines ===== */
+.particle-intro-frame .cross-h,
+.particle-intro-frame .cross-v {
+  position: absolute;
+  background: rgba(60, 120, 160, 0.06);
+  transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.particle-intro-frame .cross-h {
+  top: 50%;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  transform: translateY(-50%) scaleX(0);
+}
+
+.particle-intro-frame .cross-v {
+  left: 50%;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  transform: translateX(-50%) scaleY(0);
+}
+
+/* ===== Frame Scan Phase ===== */
+.particle-intro-frame.phase-scan .corner.tl {
+  transform: translate(-180px, -180px);
   opacity: 0;
 }
-.particle-intro-reticle.phase-scan .corner.tr {
-  transform: translate(160px, -160px);
+.particle-intro-frame.phase-scan .corner.tr {
+  transform: translate(180px, -180px);
   opacity: 0;
 }
-.particle-intro-reticle.phase-scan .corner.bl {
-  transform: translate(-160px, 160px);
+.particle-intro-frame.phase-scan .corner.bl {
+  transform: translate(-180px, 180px);
   opacity: 0;
 }
-.particle-intro-reticle.phase-scan .corner.br {
-  transform: translate(160px, 160px);
+.particle-intro-frame.phase-scan .corner.br {
+  transform: translate(180px, 180px);
+  opacity: 0;
+}
+.particle-intro-frame.phase-scan .cross-h,
+.particle-intro-frame.phase-scan .cross-v {
+  transform: scale(0);
   opacity: 0;
 }
 
-/* Pha "hold": khoá sát lại quanh chữ + nhấp nháy nhẹ */
-.particle-intro-reticle.phase-hold .corner,
-.particle-intro-reticle.phase-fade .corner {
-  animation: reticle-flicker 2.4s ease-in-out infinite;
+/* ===== Frame Hold Phase ===== */
+.particle-intro-frame.phase-hold .corner,
+.particle-intro-frame.phase-fade .corner {
+  animation: frame-pulse 3s ease-in-out infinite;
 }
 
-@keyframes reticle-flicker {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  92% {
-    opacity: 1;
-  }
-  94% {
-    opacity: 0.4;
-  }
-  96% {
-    opacity: 1;
-  }
+.particle-intro-frame.phase-hold .corner {
+  border-color: rgba(60, 140, 180, 0.6);
 }
 
-/* ===== HUD góc màn hình — mã trang trí kiểu terminal ===== */
+.particle-intro-frame.phase-hold .cross-h,
+.particle-intro-frame.phase-fade .cross-h {
+  transform: translateY(-50%) scaleX(1);
+  opacity: 1;
+}
 
+.particle-intro-frame.phase-hold .cross-v,
+.particle-intro-frame.phase-fade .cross-v {
+  transform: translateX(-50%) scaleY(1);
+  opacity: 1;
+}
+
+@keyframes frame-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.2; }
+}
+
+/* ===== HUD Elements - The Machine Style ===== */
 .particle-intro-hud {
   position: absolute;
-  z-index: 2;
-
-  font-family: "JetBrains Mono", "Courier New", monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-
-  color: rgba(56, 248, 197, 0.75);
-  text-shadow: 0 0 6px rgba(56, 248, 197, 0.5);
-
+  z-index: 3;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(60, 140, 180, 0.5);
   pointer-events: none;
+  text-transform: uppercase;
 }
 
 .hud-tl {
-  top: 20px;
-  left: 20px;
+  top: 24px;
+  left: 24px;
+  line-height: 1.8;
+}
+
+.hud-tl .hud-label {
+  color: rgba(60, 140, 180, 0.2);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+
+.hud-tl .hud-value {
+  color: rgba(60, 140, 180, 0.6);
+  font-weight: 700;
 }
 
 .hud-tr {
-  top: 20px;
-  right: 20px;
-  color: rgba(255, 62, 122, 0.75);
-  text-shadow: 0 0 6px rgba(255, 62, 122, 0.5);
+  top: 24px;
+  right: 24px;
+  text-align: right;
+  line-height: 1.8;
 }
 
-/* ===== Terminal — dòng chữ hiện dần kiểu "ACCESS GRANTED" ===== */
+.hud-tr .hud-label {
+  color: rgba(80, 160, 190, 0.2);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
 
+.hud-tr .hud-value {
+  color: rgba(80, 160, 190, 0.6);
+  font-weight: 700;
+}
+
+.hud-bl {
+  bottom: 24px;
+  left: 24px;
+  line-height: 1.8;
+}
+
+.hud-bl .hud-label {
+  color: rgba(60, 140, 180, 0.2);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+
+.hud-bl .hud-value {
+  color: rgba(60, 140, 180, 0.5);
+}
+
+/* ===== Progress Bar (cold, minimal) ===== */
+.particle-intro-progress {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 130px;
+  height: 1.5px;
+  background: rgba(60, 120, 160, 0.08);
+  z-index: 3;
+  overflow: hidden;
+}
+
+.particle-intro-progress .progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(60, 120, 160, 0.2), rgba(60, 140, 180, 0.6));
+  transition: width 0.1s linear;
+}
+
+/* ===== TERMINAL NÂNG CẤP (mở rộng) ===== */
 .particle-intro-terminal {
   position: absolute;
   left: 50%;
-  bottom: 14%;
+  bottom: 16%;
   transform: translateX(-50%);
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-
-  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-family: "Courier New", monospace;
   font-size: 13px;
   letter-spacing: 0.04em;
-
   text-align: center;
+  z-index: 3;
+  width: 80%;
+  max-width: 700px;
+  min-width: 320px;
 }
 
 .term-line {
   opacity: 0;
-  color: rgba(56, 248, 197, 0.9);
-  animation: term-reveal 0.4s ease forwards;
+  animation: term-reveal 0.35s ease forwards;
+  margin: 0.1rem 0;
+  white-space: nowrap;
 }
+
+/* Các class delay cho từng dòng */
+.delay-1 { animation-delay: 0.4s; }
+.delay-2 { animation-delay: 0.8s; }
+.delay-3 { animation-delay: 1.2s; }
+.delay-4 { animation-delay: 1.6s; }
+.delay-5 { animation-delay: 2.0s; }
+.delay-6 { animation-delay: 2.4s; }
 
 .term-access {
-  font-weight: 700;
-  color: #38f8c5;
-  text-shadow: 0 0 8px rgba(56, 248, 197, 0.7);
-  animation: term-reveal 0.4s ease forwards, term-glitch 2.6s ease-in-out 0.5s infinite;
+  color: #00ff88;
+  font-weight: bold;
+  font-size: 1.2rem;
+  animation-delay: 0s;
 }
 
-.term-delay-1 {
-  animation-delay: 0.35s;
-  color: rgba(230, 255, 250, 0.75);
+.term-info {
+  color: #aaffcc;
+  font-size: 0.95rem;
 }
 
-.term-delay-2 {
-  animation-delay: 0.65s;
-  color: rgba(230, 255, 250, 0.75);
+.term-prompt {
+  color: #88ffaa;
+  font-size: 1rem;
 }
 
+/* Hiệu ứng xuất hiện */
 @keyframes term-reveal {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(6px) scale(0.98);
+    filter: blur(1px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
   }
 }
 
-/* Tách kênh màu đỏ/lục nhẹ, chỉ trên dòng "ACCESS GRANTED" */
-@keyframes term-glitch {
-  0%,
-  96%,
-  100% {
-    text-shadow: 0 0 8px rgba(56, 248, 197, 0.7);
-    transform: translate(0, 0);
+/* Con trỏ nhấp nháy chung */
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 16px;
+  background: rgba(60, 160, 200, 0.6);
+  animation: cursor-blink 0.8s step-end infinite;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background: rgba(100, 190, 210, 0.5);
+  animation: cursor-blink 0.7s step-end infinite;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ===== Status Indicator (cold) ===== */
+.particle-intro-status {
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  opacity: 0;
+  animation: status-fade 0.6s ease 0.6s forwards;
+}
+
+@keyframes status-fade {
+  to { opacity: 1; }
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4a8aaa;
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+.status-dot.off {
+  background: rgba(60, 120, 160, 0.1);
+  animation: none;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.1; transform: scale(0.7); }
+}
+
+.status-label {
+  font-family: "Courier New", monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: rgba(60, 140, 180, 0.25);
+  text-transform: uppercase;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .particle-intro-frame {
+    width: 320px;
+    height: 160px;
   }
-  97% {
-    text-shadow: -2px 0 rgba(255, 62, 122, 0.8), 2px 0 rgba(56, 248, 197, 0.8);
-    transform: translate(-1px, 0);
+  
+  .particle-intro-frame .corner {
+    width: 18px;
+    height: 18px;
   }
-  98% {
-    text-shadow: 2px 0 rgba(255, 62, 122, 0.8), -2px 0 rgba(56, 248, 197, 0.8);
-    transform: translate(1px, 0);
+  
+  .particle-intro-frame.phase-scan .corner.tl {
+    transform: translate(-120px, -120px);
+  }
+  .particle-intro-frame.phase-scan .corner.tr {
+    transform: translate(120px, -120px);
+  }
+  .particle-intro-frame.phase-scan .corner.bl {
+    transform: translate(-120px, 120px);
+  }
+  .particle-intro-frame.phase-scan .corner.br {
+    transform: translate(120px, 120px);
+  }
+  
+  .particle-intro-terminal {
+    font-size: 11px;
+    bottom: 12%;
+    min-width: 280px;
+  }
+  
+  .term-access {
+    font-size: 1rem;
+  }
+  .term-info {
+    font-size: 0.85rem;
+  }
+  .term-prompt {
+    font-size: 0.9rem;
+  }
+  
+  .particle-intro-hud {
+    font-size: 8px;
+  }
+  
+  .hud-tl, .hud-bl {
+    display: none;
+  }
+  
+  .particle-intro-progress {
+    width: 80px;
+    bottom: 16px;
+    right: 16px;
+  }
+  
+  .particle-intro-status {
+    right: 14px;
   }
 }
 
 @media (max-width: 480px) {
-  .particle-intro-reticle {
-    width: 260px;
-    height: 140px;
+  .particle-intro-frame {
+    width: 220px;
+    height: 110px;
   }
-
+  
+  .particle-intro-frame .corner {
+    width: 14px;
+    height: 14px;
+    border-width: 1px;
+  }
+  
+  .particle-intro-frame.phase-scan .corner.tl {
+    transform: translate(-80px, -80px);
+  }
+  .particle-intro-frame.phase-scan .corner.tr {
+    transform: translate(80px, -80px);
+  }
+  .particle-intro-frame.phase-scan .corner.bl {
+    transform: translate(-80px, 80px);
+  }
+  .particle-intro-frame.phase-scan .corner.br {
+    transform: translate(80px, 80px);
+  }
+  
   .particle-intro-terminal {
-    font-size: 11px;
+    font-size: 10px;
     bottom: 10%;
-    padding: 0 16px;
+    width: 90%;
+    min-width: 200px;
   }
-
+  
+  .term-access {
+    font-size: 0.9rem;
+  }
+  .term-info {
+    font-size: 0.75rem;
+  }
+  .term-prompt {
+    font-size: 0.8rem;
+  }
+  
   .particle-intro-hud {
-    font-size: 9px;
+    font-size: 7px;
+  }
+  
+  .hud-tr {
+    top: 14px;
+    right: 14px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .particle-intro-scanlines,
-  .term-access,
-  .particle-intro-reticle .corner {
-    animation: none;
+  .particle-intro-glitch,
+  .particle-intro-frame .corner,
+  .term-line {
+    animation: none !important;
   }
-
-  .particle-intro-reticle.phase-scan .corner {
-    transform: none;
-    opacity: 1;
+  
+  .particle-intro-frame.phase-scan .corner {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  
+  .particle-intro-frame.phase-scan .cross-h,
+  .particle-intro-frame.phase-scan .cross-v {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+  }
+  
+  .cursor, .cursor-blink {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }
