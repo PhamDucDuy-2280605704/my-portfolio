@@ -21,35 +21,24 @@ import IntroReplayContext from "./context/IntroReplayContext";
 // route nào (chỉ hiện ở "/") nên phải nằm bên trong <BrowserRouter>, được
 // render từ AppRoutes.jsx. App.jsx chỉ cung cấp hàm "phát lại intro" qua
 // IntroReplayContext để component đó gọi ngược lại.
-const INTRO_SEEN_KEY = "introSeen";
-
 function App() {
   // isLoading = true khi cần hiện ParticleIntro.
   // ParticleIntro tự gọi onFinish() sau khi chạy xong để tắt mình đi.
   //
-  // Intro CHỈ tự động hiện đúng 1 LẦN DUY NHẤT trong suốt vòng đời trình
-  // duyệt của người dùng (đánh dấu bằng localStorage), và chỉ khi đang ở
-  // đúng trang chủ ("/"). Những lần load/reload sau đó (kể cả reload lại
-  // trang chủ) sẽ KHÔNG tự hiện intro nữa — muốn xem lại phải bấm nút
-  // "Xem lại intro" (xem handleReplayIntro bên dưới, nút này luôn bỏ qua
-  // cờ đã xem vì là hành động chủ động của người dùng).
+  // Intro LUÔN tự động hiện mỗi khi có người tải/bấm link vào ĐÚNG trang chủ
+  // ("/") — kể cả reload lại nhiều lần cũng vẫn hiện, để ai bấm link demo
+  // cũng chắc chắn thấy được intro. Các trang con (VD "/about") thì không
+  // hiện, vào thẳng luôn.
   //
   // Dùng window.location.pathname (không phải useLocation) vì App.jsx nằm
   // NGOÀI <BrowserRouter> — đây chỉ là giá trị khởi tạo 1 lần lúc mount.
-  const [isLoading, setIsLoading] = useState(() => {
-    const isHomePage = window.location.pathname === "/";
-    const alreadySeen = window.localStorage.getItem(INTRO_SEEN_KEY) === "true";
-    return isHomePage && !alreadySeen;
-  });
+  const [isLoading, setIsLoading] = useState(
+    () => window.location.pathname === "/"
+  );
 
   // introKey tăng lên mỗi lần bấm "Xem lại intro" -> React remount lại
   // <ParticleIntro key={introKey} /> nên animation chạy lại từ đầu.
   const [introKey, setIntroKey] = useState(0);
-
-  const handleIntroFinish = () => {
-    window.localStorage.setItem(INTRO_SEEN_KEY, "true");
-    setIsLoading(false);
-  };
 
   const handleReplayIntro = () => {
     setIntroKey((key) => key + 1);
@@ -58,7 +47,7 @@ function App() {
 
   return (
     <IntroReplayContext.Provider value={handleReplayIntro}>
-      {isLoading && <ParticleIntro key={introKey} onFinish={handleIntroFinish} />}
+      {isLoading && <ParticleIntro key={introKey} onFinish={() => setIsLoading(false)} />}
 
       <Background />
 
