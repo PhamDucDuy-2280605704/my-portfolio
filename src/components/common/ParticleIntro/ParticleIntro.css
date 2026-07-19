@@ -19,32 +19,41 @@
   inset: 0;
 }
 
-/* ===== Matrix / Data Stream (The Machine style - colder, dimmer) ===== */
-.particle-intro-matrix {
+/* ===== Grid nền — lưới phối cảnh tạo chiều sâu không gian số ===== */
+.particle-intro-grid {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.04;
-  font-family: "Courier New", monospace;
-  font-size: 13px;
-  color: #4a7a9c;
+  z-index: 1;
+  mix-blend-mode: screen;
+  opacity: 0.35;
   overflow: hidden;
-  line-height: 1.2;
+  perspective: 400px;
 }
 
-.matrix-char {
+.particle-intro-grid::before {
+  content: "";
   position: absolute;
-  font-family: "Courier New", monospace;
-  color: rgba(60, 120, 160, 0.08);
-  pointer-events: none;
-  animation: matrix-fall linear infinite;
-}
-
-@keyframes matrix-fall {
-  0% { transform: translateY(-100%); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(100vh); opacity: 0; }
+  left: -50%;
+  right: -50%;
+  bottom: -10%;
+  height: 70%;
+  background-image: repeating-linear-gradient(
+      to right,
+      rgba(74, 138, 170, 0.18) 0px,
+      rgba(74, 138, 170, 0.18) 1px,
+      transparent 1px,
+      transparent 60px
+    ),
+    repeating-linear-gradient(
+      to top,
+      rgba(74, 138, 170, 0.14) 0px,
+      rgba(74, 138, 170, 0.14) 1px,
+      transparent 1px,
+      transparent 60px
+    );
+  transform: rotateX(62deg);
+  transform-origin: bottom;
 }
 
 /* ===== Scanlines (cold, subtle) ===== */
@@ -59,12 +68,6 @@
     rgba(60, 120, 160, 0.02) 2px,
     rgba(60, 120, 160, 0.02) 4px
   );
-  animation: scan-drift 12s linear infinite;
-}
-
-@keyframes scan-drift {
-  from { transform: translateY(0); }
-  to { transform: translateY(100%); }
 }
 
 /* ===== Vignette (deeper, colder) ===== */
@@ -92,6 +95,130 @@
   98% { opacity: 0.04; }
 }
 
+/* ===== Grain — texture nhiễu rất nhẹ, tăng cảm giác "cận cảnh máy quay" ===== */
+.particle-intro-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.4) 0px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 0px, transparent 1px, transparent 2px);
+  mix-blend-mode: overlay;
+}
+
+/* ===== Scan-beam — 1 nhịp quét sáng dọc màn hình, chỉ chạy 1 lần lúc scan ===== */
+.particle-intro-scanbeam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  top: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(120, 190, 220, 0.55) 45%,
+    rgba(120, 190, 220, 0.55) 55%,
+    transparent
+  );
+  box-shadow: 0 0 14px rgba(90, 160, 195, 0.5);
+  animation: scanbeam-sweep 0.75s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+}
+
+@keyframes scanbeam-sweep {
+  from {
+    top: 0;
+    opacity: 1;
+  }
+  to {
+    top: 100%;
+    opacity: 0.2;
+  }
+}
+
+/* ===== REC — chấm nhỏ kiểu "đang bị giám sát", tối giản, không neon ===== */
+.particle-intro-rec {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: rgba(150, 90, 90, 0.55);
+  pointer-events: none;
+}
+
+.rec-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(160, 70, 70, 0.75);
+  animation: rec-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes rec-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+/* ===== Boot log — vài dòng log chạy nhanh lúc quét/warp ===== */
+.particle-intro-bootlog {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: rgba(90, 150, 180, 0.55);
+  pointer-events: none;
+}
+
+.particle-intro-bootlog p {
+  margin: 0;
+  animation: bootlog-line 0.3s ease forwards;
+}
+
+@keyframes bootlog-line {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===== Flash — 1 nhịp "chụp" trắng nhanh khi chữ vừa khoá xong ===== */
+.particle-intro-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: rgba(210, 230, 240, 0.75);
+  animation: camera-flash 0.4s ease-out forwards;
+}
+
+@keyframes camera-flash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 /* ===== Machine Frame (cold, minimal, no neon) ===== */
 .particle-intro-frame {
   position: absolute;
@@ -100,8 +227,15 @@
   width: 500px;
   height: 220px;
   transform: translate(-50%, -50%);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   z-index: 2;
+}
+
+/* Siết khung lại nhẹ khi đã "khoá" xong -> cảm giác lock-on rõ rệt hơn */
+.particle-intro-frame.phase-hold,
+.particle-intro-frame.phase-fade {
+  transform: translate(-50%, -50%) scale(0.94);
 }
 
 .particle-intro-frame .corner {
@@ -247,6 +381,49 @@
   right: 24px;
   text-align: right;
   line-height: 1.8;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.particle-intro-radar {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border-radius: 50%;
+  border: 1px solid rgba(74, 138, 170, 0.35);
+  flex-shrink: 0;
+}
+
+.particle-intro-radar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(120, 190, 220, 0.55),
+    transparent 35%
+  );
+  animation: radar-spin 2.4s linear infinite;
+}
+
+.particle-intro-radar::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  background: rgba(160, 210, 230, 0.9);
+}
+
+@keyframes radar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .hud-tr .hud-label {
@@ -331,19 +508,21 @@
 .delay-6 { animation-delay: 2.4s; }
 
 .term-access {
-  color: #00ff88;
+  color: #e4eef2;
   font-weight: bold;
   font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 10px rgba(74, 138, 170, 0.6);
   animation-delay: 0s;
 }
 
 .term-info {
-  color: #aaffcc;
+  color: rgba(160, 195, 210, 0.85);
   font-size: 0.95rem;
 }
 
 .term-prompt {
-  color: #88ffaa;
+  color: rgba(140, 180, 198, 0.9);
   font-size: 1rem;
 }
 
@@ -430,6 +609,114 @@
   letter-spacing: 0.12em;
   color: rgba(60, 140, 180, 0.25);
   text-transform: uppercase;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-footnote {
+  margin-top: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  color: rgba(74, 138, 170, 0.3);
+  text-transform: uppercase;
+}
+
+/* ===== Tên + vai trò — chữ THẬT, sắc nét (đè lên đúng chỗ pixel vừa ráp) ===== */
+.particle-intro-name-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -62%);
+  z-index: 4;
+  text-align: center;
+  pointer-events: none;
+  padding: 0 20px;
+}
+
+.intro-caption {
+  margin: 0 0 6px;
+  font-family: "Courier New", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(140, 175, 195, 0.6);
+  opacity: 0;
+  animation: name-reveal 0.4s ease forwards;
+}
+
+.intro-name {
+  margin: 0;
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  letter-spacing: 0.04em;
+  color: #d7e6f0;
+  text-shadow: 0 0 18px rgba(74, 138, 170, 0.55), 0 0 3px rgba(74, 138, 170, 0.9);
+  animation: name-reveal 0.5s ease forwards;
+}
+
+.intro-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px auto;
+  width: 160px;
+  opacity: 0;
+  animation: name-reveal 0.5s ease 0.2s forwards;
+}
+
+.intro-divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74, 138, 170, 0.6));
+}
+
+.intro-divider span:last-child {
+  background: linear-gradient(90deg, rgba(74, 138, 170, 0.6), transparent);
+}
+
+.intro-divider i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(120, 190, 220, 0.9);
+  box-shadow: 0 0 6px rgba(120, 190, 220, 0.8);
+}
+
+.intro-role {
+  margin: 0;
+  font-family: "Courier New", monospace;
+  font-size: clamp(0.7rem, 2vw, 0.95rem);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(122, 155, 181, 0.85);
+  opacity: 0;
+  animation: name-reveal 0.5s ease 0.35s forwards;
+}
+
+@keyframes name-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .particle-intro-name-wrap {
+    transform: translate(-50%, -58%);
+  }
 }
 
 /* ===== Responsive ===== */
@@ -548,6 +835,10 @@
   .particle-intro-scanlines,
   .particle-intro-glitch,
   .particle-intro-frame .corner,
+  .particle-intro-scanbeam,
+  .rec-dot,
+  .particle-intro-radar::before,
+  .particle-intro-bootlog p,
   .term-line {
     animation: none !important;
   }
