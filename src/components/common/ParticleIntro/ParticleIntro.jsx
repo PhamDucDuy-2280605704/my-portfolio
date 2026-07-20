@@ -188,10 +188,12 @@ function ParticleIntro({ onFinish }) {
     if (reducedMotion) {
       setUiPhase("hold");
       if (progressBarRef.current) progressBarRef.current.style.width = "100%";
+      // Không có hiệu ứng bay, nhưng vẫn giữ đủ lâu để đọc rõ tên + vai trò
+      // + terminal log, tránh cảm giác intro bị "chớp tắt" như lỗi.
       const finishTimer = setTimeout(() => {
         setUiPhase("fade");
         onFinish && onFinish();
-      }, 1000);
+      }, 2400);
       return () => clearTimeout(finishTimer);
     }
 
@@ -332,7 +334,12 @@ function ParticleIntro({ onFinish }) {
   const showCrispText = uiPhase === "hold" || uiPhase === "fade";
 
   return (
-    <div className="particle-intro" style={{ opacity: overlayOpacity }}>
+    <div
+      className="particle-intro"
+      style={{ opacity: overlayOpacity }}
+      aria-hidden="true"
+      role="presentation"
+    >
       <canvas ref={canvasRef} className="particle-intro-canvas" />
 
       <div className="particle-intro-grid" />
