@@ -15,11 +15,15 @@
   font-size: 18px;
   cursor: pointer;
 
-  transition: 0.25s;
+  transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .theme-toggle:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
   transform: rotate(15deg);
+
+  /* Quầng sáng nhẹ đồng bộ với gạch chân của menu khi hover */
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }

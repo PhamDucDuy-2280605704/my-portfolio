@@ -1,23 +1,17 @@
-.hero{
+.hero {
+  position: relative;
 
-    position:relative;
+  max-width: 1200px;
+  margin: auto;
 
-    max-width:1200px;
+  min-height: calc(100vh - 100px);
 
-    margin:auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 80px;
 
-    min-height:calc(100vh - 100px);
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:80px;
-
-    padding:0 40px;
-
+  padding: 0 40px;
 }
 
 /* 4 góc hoa văn trang trí — lùi vào trong 24px, dùng lại component
@@ -46,122 +40,183 @@
   right: 24px;
 }
 
-.hero-left{
-
-    flex:1;
-
+.hero-left {
+  flex: 1;
 }
 
-.hero-right{
-
-    flex:1;
-
-    display:flex;
-
-    justify-content:center;
-
+/* Các dòng trong hero-left xuất hiện dần từ dưới lên, so le nhau theo thứ
+   tự đọc (hello -> tên -> vai trò -> highlights -> mô tả -> quote -> nút),
+   tạo cảm giác trang được "dựng" lên thay vì hiện phẳng 1 lượt. */
+.hero-left > * {
+  opacity: 0;
+  animation: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.hero-right img{
-
-    width:420px;
-
-    height:420px;
-
-    object-fit:cover;
-
-    border-radius:50%;
-
+.hello {
+  animation-delay: 0.05s;
+}
+.hero-left h1 {
+  animation-delay: 0.12s;
+}
+.hero-left h2 {
+  animation-delay: 0.19s;
+}
+.hero-highlights {
+  animation-delay: 0.26s;
+}
+.tagline {
+  animation-delay: 0.33s;
+}
+.quote {
+  animation-delay: 0.4s;
+}
+.buttons {
+  animation-delay: 0.47s;
 }
 
-.hello{
-
-    font-size:20px;
-
-    color:var(--color-text-secondary);
-
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.hero h1{
-
-    font-size:64px;
-
-    margin-top:10px;
-
+.hero-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
-.hero h2{
-
-    margin-top:15px;
-
-    color:var(--color-primary);
-
+/* Vòng sáng mềm phía sau avatar, đồng bộ tông với --color-primary — thay vì
+   ảnh tròn "trơ" giữa nền, giờ có điểm nhấn ánh sáng như spotlight. */
+.hero-right {
+  position: relative;
 }
 
+.hero-right::before {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+
+  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+  opacity: 0.18;
+  filter: blur(30px);
+
+  pointer-events: none;
+}
+
+.hero-right img {
+  position: relative;
+
+  width: 420px;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 50%;
+
+  border: 1px solid var(--color-border);
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.5);
+
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-right img:hover {
+  transform: translateY(-6px);
+}
+
+.hello {
+  font-size: 20px;
+  color: var(--color-text-secondary);
+}
+
+.hero h1 {
+  font-size: 64px;
+  margin-top: 10px;
+}
+
+.hero h2 {
+  margin-top: 15px;
+  color: var(--color-primary);
+}
+
+/* Frontend / Backend / Mobile giờ hiện dạng pill tag riêng biệt, có viền +
+   nền mờ, thay vì chữ thường nối dấu chấm — dễ đọc và trông "sản phẩm" hơn. */
 .hero-highlights {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 
-  margin-top: 14px;
+  margin-top: 16px;
+}
 
-  font-size: 13px;
+.hero-highlights span {
+  padding: 5px 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: var(--color-text-secondary);
+
+  transition: border-color 0.25s ease, color 0.25s ease;
 }
 
-.hero-highlights span {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.hero-highlights span:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
+/* Dấu chấm phân cách cũ không còn cần thiết vì mỗi mục đã tách thành pill
+   riêng, ẩn đi để không lẫn vào giữa các pill. */
 .hero-highlights .dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--color-text-secondary);
-  opacity: 0.6;
+  display: none;
 }
 
-.tagline{
+.tagline {
+  margin-top: 22px;
 
-    margin-top:22px;
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
 
-    font-size:19px;
-
-    line-height:1.7;
-
-    color:var(--color-text-secondary);
-
-    max-width:480px;
-
+  max-width: 480px;
 }
 
-.quote{
+/* Quote có gạch trái + đổi qua font nghiêng serif nhẹ, tách rõ khỏi phần
+   tagline thay vì trông như 1 dòng phụ mờ nhạt. */
+.quote {
+  position: relative;
 
-    margin-top:16px;
+  margin-top: 20px;
+  padding-left: 18px;
 
-    font-size:15px;
+  border-left: 2px solid var(--color-primary);
 
-    font-style:italic;
-
-    color:var(--color-text-secondary);
-
-    opacity:0.75;
-
+  /* Dùng đúng font gốc của site (hỗ trợ dấu tiếng Việt chuẩn) — Georgia/Times
+     New Roman trước đó làm dấu bị tách rời khỏi chữ (VD "tối" hiện thành
+     "tố i"), chỉ giữ lại kiểu chữ nghiêng cho sang trọng. */
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  opacity: 0.85;
 }
 
-.buttons{
+.buttons {
+  display: flex;
+  gap: 20px;
 
-    display:flex;
-
-    gap:20px;
-
-    margin-top:35px;
-
+  margin-top: 35px;
 }
 
 @media (max-width: 900px) {
@@ -172,6 +227,7 @@
   .hero {
     flex-direction: column-reverse;
     text-align: center;
+
     gap: 40px;
     padding: 60px 24px;
     min-height: auto;
@@ -179,6 +235,11 @@
 
   .hero-highlights {
     justify-content: center;
+  }
+
+  .hero-right::before {
+    width: 260px;
+    height: 260px;
   }
 
   .hero-right img {
@@ -198,7 +259,9 @@
   }
 
   .quote {
+    display: inline-block;
     font-size: 14px;
+    text-align: left;
   }
 
   .buttons {
@@ -208,6 +271,11 @@
 }
 
 @media (max-width: 420px) {
+  .hero-right::before {
+    width: 200px;
+    height: 200px;
+  }
+
   .hero-right img {
     width: 200px;
     height: 200px;
@@ -228,5 +296,12 @@
 
   .buttons button {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-left > * {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }
