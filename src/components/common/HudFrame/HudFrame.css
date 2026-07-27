@@ -1,0 +1,103 @@
+.hud-frame {
+  position: relative;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+
+  padding: 20px;
+
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hud-frame:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15);
+}
+
+.hud-frame-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* 4 góc bracket "[ ]" — chỉ hiện đường viền góc, không viền hết cạnh,
+   giống khung ngắm/khung chọn trên màn hình kỹ thuật số. */
+.hud-frame-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+
+  border: 1.5px solid var(--color-primary);
+  opacity: 0.55;
+
+  transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.hud-frame:hover .hud-frame-corner {
+  opacity: 1;
+  width: 18px;
+  height: 18px;
+}
+
+.hud-frame-corner.tl {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud-frame-corner.tr {
+  top: -1px;
+  right: -1px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.hud-frame-corner.bl {
+  bottom: -1px;
+  left: -1px;
+  border-right: none;
+  border-top: none;
+}
+
+.hud-frame-corner.br {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Nhãn nhỏ góc trên trái, kiểu "FEED 01" / "SKILL.02" — đè lên viền trên
+   của khung, nền trùng màu surface để cắt ngang đường viền cho gọn. */
+.hud-frame-label {
+  position: absolute;
+  top: -9px;
+  left: 16px;
+  z-index: 2;
+
+  padding: 0 8px;
+
+  background: var(--color-surface);
+
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.hud-frame:hover .hud-frame-label {
+  color: var(--color-primary);
+}
+
+@media (max-width: 480px) {
+  .hud-frame {
+    padding: 16px;
+  }
+
+  .hud-frame-corner {
+    width: 10px;
+    height: 10px;
+  }
+}

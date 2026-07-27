@@ -3,16 +3,34 @@
   margin-bottom: 80px;
 }
 
+/* Subtitle giờ hiện dạng "tag" kiểu HUD: [ SUBTITLE ] font monospace,
+   có vạch tick nhỏ 2 bên thay vì chữ in hoa trơn như trước — đồng bộ với
+   phong cách bracket-frame của ParticleIntro/Navbar. */
 .section-title p {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 
   color: var(--color-primary);
-  font-size: 15px;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 3px;
 
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.section-title p::before,
+.section-title p::after {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary));
+}
+
+.section-title p::after {
+  background: linear-gradient(90deg, var(--color-primary), transparent);
 }
 
 .section-title h2 {
@@ -24,13 +42,15 @@
   text-shadow: 0 0 40px rgba(212, 175, 116, 0.18);
 }
 
+/* Divider đổi từ "line–dot–line" tròn trịa sang "line–tick–line" vuông vức,
+   giống vạch chia độ trên màn hình điều khiển hơn là hoạ tiết trang trí. */
 .section-title-divider {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 
-  width: 140px;
+  width: 160px;
   margin: 22px auto 0;
 }
 
@@ -45,12 +65,16 @@
 }
 
 .section-title-divider-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   flex-shrink: 0;
-  border-radius: 50%;
+
+  /* Vuông thay vì tròn, xoay 45° -> giống 1 pixel/tick đo lường kỹ thuật */
+  border-radius: 1px;
+  transform: rotate(45deg);
 
   background: var(--color-accent);
+  box-shadow: 0 0 10px rgba(212, 175, 116, 0.5);
 }
 
 @media (max-width: 640px) {
@@ -63,7 +87,13 @@
   }
 
   .section-title p {
-    font-size: 13px;
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  .section-title p::before,
+  .section-title p::after {
+    width: 14px;
   }
 
   .section-title-divider {
