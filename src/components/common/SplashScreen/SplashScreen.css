@@ -11,7 +11,7 @@
 
   background:
     radial-gradient(ellipse at center, rgba(var(--color-primary-rgb), 0.1), transparent 60%),
-    linear-gradient(160deg, #05070d, #0a0f1c 55%, #05070d);
+    linear-gradient(160deg, var(--color-bg), var(--color-surface) 55%, var(--color-bg));
 
   animation: splash-fade-in 0.5s ease;
 }
@@ -79,21 +79,41 @@
 /* Nội dung chính giữa khung */
 
 .splash-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
   color: var(--color-accent);
-  font-size: 13px;
+  font-family: var(--font-mono);
+  font-size: 12px;
   letter-spacing: 3px;
   text-transform: uppercase;
 
   animation: splash-line-in 0.5s ease 0.1s both;
 }
 
+.splash-eyebrow::before,
+.splash-eyebrow::after {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-accent));
+}
+
+.splash-eyebrow::after {
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+}
+
 .splash-title {
   margin: 14px 0 20px;
 
-  font-family: "Georgia", "Times New Roman", serif;
-  font-style: italic;
+  /* "Chào Mừng" có dấu tiếng Việt -> KHÔNG dùng serif (Georgia/Times New
+     Roman), dấu dễ hiển thị lệch/thiếu trên nhiều máy. Dùng font-display
+     (Chakra Petch) đồng bộ toàn site, có bộ dấu đầy đủ. */
+  font-family: var(--font-display);
   font-size: clamp(40px, 8vw, 56px);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 
   color: #f8fafc;
   text-shadow: 0 0 30px rgba(var(--color-accent-rgb), 0.35);

@@ -9,12 +9,17 @@
 
   /* Nền gần như đen, hơi ngả xanh navy — giống màn hình điều khiển tắt đèn phòng */
   --color-bg: #05090c;
-  --color-surface: #0a1620;
+  /* Sáng hơn 1 chút so với --color-bg để card/khung nổi rõ hơn, tránh cảm
+     giác "chìm" vào nền khi xem nội dung dài. */
+  --color-surface: #0d1c27;
 
-  --color-text: #eaf6fb;
-  --color-text-secondary: #6f95a3;
+  --color-text: #f2f9fc;
+  /* Sáng hơn bản trước (#6f95a3 -> #93b8c4) để đoạn văn dài (bio, mô tả dự
+     án, nhật ký...) dễ đọc hơn trên nền tối, vẫn đủ mờ để phân biệt với
+     --color-text chính và --color-primary/--color-accent của các nhãn HUD. */
+  --color-text-secondary: #93b8c4;
 
-  --color-border: #163544;
+  --color-border: #1c4254;
 
   /* Nền kính mờ cho Navbar + overlay toàn màn hình */
   --color-navbar-bg: rgba(4, 9, 12, 0.78);

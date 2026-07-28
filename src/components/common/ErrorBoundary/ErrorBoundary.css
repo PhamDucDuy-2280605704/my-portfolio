@@ -24,16 +24,28 @@
   max-width: 420px;
 }
 
+.error-boundary-tag {
+  margin-bottom: 16px;
+  padding: 4px 12px;
+  border: 1px solid rgba(var(--color-accent-rgb), 0.4);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
 .error-boundary-button {
   padding: 12px 28px;
 
   background: var(--color-primary);
   border: none;
-  border-radius: var(--radius-sm);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 
-  color: white;
+  color: #04141a;
+  font-family: var(--font-display);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
   cursor: pointer;
 
   transition: 0.25s;

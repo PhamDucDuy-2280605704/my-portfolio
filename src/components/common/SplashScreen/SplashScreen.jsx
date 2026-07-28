@@ -42,7 +42,7 @@ function SplashScreen({ onFinish }) {
 
         <div className="splash-content">
 
-          <p className="splash-eyebrow">✦ Portfolio Cá Nhân ✦</p>
+          <p className="splash-eyebrow">Portfolio Cá Nhân</p>
 
           <h1 className="splash-title">Chào Mừng</h1>
 

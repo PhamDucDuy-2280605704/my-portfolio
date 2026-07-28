@@ -1,6 +1,6 @@
-/* Nút "Xem lại intro" — dùng đúng token màu/bo góc/font của site
-   (--color-*, --radius-full, --font-family) thay vì màu riêng của intro,
-   để không bị lạc tông với Navbar/Button khi hiện ở trang chủ. */
+/* Nút "Xem lại intro" — dùng đúng token màu/font của site (--color-*,
+   --font-family), góc vát chéo đồng bộ .btn/.hero-highlights thay vì bo
+   tròn pill, để không bị lạc tông với phần còn lại của site. */
 
 .replay-intro-btn {
   position: fixed;
@@ -12,18 +12,19 @@
   align-items: center;
   gap: 8px;
 
-  padding: 10px 16px;
+  padding: 10px 18px;
 
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
 
   background: var(--color-surface);
   box-shadow: var(--shadow);
 
   color: var(--color-text-secondary);
-  font-family: var(--font-family);
+  font-family: var(--font-display);
   font-size: var(--fs-xs);
   font-weight: 600;
+  text-transform: uppercase;
   letter-spacing: 0.03em;
 
   cursor: pointer;

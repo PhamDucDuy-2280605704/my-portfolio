@@ -34,7 +34,9 @@ class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <div className="error-boundary">
-          <h1>😵 Đã có lỗi xảy ra</h1>
+          <p className="error-boundary-tag">SYS_FAULT // RENDER_CRASH</p>
+
+          <h1>Đã có lỗi xảy ra</h1>
           <p>Trang gặp sự cố không mong muốn. Bạn thử tải lại trang xem sao nhé.</p>
 
           <button

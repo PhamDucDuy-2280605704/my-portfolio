@@ -9,7 +9,7 @@
 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
 
   color: var(--color-text);
   font-size: 18px;
