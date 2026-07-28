@@ -14,6 +14,7 @@ import projects from "../../data/projects";
 import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
+import HudFrame from "../../components/common/HudFrame/HudFrame";
 
 // 2 tab lọc dự án: "Đã hoàn thành" và "Đang phát triển".
 // key phải khớp với tên field trong data/projects.js (completed/inProgress).
@@ -25,9 +26,14 @@ const tabs = [
 // Card hiển thị 1 dự án: ảnh (hoặc placeholder gradient+icon nếu chưa có ảnh),
 // tên, mô tả, danh sách công nghệ, và 2 link Demo/Mã nguồn (tự vô hiệu hoá
 // hiển thị "sắp ra mắt"/"đang cập nhật" nếu project.demo hoặc project.source là null).
-function ProjectCard({ project }) {
+// code: mã hiệu HUD (VD "PRJ.01") hiện ở góc trên trái khung, giúp mỗi card
+// trông như 1 hồ sơ được đánh số trên bảng điều khiển.
+function ProjectCard({ project, code }) {
   return (
-    <div className="project-card">
+    <HudFrame
+      label={code}
+      className="project-card"
+    >
 
       <div className="project-image">
         {project.image ? (
@@ -91,7 +97,7 @@ function ProjectCard({ project }) {
 
       </div>
 
-    </div>
+    </HudFrame>
   );
 }
 
@@ -134,10 +140,11 @@ function Projects() {
       {/* Nếu nhóm đang chọn chưa có dự án nào -> hiện trạng thái rỗng thay vì để trống trơn */}
       {activeList.length > 0 ? (
         <div className="projects-grid">
-          {activeList.map((project) => (
+          {activeList.map((project, index) => (
             <ProjectCard
               key={project.name}
               project={project}
+              code={`PRJ.${String(index + 1).padStart(2, "0")}`}
             />
           ))}
         </div>

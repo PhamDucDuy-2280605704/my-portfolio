@@ -1,9 +1,9 @@
 import "./CornerFlourish.css";
 
-// Hoạ tiết góc trang trí dùng chung — vẽ 1 lần, dùng ở 4 góc của 1 khung bằng
-// cách đặt 4 instance liên tiếp trong 1 container có class truyền vào (containerClassName
-// tự định nghĩa vị trí/lật hướng qua CSS :nth-of-type, xem CornerFlourish.css).
-// Ban đầu chỉ dùng trong SplashScreen, tách ra để dùng lại được ở nơi khác (VD: Hero).
+// Bracket góc kiểu HUD — 1 nét L vuông góc + 1 tick vuông nhỏ ở đầu mút,
+// đồng bộ hẳn với .hud-frame-corner (HudFrame) và .corner (ParticleIntro)
+// thay vì đường cong trang trí kiểu cổ điển trước đây. Vẽ 1 lần ở góc trên
+// trái, 3 góc còn lại chỉ lật hướng bằng CSS transform (xem CornerFlourish.css).
 function CornerFlourish() {
   return (
     <svg
@@ -12,29 +12,24 @@ function CornerFlourish() {
       aria-hidden="true"
     >
       <path
-        d="M6 46 C6 22 22 6 46 6"
+        d="M6 42 L6 6 L42 6"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
       />
       <path
-        d="M6 6 L52 52"
+        d="M6 6 L30 30"
         fill="none"
         stroke="currentColor"
         strokeWidth="1"
-        strokeDasharray="1 9"
+        strokeDasharray="1 8"
         strokeLinecap="round"
       />
-      <circle
-        cx="6"
-        cy="6"
-        r="3.5"
-        fill="currentColor"
-      />
-      <circle
-        cx="52"
-        cy="52"
-        r="2.5"
+      <rect
+        x="2"
+        y="2"
+        width="6"
+        height="6"
         fill="currentColor"
       />
     </svg>

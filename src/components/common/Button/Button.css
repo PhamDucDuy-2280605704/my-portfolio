@@ -1,11 +1,16 @@
 .btn {
+  position: relative;
+
   padding: 14px 28px;
 
-  border-radius: 10px;
+  /* Góc vát chéo kiểu nút bấm kỹ thuật, thay cho bo tròn mềm mại trước đây */
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 
-  font-size: 16px;
-
+  font-family: var(--font-display);
+  font-size: 15px;
   font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 
   transition: .3s;
 
@@ -18,7 +23,7 @@
 
   background: var(--color-primary);
 
-  color: white;
+  color: #04141a;
 
   border: none;
 }
@@ -29,8 +34,8 @@
 
   transform: translateY(-2px);
 
-  /* Quầng sáng vàng đồng nhẹ khi hover, đồng bộ tông màu accent của SplashScreen/SectionTitle */
-  box-shadow: 0 8px 24px -6px rgba(212, 175, 116, 0.45);
+  /* Quầng sáng cam nhẹ khi hover, đồng bộ tông accent của SectionTitle */
+  box-shadow: 0 8px 24px -6px rgba(var(--color-accent-rgb), 0.45);
 }
 
 /* Outline */
@@ -39,8 +44,6 @@
 
   background: transparent;
 
-  /* Trước đây hard-code "white" -> mất tương phản trên theme sáng.
-     Dùng var(--color-text) để luôn đọc rõ ở cả 2 theme. */
   color: var(--color-text);
 
   border: 2px solid var(--color-primary);
@@ -50,11 +53,11 @@
 
   background: var(--color-primary);
 
-  color: white;
+  color: #04141a;
 
   transform: translateY(-2px);
 
-  box-shadow: 0 8px 24px -6px rgba(212, 175, 116, 0.45);
+  box-shadow: 0 8px 24px -6px rgba(var(--color-accent-rgb), 0.45);
 }
 
 /* Disabled — dùng khi hành động chưa khả dụng (VD: chưa có file để tải) */

@@ -7,6 +7,7 @@ import journal from "../../data/journal";
 import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
+import HudFrame from "../../components/common/HudFrame/HudFrame";
 
 // Định dạng chuỗi ngày "YYYY-MM-DD" (trong data/journal.js) thành dạng
 // tiếng Việt dễ đọc, VD: "11 tháng 7, 2026".
@@ -43,12 +44,13 @@ function Journal() {
 
       <div className="journal-list">
 
-        {journal.map((entry) => {
+        {journal.map((entry, index) => {
           const isOpen = openId === entry.id;
 
           return (
-            <article
+            <HudFrame
               key={entry.id}
+              label={`LOG.${String(index + 1).padStart(2, "0")}`}
               className={`journal-card ${isOpen ? "open" : ""}`}
             >
 
@@ -73,8 +75,8 @@ function Journal() {
               {/* Chỉ render phần nội dung đầy đủ khi bài này đang được mở */}
               {isOpen && (
                 <div className="journal-content">
-                  {entry.content.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+                  {entry.content.map((paragraph, i) => (
+                    <p key={i}>{paragraph}</p>
                   ))}
                 </div>
               )}
@@ -87,7 +89,7 @@ function Journal() {
                 {isOpen ? "Thu gọn" : "Đọc tiếp"} <FaArrowRight />
               </button>
 
-            </article>
+            </HudFrame>
           );
         })}
 

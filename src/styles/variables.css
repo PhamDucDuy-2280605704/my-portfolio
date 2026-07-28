@@ -1,42 +1,48 @@
 :root {
 
-  /* ===== Colors (mặc định: Dark) ===== */
+  /* ===== HUD Colors (mặc định: Dark — "Ambassador Program" console) ===== */
 
-  --color-primary: #3b82f6;
-  --color-primary-hover: #2563eb;
+  /* Cyan chủ đạo — màu khung/khối UI, link, viền active */
+  --color-primary: #22d3ee;
+  --color-primary-hover: #67e8f9;
+  --color-primary-rgb: 34, 211, 238;
 
-  --color-bg: #0f172a;
-  --color-surface: #1e293b;
+  /* Nền gần như đen, hơi ngả xanh navy — giống màn hình điều khiển tắt đèn phòng */
+  --color-bg: #05090c;
+  --color-surface: #0a1620;
 
-  --color-text: #f8fafc;
-  --color-text-secondary: #94a3b8;
+  --color-text: #eaf6fb;
+  --color-text-secondary: #6f95a3;
 
-  --color-border: #334155;
+  --color-border: #163544;
 
-  /* Nền kính mờ (glassmorphism) cho Navbar + các overlay toàn màn hình */
-  --color-navbar-bg: rgba(15, 23, 42, 0.65);
-  --color-overlay-bg: rgba(15, 23, 42, 0.85);
+  /* Nền kính mờ cho Navbar + overlay toàn màn hình */
+  --color-navbar-bg: rgba(4, 9, 12, 0.78);
+  --color-overlay-bg: rgba(4, 9, 12, 0.92);
 
-  /* Màu trạng thái (badge chứng chỉ, thông báo form...) — tách riêng theo theme
-     vì tông màu sáng (VD: #4ade80) đủ tương phản trên nền tối nhưng lại quá mờ,
-     KHÔNG đạt chuẩn tương phản trên nền sáng. */
-  --color-success-bg: rgba(34, 197, 94, 0.15);
+  --color-success-bg: rgba(74, 222, 128, 0.14);
   --color-success-text: #4ade80;
 
-  --color-info-bg: rgba(59, 130, 246, 0.15);
-  --color-info-text: #60a5fa;
+  --color-info-bg: rgba(34, 211, 238, 0.14);
+  --color-info-text: #67e8f9;
 
   --color-danger-text: #f87171;
 
-  /* Màu nhấn trang trí (accent) — vàng đồng thanh lịch, lấy cảm hứng từ
-     SplashScreen. CHỈ dùng cho chi tiết trang trí (vạch chia, hoạ tiết, gạch
-     chân mục đang chọn...), KHÔNG dùng cho nút/link tương tác — --color-primary
-     vẫn là màu tương tác chính để giữ thống nhất & dễ nhận biết. */
-  --color-accent: #d4af74;
+  /* Màu nhấn cam/hổ phách — dùng cho label, badge, số liệu, gạch chân đang
+     chọn... lấy cảm hứng từ các ô "ADRN" trên HUD tham chiếu. KHÔNG dùng cho
+     nút/link tương tác chính — --color-primary vẫn đảm nhiệm việc đó. */
+  --color-accent: #ffa94d;
+  --color-accent-rgb: 255, 169, 77;
 
   /* ===== Typography ===== */
 
-  --font-family: "Inter", sans-serif;
+  /* Chakra Petch: font kỹ thuật, góc vuông, có bộ dấu tiếng Việt đầy đủ
+     -> dùng cho heading/nav/nhãn HUD. Inter giữ vai trò font đọc chính cho
+     đoạn văn dài (dễ đọc + dấu tiếng Việt chuẩn). Share Tech Mono chỉ dùng
+     cho số liệu/mã hiệu KHÔNG chứa tiếng Việt (readout, timestamp, id...). */
+  --font-family: "Inter", "Chakra Petch", sans-serif;
+  --font-display: "Chakra Petch", "Inter", sans-serif;
+  --font-mono: "Share Tech Mono", "Courier New", monospace;
 
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
@@ -46,53 +52,56 @@
   --fs-2xl: 3rem;
   --fs-3xl: 4rem;
 
-  /* ===== Radius ===== */
+  /* ===== Radius =====
+     HUD tham chiếu gần như không bo góc — giữ radius rất nhỏ để hợp phong
+     cách bảng điều khiển kỹ thuật thay vì bo tròn mềm mại như trước. */
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
   --radius-full: 999px;
 
-  /* ===== Shadow ===== */
-
-  --shadow:
-    0 10px 30px rgba(0,0,0,.25);
+  /* ===== Shadow / Glow ===== */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --hud-glow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.25),
+    0 0 24px -6px rgba(var(--color-primary-rgb), 0.35);
 
 }
 
 /* ===== Theme Sáng =====
    Kích hoạt bằng thuộc tính data-theme="light" trên thẻ <html>
-   (xem src/hooks/useTheme.js). Chỉ cần override lại các biến màu ở trên —
-   toàn bộ component đã dùng var(--color-*) nên tự động đổi theo, không cần
-   sửa CSS ở từng file riêng lẻ. */
+   (xem src/hooks/useTheme.js). Giữ tinh thần HUD (cyan/cam, góc vuông) nhưng
+   trên nền sáng — dùng cho người muốn đọc nội dung dài ban ngày. */
 [data-theme="light"] {
 
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
+  --color-primary: #0891b2;
+  --color-primary-hover: #0e7490;
+  --color-primary-rgb: 8, 145, 178;
 
-  --color-bg: #f1f5f9;
+  --color-bg: #eef3f5;
   --color-surface: #ffffff;
 
-  --color-text: #0f172a;
-  --color-text-secondary: #64748b;
+  --color-text: #071a22;
+  --color-text-secondary: #4b6672;
 
-  --color-border: #e2e8f0;
+  --color-border: #cbd9dd;
 
-  --color-navbar-bg: rgba(255, 255, 255, 0.75);
-  --color-overlay-bg: rgba(255, 255, 255, 0.9);
+  --color-navbar-bg: rgba(255, 255, 255, 0.82);
+  --color-overlay-bg: rgba(255, 255, 255, 0.94);
 
   --color-success-bg: rgba(22, 163, 74, 0.12);
   --color-success-text: #16a34a;
 
-  --color-info-bg: rgba(37, 99, 235, 0.12);
-  --color-info-text: #2563eb;
+  --color-info-bg: rgba(8, 145, 178, 0.12);
+  --color-info-text: #0891b2;
 
   --color-danger-text: #dc2626;
 
-  /* Vàng đồng đậm hơn 1 chút để đủ tương phản trên nền sáng */
-  --color-accent: #a97a2f;
+  --color-accent: #c2680f;
+  --color-accent-rgb: 194, 104, 15;
 
-  --shadow:
-    0 10px 30px rgba(15, 23, 42, .08);
+  --shadow: 0 10px 30px rgba(7, 26, 34, 0.1);
+  --hud-glow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.2),
+    0 0 20px -8px rgba(var(--color-primary-rgb), 0.3);
 
 }

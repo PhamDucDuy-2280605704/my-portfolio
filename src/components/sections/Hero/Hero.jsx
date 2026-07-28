@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import Button from "../../common/Button/Button";
 import CornerFlourish from "../../common/CornerFlourish/CornerFlourish";
+import HudFrame from "../../common/HudFrame/HudFrame";
 import "./Hero.css";
 
 import profile from "../../../data/profile";
@@ -25,7 +26,10 @@ function Hero() {
       <CornerFlourish />
 
       <div className="hero-left">
-        <p className="hello">👋 Xin chào, mình là</p>
+        <p className="hello">
+          <span className="hello-dot" />
+          Xin chào, mình là
+        </p>
 
         <h1>{profile.fullName}</h1>
 
@@ -53,10 +57,15 @@ function Hero() {
       </div>
 
       <div className="hero-right">
-        <img
-          src={profile.avatar}
-          alt={profile.fullName}
-        />
+        <HudFrame
+          label="PROFILE.01"
+          className="hero-avatar-frame"
+        >
+          <img
+            src={profile.avatar}
+            alt={profile.fullName}
+          />
+        </HudFrame>
       </div>
     </section>
   );

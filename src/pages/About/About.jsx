@@ -5,6 +5,7 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import Button from "../../components/common/Button/Button";
+import HudFrame from "../../components/common/HudFrame/HudFrame";
 
 // Trang "/about" — bio đầy đủ (khác với Hero ở Home, vốn chỉ có mô tả ngắn).
 // Toàn bộ nội dung (bio, ngày sinh, email, CV...) lấy từ data/profile.js.
@@ -22,12 +23,12 @@ function About() {
       <div className="about-page-content">
 
         <div className="about-page-image">
-
-          <img
-            src={profile.avatar}
-            alt={profile.fullName}
-          />
-
+          <HudFrame label="IDENT.01">
+            <img
+              src={profile.avatar}
+              alt={profile.fullName}
+            />
+          </HudFrame>
         </div>
 
         <div className="about-page-info">
@@ -44,15 +45,18 @@ function About() {
           <ul className="about-page-details">
 
             <li>
-              <strong>Ngày sinh:</strong> {profile.birthday}
+              <span className="detail-code hud-readout">DOB</span>
+              <span>{profile.birthday}</span>
             </li>
 
             <li>
-              <strong>Email:</strong> {profile.email}
+              <span className="detail-code hud-readout">MAIL</span>
+              <span>{profile.email}</span>
             </li>
 
             <li>
-              <strong>Địa chỉ:</strong> {profile.location}
+              <span className="detail-code hud-readout">LOC</span>
+              <span>{profile.location}</span>
             </li>
 
           </ul>

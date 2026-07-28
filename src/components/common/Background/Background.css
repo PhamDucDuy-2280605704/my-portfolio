@@ -7,7 +7,7 @@
   pointer-events: none;
 
   background:
-    linear-gradient(to bottom, rgba(59, 130, 246, 0.12), transparent 320px),
+    linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0.08), transparent 320px),
     var(--color-bg);
 }
 
@@ -24,9 +24,8 @@
   will-change: transform, opacity;
 }
 
-/* Chỉ dùng đúng 2 màu chủ đạo của site (--color-primary xanh,
-   --color-accent vàng đồng) thay vì 4 màu tự do trước đây — nền giờ đồng bộ
-   hẳn với Navbar/Hero/Button thay vì trông như 1 mảng riêng biệt. */
+/* Chỉ dùng đúng 2 màu chủ đạo của site (--color-primary cyan,
+   --color-accent cam) — nền đồng bộ với Navbar/Hero/Button. */
 
 .app-blob-1 {
   top: -10%;
@@ -50,7 +49,7 @@
   height: 620px;
 
   background: radial-gradient(circle, var(--color-primary), transparent 70%);
-  opacity: 0.22;
+  opacity: 0.16;
 
   animation:
     drift-2 32s ease-in-out infinite,
@@ -65,9 +64,9 @@
   width: 420px;
   height: 420px;
 
-  /* Điểm nhấn vàng đồng rất nhẹ — cùng tông với hover Button/ReplayIntroButton */
+  /* Điểm nhấn cam rất nhẹ — cùng tông với hover Button/ReplayIntroButton */
   background: radial-gradient(circle, var(--color-accent), transparent 70%);
-  opacity: 0.14;
+  opacity: 0.1;
 
   animation:
     drift-3 22s ease-in-out infinite,
@@ -82,7 +81,7 @@
   height: 380px;
 
   background: radial-gradient(circle, var(--color-primary), transparent 70%);
-  opacity: 0.18;
+  opacity: 0.14;
 
   animation:
     drift-4 28s ease-in-out infinite,
@@ -108,19 +107,87 @@
   animation: twinkle 6s ease-in-out infinite;
 }
 
+/* Lưới toạ độ kỹ thuật — đậm hơn bản cũ để rõ nét "màn hình điều khiển",
+   vẫn tự đổi theo theme sáng/tối vì dùng var(--color-border). */
 .app-grid {
   position: absolute;
   inset: 0;
 
-  /* Đổi từ màu slate cố định sang var(--color-border) — lưới nền tự đổi
-     theo theme sáng/tối giống mọi viền khác trong site, không bị "trơ" 1 màu. */
   background-image:
     linear-gradient(to right, var(--color-border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 0.5;
+  background-size: 44px 44px;
+  opacity: 0.55;
 
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 15%, #000 40%, transparent 100%);
+}
+
+/* Vệt quét (scanline) chạy dọc màn hình theo chu kỳ chậm — gợi ý màn hình
+   đang "quét" liên tục, tắt hẳn khi prefers-reduced-motion. */
+.app-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 140px;
+
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(var(--color-primary-rgb), 0.05) 45%,
+    rgba(var(--color-primary-rgb), 0.09) 50%,
+    rgba(var(--color-primary-rgb), 0.05) 55%,
+    transparent
+  );
+
+  animation: scan-sweep 9s linear infinite;
+}
+
+/* Làm tối 4 góc màn hình nhẹ, tăng cảm giác "nhìn qua khung kính" của HUD */
+.app-vignette {
+  position: absolute;
+  inset: 0;
+
+  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.65);
+}
+
+/* Khung góc cố định theo viewport, kiểu bezel màn hình điều khiển — chỉ
+   trang trí, luôn nằm trên grid/blob nhưng dưới nội dung thật. */
+.app-viewport-corner {
+  position: fixed;
+  width: 26px;
+  height: 26px;
+  z-index: 2;
+
+  border: 1.5px solid rgba(var(--color-primary-rgb), 0.45);
+  opacity: 0.7;
+}
+
+.app-viewport-corner.tl {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.app-viewport-corner.tr {
+  top: 10px;
+  right: 10px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.app-viewport-corner.bl {
+  bottom: 10px;
+  left: 10px;
+  border-right: none;
+  border-top: none;
+}
+
+.app-viewport-corner.br {
+  bottom: 10px;
+  right: 10px;
+  border-left: none;
+  border-top: none;
 }
 
 @keyframes drift-1 {
@@ -191,6 +258,16 @@
   }
 }
 
+@keyframes scan-sweep {
+  0% {
+    top: -140px;
+  }
+
+  100% {
+    top: 100%;
+  }
+}
+
 @media (max-width: 640px) {
   .app-blob {
     filter: blur(60px);
@@ -207,12 +284,18 @@
   .app-particle {
     display: none;
   }
+
+  .app-viewport-corner {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .app-blob,
   .app-blobs,
-  .app-particle {
+  .app-particle,
+  .app-scanline {
     animation: none;
   }
 }

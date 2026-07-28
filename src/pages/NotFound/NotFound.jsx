@@ -13,6 +13,8 @@ function NotFound() {
   return (
     <section className="notfound-page">
 
+      <p className="notfound-tag hud-readout">ERR_404 // NODE_NOT_FOUND</p>
+
       <h1 className="notfound-code">404</h1>
 
       <h2>Không tìm thấy trang</h2>

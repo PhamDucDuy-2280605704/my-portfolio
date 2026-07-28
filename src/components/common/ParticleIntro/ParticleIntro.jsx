@@ -24,9 +24,10 @@ const ASSEMBLE_DURATION = 1350; // ms
 const HOLD_DURATION = 2200; // ms
 const FADE_DURATION = 650; // ms
 
-// Tông lạnh đồng bộ với CSS (rgba(60,120,160,*) / rgba(74,138,170,*))
-const COLD_A = [74, 138, 170];
-const COLD_B = [58, 110, 145];
+// Tông cyan đồng bộ với --color-primary (#22d3ee) / bản đậm hơn của nó,
+// khớp với CSS mới (rgba(var(--color-primary-rgb), *))
+const COLD_A = [34, 211, 238];
+const COLD_B = [14, 165, 190];
 
 const PHASE_ORDER = ["scan", "warp", "assemble", "hold", "fade"];
 
@@ -208,7 +209,7 @@ function ParticleIntro({ onFinish }) {
       const elapsed = ts - startRef.current;
 
       ctx.clearRect(0, 0, cw, ch);
-      ctx.fillStyle = "#05080f";
+      ctx.fillStyle = "#05090c";
       ctx.fillRect(0, 0, cw, ch);
 
       const particles = particlesRef.current;
@@ -272,7 +273,7 @@ function ParticleIntro({ onFinish }) {
         const pulse = 0.5 + 0.5 * Math.sin(glowT * Math.PI * 2 * 0.55);
         const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 280);
         grad.addColorStop(0, `rgba(${COLD_A[0]}, ${COLD_A[1]}, ${COLD_A[2]}, ${0.05 + pulse * 0.025})`);
-        grad.addColorStop(1, "rgba(74, 138, 170, 0)");
+        grad.addColorStop(1, "rgba(34, 211, 238, 0)");
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, cw, ch);
       }

@@ -3,16 +3,17 @@
   margin-bottom: 80px;
 }
 
-/* Subtitle giờ hiện dạng "tag" kiểu HUD: [ SUBTITLE ] font monospace,
-   có vạch tick nhỏ 2 bên thay vì chữ in hoa trơn như trước — đồng bộ với
-   phong cách bracket-frame của ParticleIntro/Navbar. */
+/* Subtitle hiện dạng "tag" kiểu HUD: [ SUBTITLE ] có vạch tick nhỏ 2 bên
+   thay vì chữ in hoa trơn — đồng bộ phong cách bracket-frame của
+   ParticleIntro/Navbar. Dùng font-display (Chakra Petch) vì chuỗi này có
+   dấu tiếng Việt, KHÔNG dùng font-mono (không có bộ dấu). */
 .section-title p {
   display: inline-flex;
   align-items: center;
   gap: 10px;
 
   color: var(--color-primary);
-  font-family: "Courier New", monospace;
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
@@ -38,12 +39,12 @@
   font-weight: 800;
   line-height: 1.15;
 
-  /* Phát sáng vàng đồng rất nhẹ, đồng bộ hiệu ứng chữ ở SplashScreen */
-  text-shadow: 0 0 40px rgba(212, 175, 116, 0.18);
+  /* Phát sáng cam rất nhẹ, đồng bộ hiệu ứng chữ ở SplashScreen */
+  text-shadow: 0 0 40px rgba(var(--color-accent-rgb), 0.18);
 }
 
-/* Divider đổi từ "line–dot–line" tròn trịa sang "line–tick–line" vuông vức,
-   giống vạch chia độ trên màn hình điều khiển hơn là hoạ tiết trang trí. */
+/* Divider kiểu "line–tick–line" vuông vức, giống vạch chia độ trên màn hình
+   điều khiển hơn là hoạ tiết trang trí. */
 .section-title-divider {
   display: flex;
   align-items: center;
@@ -74,7 +75,7 @@
   transform: rotate(45deg);
 
   background: var(--color-accent);
-  box-shadow: 0 0 10px rgba(212, 175, 116, 0.5);
+  box-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.5);
 }
 
 @media (max-width: 640px) {

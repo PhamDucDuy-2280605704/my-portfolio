@@ -25,5 +25,5 @@
   transform: rotate(15deg);
 
   /* Quầng sáng nhẹ đồng bộ với gạch chân của menu khi hover */
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+  box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.12);
 }

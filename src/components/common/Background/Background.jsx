@@ -1,7 +1,11 @@
 import "./Background.css";
 
-// Nền động toàn site: các quầng sáng gradient mờ trôi chậm, đổi màu nhẹ theo thời gian,
-// cùng vài hạt sáng lấp lánh kiểu "digital". Cố định, nằm dưới nội dung, không chặn click.
+// Nền động toàn site, phong cách "màn hình điều khiển" (HUD console):
+// lưới toạ độ, quầng sáng gradient trôi chậm, hạt sáng lấp lánh, 1 vệt quét
+// (scanline) chạy dọc màn hình, và khung góc cố định theo viewport — mô
+// phỏng viền bezel của màn hình điều khiển kỹ thuật, không sao chép bố cục
+// của bất kỳ sản phẩm phim/game cụ thể nào.
+// Cố định, nằm dưới nội dung, không chặn click (pointer-events: none).
 function Background() {
   // Tạo 14 hạt sáng, mỗi hạt lấy vị trí/thời gian animation "giả ngẫu nhiên"
   // (dựa trên index nhân với số lẻ) để chúng không xếp thẳng hàng hay nhấp
@@ -36,6 +40,14 @@ function Background() {
       </div>
 
       <div className="app-grid" />
+      <div className="app-scanline" />
+      <div className="app-vignette" />
+
+      {/* Khung 4 góc cố định theo viewport, kiểu bezel màn hình điều khiển */}
+      <span className="app-viewport-corner tl" />
+      <span className="app-viewport-corner tr" />
+      <span className="app-viewport-corner bl" />
+      <span className="app-viewport-corner br" />
     </div>
   );
 }

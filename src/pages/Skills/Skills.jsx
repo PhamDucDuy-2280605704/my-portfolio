@@ -99,13 +99,18 @@ function Skills() {
 
       {/* Chỉ render nhóm nào có ít nhất 1 kỹ năng (tránh hiện tiêu đề nhóm trống) */}
       {groups.map(
-        (group) =>
+        (group, index) =>
           skills[group.key]?.length > 0 && (
             <div
               key={group.key}
               className="skills-group"
             >
-              <h3 className="skills-group-title">{group.title}</h3>
+              <h3 className="skills-group-title">
+                <span className="skills-group-code hud-readout">
+                  SKL.{String(index + 1).padStart(2, "0")}
+                </span>
+                {group.title}
+              </h3>
 
               <SkillGrid items={skills[group.key]} />
             </div>

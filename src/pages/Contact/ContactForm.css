@@ -67,9 +67,16 @@
 }
 
 .contact-form-field label {
-  font-size: 13px;
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.contact-form-field label::before {
+  content: "> ";
 }
 
 .contact-form-field input,
@@ -93,7 +100,7 @@
 .contact-form-field textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
 }
 
 .contact-form-field input::placeholder,
@@ -112,11 +119,14 @@
 
   background: var(--color-primary);
   border: none;
-  border-radius: var(--radius-sm);
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 
-  color: white;
+  color: #04141a;
+  font-family: var(--font-display);
   font-size: 15px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   cursor: pointer;
 
   transition: 0.25s;
@@ -124,7 +134,7 @@
 
 .contact-form-submit:hover:not(:disabled) {
   background: var(--color-primary-hover);
-  box-shadow: 0 8px 24px -6px rgba(212, 175, 116, 0.45);
+  box-shadow: 0 8px 24px -6px rgba(var(--color-accent-rgb), 0.45);
   transform: translateY(-2px);
 }
 
@@ -202,11 +212,13 @@
 
   background: none;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
 
   color: var(--color-text);
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
+  text-transform: uppercase;
   cursor: pointer;
 
   transition: 0.25s;

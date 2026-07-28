@@ -7,7 +7,15 @@ import logo from "../../../assets/images/logo.jpg";
 import profile from "../../../data/profile";
 import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
 
-// Thanh điều hướng chung cho mọi trang. Gồm 3 phần:
+// Đồng hồ giờ:phút:giây kiểu HUD, luôn 2 chữ số (dùng lại ở góc phải Navbar).
+function formatClock(date) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+// Thanh điều hướng chung cho mọi trang, dựng theo phong cách HUD (bảng điều
+// khiển kỹ thuật): 1 dải nhãn mã hiệu mỏng phía trên + thanh menu chính bên
+// dưới. Vẫn giữ nguyên 3 phần logic gốc:
 //   1. Logo (chỉ hiện ở trang Home, bấm vào phóng to xem toàn màn hình)
 //   2. Menu ngang (desktop) — tự ẩn thành nút hamburger khi màn hình hẹp (≤1080px)
 //   3. Menu full-screen (mobile) — hiện khi bấm nút hamburger
@@ -16,20 +24,31 @@ function Navbar() {
   const [isZoomed, setIsZoomed] = useState(false);
   // isMenuOpen: đang mở menu full-screen trên mobile hay không.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // Đồng hồ hệ thống — đặt cố định ở góc phải Navbar (sticky) để luôn thấy
+  // ngay, không phải cuộn xuống cuối trang mới thấy như bản Footer cũ.
+  const [now, setNow] = useState(() => new Date());
 
-  // Biết đang ở trang nào để quyết định có hiện logo hay không.
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Biết đang ở trang nào để quyết định có hiện logo hay không, và để hiện
+  // nhãn "mã hiệu" của khu vực đang xem (VD "SECTION 02 · GIỚI THIỆU").
   const { pathname } = useLocation();
   const isHome = pathname === "/";
 
   const menus = [
-    { name: "Trang Chủ", path: "/" },
-    { name: "Giới Thiệu", path: "/about" },
-    { name: "Kỹ Năng", path: "/skills" },
-    { name: "Dự Án", path: "/projects" },
-    { name: "Kinh Nghiệm", path: "/experience" },
-    { name: "Nhật Ký", path: "/journal" },
-    { name: "Liên Hệ", path: "/contact" },
+    { name: "Trang Chủ", path: "/", code: "SEC.01" },
+    { name: "Giới Thiệu", path: "/about", code: "SEC.02" },
+    { name: "Kỹ Năng", path: "/skills", code: "SEC.03" },
+    { name: "Dự Án", path: "/projects", code: "SEC.04" },
+    { name: "Kinh Nghiệm", path: "/experience", code: "SEC.05" },
+    { name: "Nhật Ký", path: "/journal", code: "SEC.06" },
+    { name: "Liên Hệ", path: "/contact", code: "SEC.07" },
   ];
+
+  const activeItem = menus.find((item) => item.path === pathname) || menus[0];
 
   // Khi 1 trong 2 overlay (phóng to logo / menu mobile) đang mở:
   // - khoá cuộn trang nền (tránh cuộn nền trong khi xem overlay)
@@ -57,6 +76,24 @@ function Navbar() {
 
   return (
     <>
+      {/* Dải nhãn mã hiệu mỏng phía trên menu chính — chỉ trang trí, mô
+          phỏng thanh trạng thái trên cùng của bảng điều khiển kỹ thuật. */}
+      <div
+        className="navbar-meta"
+        aria-hidden="true"
+      >
+        <span className="navbar-meta-item">
+          <i className="navbar-meta-dot" />
+          {profile.fullName.toUpperCase()}
+        </span>
+        <span className="navbar-meta-item navbar-meta-item-center">
+          {activeItem.code} &middot; {activeItem.name.toUpperCase()}
+        </span>
+        <span className="navbar-meta-item navbar-clock hud-readout">
+          {formatClock(now)}
+        </span>
+      </div>
+
       <nav className="navbar">
         {/* Logo: chỉ hiện ở trang Home (class "logo-hidden" ẩn nhưng vẫn giữ
             chỗ bằng visibility:hidden, để menu bên cạnh không bị lệch vị trí
@@ -68,10 +105,12 @@ function Navbar() {
           tabIndex={isHome ? 0 : -1}
           aria-hidden={!isHome}
         >
-          <img
-            src={logo}
-            alt={profile.fullName}
-          />
+          <span className="logo-frame">
+            <img
+              src={logo}
+              alt={profile.fullName}
+            />
+          </span>
         </button>
 
         {/* Gom nhóm bên phải (menu + toggle theme + hamburger) vào 1 wrapper,
@@ -126,6 +165,7 @@ function Navbar() {
                   to={item.path}
                   onClick={() => setIsMenuOpen(false)}
                 >
+                  <span className="mobile-menu-code hud-readout">{item.code}</span>
                   {item.name}
                 </NavLink>
               </li>

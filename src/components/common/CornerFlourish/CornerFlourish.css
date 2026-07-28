@@ -3,10 +3,16 @@
   width: 56px;
   height: 56px;
 
-  color: var(--color-accent);
-  opacity: 0.4;
+  /* Nét bracket dùng cyan chủ đạo, tick vuông ở đầu mút dùng cam — đồng bộ
+     đúng cặp màu mà HudFrame/ParticleIntro đang dùng cho góc bracket. */
+  color: var(--color-primary);
+  opacity: 0.55;
 
   pointer-events: none;
+}
+
+.corner-flourish-svg rect {
+  fill: var(--color-accent);
 }
 
 /* 4 instance liên tiếp trong cùng 1 container -> mỗi cái tự định vị 1 góc,

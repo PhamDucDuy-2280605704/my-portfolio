@@ -70,8 +70,8 @@
 
   width: 54px;
   height: 54px;
-  border-radius: 50%;
 
+  border: 1px solid color-mix(in srgb, var(--badge-color) 45%, transparent);
   background: color-mix(in srgb, var(--badge-color) 16%, transparent);
 
   transition: 0.3s;

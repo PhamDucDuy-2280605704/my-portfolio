@@ -52,7 +52,7 @@
 
     margin-top:15px;
 
-    color:#2563eb;
+    color:var(--color-primary);
 
 }
 

@@ -36,7 +36,7 @@
   transform: translateY(-2px);
 
   /* Cùng quầng sáng vàng đồng dùng khi hover Button/SectionTitle, giữ đồng bộ toàn site */
-  box-shadow: 0 8px 24px -6px rgba(212, 175, 116, 0.45);
+  box-shadow: 0 8px 24px -6px rgba(var(--color-accent-rgb), 0.45);
 }
 
 .replay-intro-icon {

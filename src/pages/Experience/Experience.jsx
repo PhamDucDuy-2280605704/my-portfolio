@@ -8,6 +8,7 @@ import certificates from "../../data/certificates";
 import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
+import HudFrame from "../../components/common/HudFrame/HudFrame";
 
 // Nhãn trạng thái nhỏ cho mỗi chứng chỉ: "Đã hoàn thành" (xanh lá) hoặc "Đang học" (xanh dương).
 function StatusBadge({ status }) {
@@ -17,6 +18,18 @@ function StatusBadge({ status }) {
     <span className={`status-badge ${isDone ? "done" : "progress"}`}>
       {isDone ? "Đã hoàn thành" : "Đang học"}
     </span>
+  );
+}
+
+// Tiêu đề khối kèm mã hiệu HUD nhỏ phía trước (VD "EDU // Học vấn"),
+// dùng chung cho cả 3 khối trong trang để đồng bộ với các trang khác
+// (Skills đã dùng cùng kiểu mã hiệu SKL.0x).
+function BlockTitle({ code, children }) {
+  return (
+    <h3 className="experience-block-title">
+      <span className="experience-block-code hud-readout">{code}</span>
+      {children}
+    </h3>
   );
 }
 
@@ -35,7 +48,7 @@ function Experience() {
 
       <div className="experience-block">
 
-        <h3 className="experience-block-title">Học vấn</h3>
+        <BlockTitle code="EDU">Học vấn</BlockTitle>
 
         <div className="timeline">
 
@@ -60,13 +73,14 @@ function Experience() {
 
       <div className="experience-block">
 
-        <h3 className="experience-block-title">Kinh nghiệm làm việc</h3>
+        <BlockTitle code="EXP">Kinh nghiệm làm việc</BlockTitle>
 
         <div className="work-list">
 
-          {workExperience.map((job) => (
-            <div
+          {workExperience.map((job, index) => (
+            <HudFrame
               key={job.company}
+              label={`EXP.${String(index + 1).padStart(2, "0")}`}
               className="work-card"
             >
 
@@ -84,8 +98,8 @@ function Experience() {
               </div>
 
               <ul className="work-card-highlights">
-                {job.highlights.map((point, index) => (
-                  <li key={index}>{point}</li>
+                {job.highlights.map((point, i) => (
+                  <li key={i}>{point}</li>
                 ))}
               </ul>
 
@@ -117,7 +131,7 @@ function Experience() {
                 </div>
               </div>
 
-            </div>
+            </HudFrame>
           ))}
 
         </div>
@@ -126,13 +140,14 @@ function Experience() {
 
       <div className="experience-block">
 
-        <h3 className="experience-block-title">Chứng chỉ & Kỹ năng</h3>
+        <BlockTitle code="CERT">Chứng chỉ &amp; Kỹ năng</BlockTitle>
 
         <div className="certificate-grid">
 
-          {certificates.map((cert) => (
-            <div
+          {certificates.map((cert, index) => (
+            <HudFrame
               key={cert.name}
+              label={`CERT.${String(index + 1).padStart(2, "0")}`}
               className="certificate-card"
             >
 
@@ -157,7 +172,7 @@ function Experience() {
                 <StatusBadge status={cert.status} />
               </div>
 
-            </div>
+            </HudFrame>
           ))}
 
         </div>

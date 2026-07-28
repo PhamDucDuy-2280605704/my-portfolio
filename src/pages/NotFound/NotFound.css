@@ -1,5 +1,5 @@
 .notfound-page {
-  min-height: calc(100vh - 100px);
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;
@@ -10,11 +10,26 @@
   padding: 20px;
 }
 
+/* Nhãn nhỏ kiểu terminal error phía trên mã lỗi to — tăng cảm giác "màn
+   hình hệ thống báo lỗi" thay vì chỉ hiện số 404 trơn. */
+.notfound-tag {
+  margin-bottom: 12px;
+
+  padding: 4px 12px;
+  border: 1px solid rgba(var(--color-accent-rgb), 0.4);
+
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+}
+
 .notfound-code {
+  font-family: var(--font-mono);
   font-size: 120px;
   font-weight: 800;
   color: var(--color-primary);
   line-height: 1;
+  text-shadow: 0 0 40px rgba(var(--color-primary-rgb), 0.35);
 }
 
 .notfound-page h2 {

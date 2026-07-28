@@ -11,12 +11,15 @@
   gap: 60px;
 }
 
-.about-page-image img {
+.about-page-image {
   width: 350px;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
   position: sticky;
-  top: 120px;
+  top: 132px;
+}
+
+.about-page-image img {
+  width: 100%;
+  display: block;
 }
 
 .about-page-info {
@@ -40,11 +43,36 @@
   margin-bottom: 20px;
 }
 
+/* Danh sách thông tin (ngày sinh/email/địa chỉ) giờ hiện dạng "readout" kỹ
+   thuật: mã hiệu viết tắt (DOB/MAIL/LOC) trong khung nhỏ + giá trị thật,
+   thay vì "Nhãn: giá trị" chữ thường. */
 .about-page-details {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   margin: 30px 0;
+}
+
+.about-page-details li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 10px 16px;
+
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-primary);
+  background: var(--color-surface);
+}
+
+.detail-code {
+  flex-shrink: 0;
+  width: 46px;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
 }
 
 .about-page-info a {
@@ -57,7 +85,7 @@
     align-items: center;
   }
 
-  .about-page-image img {
+  .about-page-image {
     position: static;
   }
 }

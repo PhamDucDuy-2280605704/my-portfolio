@@ -1,3 +1,7 @@
+/* Chakra Petch (heading/nav/nhãn HUD, có dấu tiếng Việt) +
+   Share Tech Mono (số liệu/mã hiệu kỹ thuật, không dấu) */
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&display=swap");
+
 *{
     margin:0;
     padding:0;
@@ -6,7 +10,7 @@
 
 html{
     scroll-behavior:smooth;
-    scroll-padding-top:100px;
+    scroll-padding-top:120px;
 }
 
 body{
@@ -31,4 +35,9 @@ button{
 
 ul{
     list-style:none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
 }

@@ -10,7 +10,7 @@
   gap: 32px;
 
   background:
-    radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1), transparent 60%),
+    radial-gradient(ellipse at center, rgba(var(--color-primary-rgb), 0.1), transparent 60%),
     linear-gradient(160deg, #05070d, #0a0f1c 55%, #05070d);
 
   animation: splash-fade-in 0.5s ease;
@@ -28,7 +28,7 @@
   width: min(560px, 88vw);
   padding: 56px 32px;
 
-  border: 1px solid rgba(212, 175, 116, 0.35);
+  border: 1px solid rgba(var(--color-accent-rgb), 0.35);
   border-radius: var(--radius-lg);
 
   text-align: center;
@@ -40,7 +40,7 @@
   position: absolute;
   inset: 10px;
 
-  border: 1px solid rgba(212, 175, 116, 0.18);
+  border: 1px solid rgba(var(--color-accent-rgb), 0.18);
   border-radius: calc(var(--radius-lg) - 4px);
 
   pointer-events: none;
@@ -55,7 +55,7 @@
   top: 10px;
   left: 10px;
 
-  color: rgba(212, 175, 116, 0.55);
+  color: rgba(var(--color-accent-rgb), 0.55);
   opacity: 1;
 }
 
@@ -79,7 +79,7 @@
 /* Nội dung chính giữa khung */
 
 .splash-eyebrow {
-  color: #d4af74;
+  color: var(--color-accent);
   font-size: 13px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -96,7 +96,7 @@
   font-weight: 600;
 
   color: #f8fafc;
-  text-shadow: 0 0 30px rgba(212, 175, 116, 0.35);
+  text-shadow: 0 0 30px rgba(var(--color-accent-rgb), 0.35);
 
   animation: splash-line-in 0.6s ease 0.25s both;
 }
@@ -116,18 +116,18 @@
 .splash-divider span {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 116, 0.6));
+  background: linear-gradient(90deg, transparent, rgba(var(--color-accent-rgb), 0.6));
 }
 
 .splash-divider span:last-child {
-  background: linear-gradient(90deg, rgba(212, 175, 116, 0.6), transparent);
+  background: linear-gradient(90deg, rgba(var(--color-accent-rgb), 0.6), transparent);
 }
 
 .splash-divider-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #d4af74;
+  background: var(--color-accent);
   flex-shrink: 0;
 }
 
@@ -141,7 +141,7 @@
 .splash-subtitle-en {
   margin-top: 6px;
 
-  color: #d4af74;
+  color: var(--color-accent);
   font-style: italic;
   font-size: 13px;
   letter-spacing: 0.5px;
@@ -154,7 +154,7 @@
   margin: 24px auto 0;
 
   font-size: 26px;
-  color: #d4af74;
+  color: var(--color-accent);
 
   animation:
     splash-line-in 0.5s ease 0.7s both,
@@ -167,7 +167,7 @@
   width: 220px;
   height: 3px;
 
-  background: rgba(212, 175, 116, 0.15);
+  background: rgba(var(--color-accent-rgb), 0.15);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -176,7 +176,7 @@
   width: 0%;
   height: 100%;
 
-  background: #d4af74;
+  background: var(--color-accent);
   border-radius: var(--radius-full);
 
   animation: splash-fill 5s linear forwards;

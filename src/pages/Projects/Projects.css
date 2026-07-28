@@ -23,9 +23,10 @@
 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
 
   color: var(--color-text-secondary);
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -45,7 +46,7 @@
 .projects-tab.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: white;
+  color: #04141a;
 }
 
 .projects-tab-count {
@@ -57,9 +58,8 @@
   height: 20px;
   padding: 0 6px;
 
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.15);
-
+  background: rgba(4, 20, 26, 0.25);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
 }
@@ -76,27 +76,23 @@
   gap: 22px;
 }
 
-.project-card {
+/* .project-card giờ dùng chung khung HudFrame (border + 4 góc bracket +
+   nhãn mã hiệu PRJ.0x) -> bỏ padding mặc định để ảnh bìa dự án tràn sát
+   viền trong khung bracket, giống các ô video trên HUD tham chiếu. */
+.project-card.hud-frame {
   width: 280px;
   flex: 0 1 280px;
 
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-
-  transition: 0.3s;
+  padding: 0;
 }
 
-.project-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow);
-}
-
+/* Ảnh bìa cần cắt góc riêng (không dùng overflow:hidden ở khung ngoài
+   .project-card, vì sẽ cắt luôn nhãn mã hiệu PRJ.0x nằm ở vị trí âm phía
+   trên viền -> đây chính là lỗi làm nhãn "mất chữ" trước đó). */
 .project-image {
   position: relative;
   aspect-ratio: 16 / 10;
+  overflow: hidden;
 }
 
 .project-image img {
@@ -116,7 +112,7 @@
   gap: 12px;
 
   background:
-    radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.18), transparent 60%),
+    radial-gradient(circle at 30% 30%, rgba(var(--color-primary-rgb), 0.18), transparent 60%),
     linear-gradient(135deg, var(--color-bg), var(--color-surface));
 }
 
@@ -127,9 +123,9 @@
 
   width: 44px;
   height: 44px;
-  border-radius: 50%;
 
-  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.4);
+  background: rgba(var(--color-primary-rgb), 0.12);
   color: var(--color-primary);
   font-size: 18px;
 }
@@ -164,11 +160,12 @@
 
 .project-tech span {
   padding: 3px 10px;
-  border-radius: var(--radius-full);
 
   background: var(--color-bg);
   border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-primary);
 
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--color-text-secondary);
 }
@@ -234,7 +231,6 @@
 
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
   }
 
   .projects-tab {
@@ -244,13 +240,14 @@
 
     background: transparent;
     border: none;
+    clip-path: none;
   }
 
   .projects-tab.active {
     background: var(--color-primary);
   }
 
-  .project-card {
+  .project-card.hud-frame {
     width: 100%;
     flex: 1 1 100%;
     max-width: 320px;

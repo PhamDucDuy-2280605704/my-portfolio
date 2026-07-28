@@ -22,6 +22,28 @@ body{
 
 }
 
+/* ===== Tiện ích HUD dùng chung ===== */
+
+/* Nhãn nhỏ kiểu "[ TAG ]" — dùng cho subtitle, badge trạng thái, mã hiệu... */
+.hud-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* Số liệu/mã hiệu kỹ thuật — KHÔNG dùng cho chuỗi có dấu tiếng Việt */
+.hud-readout {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
 /* Skip-to-content: đưa ra ngoài màn hình bằng transform, không dùng display:none
    (vì display:none sẽ khiến trình đọc màn hình bỏ qua hẳn, mất tác dụng).
    Khi được Tab tới (focus), đưa hẳn vào khung hình để người dùng thấy rõ. */
@@ -36,8 +58,8 @@ body{
   padding: 14px 24px;
 
   background: var(--color-primary);
-  color: white;
-  font-weight: 600;
+  color: #04141a;
+  font-weight: 700;
   text-decoration: none;
   border-radius: 0 0 var(--radius-sm) 0;
 

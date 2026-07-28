@@ -17,7 +17,7 @@ const profile = {
   avatar,
 
   // Câu quote cá nhân, hiện ở Hero (trang Home) dưới dạng trích dẫn.
-  quote: "Ngay cả trong bóng tối, con người vẫn có thể lựa chọn.",
+  quote: "Không thể trốn chạy khỏi con người mình đã tự tạo ra — chỉ có thể đối diện, bởi đó là điều mình từng tự nguyện.",
 
   // Mô tả NGẮN — dùng ở Hero (trang Home).
   description:
