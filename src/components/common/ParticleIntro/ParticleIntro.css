@@ -232,9 +232,17 @@
   width: 500px;
   height: 220px;
   transform: translate(-50%, -50%);
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
   pointer-events: none;
   z-index: 2;
+}
+
+/* Ẩn hẳn khung quét 4 góc khi đã sang phần hồ sơ (brief/fade) — để lại
+   khung này lơ lửng phía trên trong khi thẻ hồ sơ hiện riêng ở dưới từng
+   gây cảm giác 2 khối không liên quan, lệch tâm bố cục. */
+.particle-intro-frame.phase-brief,
+.particle-intro-frame.phase-fade {
+  opacity: 0;
 }
 
 /* Siết khung lại nhẹ khi đã "khoá" xong -> cảm giác lock-on rõ rệt hơn */
@@ -773,6 +781,289 @@
   }
 }
 
+/* ===== Nút bật/tắt âm thanh ===== */
+.particle-intro-mute {
+  position: absolute;
+  top: 92px;
+  right: 24px;
+  z-index: 6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  background: rgba(var(--color-primary-rgb), 0.08);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  clip-path: polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 6px);
+
+  color: rgba(var(--color-primary-rgb), 0.75);
+  font-size: 16px;
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.particle-intro-mute:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ===== Màn GATE — chờ bấm mới bắt đầu (bắt buộc để mở khoá âm thanh) ===== */
+.particle-intro-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  text-align: center;
+  padding: 24px;
+}
+
+.gate-tag {
+  color: rgba(var(--color-accent-rgb), 0.8);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+
+.gate-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  text-shadow: 0 0 24px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.gate-subtitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: rgba(var(--color-primary-rgb), 0.7);
+  max-width: 420px;
+}
+
+.gate-button {
+  margin-top: 18px;
+  padding: 16px 34px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: rgba(var(--color-primary-rgb), 0.1);
+  border: 1.5px solid rgba(var(--color-primary-rgb), 0.55);
+
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+
+  animation: gate-pulse 2s ease-in-out infinite;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.gate-button:hover {
+  background: rgba(var(--color-primary-rgb), 0.22);
+  transform: translateY(-2px);
+}
+
+.gate-button:active {
+  transform: translateY(0);
+}
+
+.gate-button-bracket {
+  opacity: 0.5;
+}
+
+@keyframes gate-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(var(--color-primary-rgb), 0);
+  }
+}
+
+/* ===== BRIEF — hồ sơ nhân sự mở rộng (thay thế phần tên+terminal) ===== */
+.particle-intro-briefing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+
+  width: min(520px, 88vw);
+  padding: 30px 32px;
+
+  background: rgba(5, 9, 12, 0.55);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.35);
+  backdrop-filter: blur(6px);
+
+  text-align: center;
+
+  opacity: 0;
+  /* Dùng keyframe riêng (KHÔNG dùng chung name-reveal) vì name-reveal ghi
+     đè hẳn transform thành translateY(0), xoá mất translate(-50%, -50%)
+     dùng để căn giữa khung -> đây chính là lỗi làm khung bị lệch xuống dưới
+     bên phải trước đó. */
+  animation: briefing-reveal 0.5s ease forwards;
+}
+
+@keyframes briefing-reveal {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(8px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.briefing-tag {
+  color: var(--color-accent);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  margin-bottom: 10px;
+}
+
+/* 4 góc bracket cyan — tie-in trực tiếp với .hud-frame-corner dùng khắp các
+   trang khác, để hồ sơ briefing này không lạc tông với phần còn lại của site. */
+.briefing-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--color-primary);
+  opacity: 0.6;
+}
+
+.briefing-corner.tl {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.briefing-corner.tr {
+  top: -1px;
+  right: -1px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.briefing-corner.bl {
+  bottom: -1px;
+  left: -1px;
+  border-right: none;
+  border-top: none;
+}
+
+.briefing-corner.br {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+.briefing-name {
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  font-weight: 700;
+  color: var(--color-text);
+  text-shadow: 0 0 16px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.briefing-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.briefing-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 8px 14px;
+
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.04);
+
+  opacity: 0;
+  animation: term-reveal 0.4s ease forwards;
+}
+
+.briefing-row span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(var(--color-primary-rgb), 0.55);
+  text-transform: uppercase;
+}
+
+.briefing-row strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.briefing-ready {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-success-text);
+}
+
+.briefing-ready-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success-text);
+  animation: dot-pulse 1.6s ease-in-out infinite;
+}
+
+.briefing-quote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(var(--color-primary-rgb), 0.7);
+
+  opacity: 0;
+  animation: term-reveal 0.4s ease forwards;
+}
+
+@media (max-width: 640px) {
+  .particle-intro-briefing {
+    padding: 22px 20px;
+  }
+
+  .briefing-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .particle-intro-frame {
@@ -893,8 +1184,19 @@
   .rec-dot,
   .particle-intro-radar::before,
   .particle-intro-bootlog p,
-  .term-line {
+  .term-line,
+  .gate-button,
+  .briefing-ready-dot,
+  .briefing-row,
+  .briefing-quote,
+  .particle-intro-briefing {
     animation: none !important;
+  }
+
+  .briefing-row,
+  .briefing-quote,
+  .particle-intro-briefing {
+    opacity: 1 !important;
   }
   
   .particle-intro-frame.phase-scan .corner {
