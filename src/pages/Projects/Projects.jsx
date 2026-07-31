@@ -15,6 +15,7 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
+import { playUiSound } from "../../utils/uiSound";
 
 // 2 tab lọc dự án: "Đã hoàn thành" và "Đang phát triển".
 // key phải khớp với tên field trong data/projects.js (completed/inProgress).
@@ -126,7 +127,10 @@ function Projects() {
             key={key}
             type="button"
             className={`projects-tab ${activeTab === key ? "active" : ""}`}
-            onClick={() => setActiveTab(key)}
+            onClick={() => {
+              playUiSound("tab");
+              setActiveTab(key);
+            }}
           >
             <Icon />
             {label}

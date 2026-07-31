@@ -6,6 +6,7 @@ import "./Navbar.css";
 import logo from "../../../assets/images/logo.jpg";
 import profile from "../../../data/profile";
 import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
+import { playUiSound } from "../../../utils/uiSound";
 
 // Đồng hồ giờ:phút:giây kiểu HUD, luôn 2 chữ số (dùng lại ở góc phải Navbar).
 function formatClock(date) {
@@ -101,7 +102,11 @@ function Navbar() {
         <button
           type="button"
           className={`logo ${isHome ? "" : "logo-hidden"}`}
-          onClick={() => isHome && setIsZoomed(true)}
+          onClick={() => {
+            if (!isHome) return;
+            playUiSound("card");
+            setIsZoomed(true);
+          }}
           tabIndex={isHome ? 0 : -1}
           aria-hidden={!isHome}
         >
@@ -124,7 +129,12 @@ function Navbar() {
           <ul className="menu">
             {menus.map((item) => (
               <li key={item.path}>
-                <NavLink to={item.path}>
+                <NavLink
+                  to={item.path}
+                  onClick={() =>
+                    playUiSound(item.path === pathname ? "navActive" : "nav")
+                  }
+                >
                   {item.name}
                 </NavLink>
               </li>
@@ -137,7 +147,10 @@ function Navbar() {
           <button
             type="button"
             className="menu-toggle"
-            onClick={() => setIsMenuOpen(true)}
+            onClick={() => {
+              playUiSound("nav");
+              setIsMenuOpen(true);
+            }}
             aria-label="Mở menu"
           >
             <IoMenu />
@@ -152,7 +165,10 @@ function Navbar() {
           <button
             type="button"
             className="mobile-menu-close"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => {
+              playUiSound("nav");
+              setIsMenuOpen(false);
+            }}
             aria-label="Đóng menu"
           >
             <IoClose />
@@ -163,7 +179,10 @@ function Navbar() {
               <li key={item.path}>
                 <NavLink
                   to={item.path}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    playUiSound(item.path === pathname ? "navActive" : "nav");
+                    setIsMenuOpen(false);
+                  }}
                 >
                   <span className="mobile-menu-code hud-readout">{item.code}</span>
                   {item.name}
@@ -183,7 +202,10 @@ function Navbar() {
           <button
             type="button"
             className="logo-overlay-close"
-            onClick={() => setIsZoomed(false)}
+            onClick={() => {
+              playUiSound("card");
+              setIsZoomed(false);
+            }}
             aria-label="Đóng"
           >
             <IoClose />

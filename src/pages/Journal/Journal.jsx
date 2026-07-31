@@ -8,6 +8,7 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
+import { playUiSound } from "../../utils/uiSound";
 
 // Định dạng chuỗi ngày "YYYY-MM-DD" (trong data/journal.js) thành dạng
 // tiếng Việt dễ đọc, VD: "11 tháng 7, 2026".
@@ -84,7 +85,10 @@ function Journal() {
               <button
                 type="button"
                 className="journal-toggle"
-                onClick={() => setOpenId(isOpen ? null : entry.id)}
+                onClick={() => {
+                  playUiSound("card");
+                  setOpenId(isOpen ? null : entry.id);
+                }}
               >
                 {isOpen ? "Thu gọn" : "Đọc tiếp"} <FaArrowRight />
               </button>

@@ -4,6 +4,7 @@ import { FaPaperPlane, FaCheckCircle } from "react-icons/fa";
 import "./ContactForm.css";
 
 import social from "../../data/social";
+import { playUiSound } from "../../utils/uiSound";
 
 // Trạng thái gửi form: idle (chưa gửi) -> sending (đang gửi) -> success | error.
 const STATUS = {
@@ -21,6 +22,7 @@ function ContactForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    playUiSound("action");
 
     const form = e.target;
     const data = new FormData(form);
@@ -71,7 +73,10 @@ function ContactForm() {
         <button
           type="button"
           className="contact-form-reset"
-          onClick={() => setStatus(STATUS.IDLE)}
+          onClick={() => {
+            playUiSound("action");
+            setStatus(STATUS.IDLE);
+          }}
         >
           Gửi tin nhắn khác
         </button>

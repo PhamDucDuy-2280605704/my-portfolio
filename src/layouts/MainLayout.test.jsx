@@ -31,7 +31,7 @@ describe("MainLayout", () => {
     expect(screen.getByText("Nội dung trang con")).toBeInTheDocument();
 
     // Footer
-    expect(screen.getByText(/Bảo lưu mọi quyền/)).toBeInTheDocument();
+    expect(screen.getByText(/OPSEC_ADMIN/)).toBeInTheDocument();
   });
 
   it("có link 'Bỏ qua đến nội dung chính' trỏ tới #main-content (accessibility)", () => {

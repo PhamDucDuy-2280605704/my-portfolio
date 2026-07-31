@@ -3,6 +3,7 @@ import { IoMoon, IoSunny } from "react-icons/io5";
 import "./ThemeToggle.css";
 
 import useTheme from "../../../hooks/useTheme";
+import { playUiSound } from "../../../utils/uiSound";
 
 // Nút bấm chuyển đổi theme sáng/tối, đặt trong Navbar (hiện ở mọi kích thước
 // màn hình, không ẩn theo breakpoint như .menu/.menu-toggle).
@@ -14,7 +15,10 @@ function ThemeToggle() {
     <button
       type="button"
       className="theme-toggle"
-      onClick={toggleTheme}
+      onClick={() => {
+        playUiSound("toggle");
+        toggleTheme();
+      }}
       aria-label={isDark ? "Chuyển sang giao diện sáng" : "Chuyển sang giao diện tối"}
       title={isDark ? "Giao diện sáng" : "Giao diện tối"}
     >

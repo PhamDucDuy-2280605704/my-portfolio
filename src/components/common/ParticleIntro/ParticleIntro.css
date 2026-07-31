@@ -14,6 +14,16 @@
   color: rgba(var(--color-primary-rgb), 0.75);
 }
 
+/* Bọc toàn bộ nội dung trang trí (trước đây là con trực tiếp của
+   .particle-intro) -> vẫn cần position:absolute;inset:0 để làm containing
+   block cho các phần tử con định vị tuyệt đối bên trong y hệt như trước.
+   Div này bắt sự kiện click để "bấm đâu cũng bỏ qua được" intro. */
+.particle-intro-visuals {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
 .particle-intro-canvas {
   display: block;
   width: 100%;
@@ -811,88 +821,47 @@
   color: var(--color-primary);
 }
 
-/* ===== Màn GATE — chờ bấm mới bắt đầu (bắt buộc để mở khoá âm thanh) ===== */
-.particle-intro-gate {
+/* ===== Nút "Bỏ qua intro" — luôn hiện, bấm là vào thẳng trang chủ ===== */
+.particle-intro-skip {
   position: absolute;
-  inset: 0;
-  z-index: 4;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-
-  text-align: center;
-  padding: 24px;
-}
-
-.gate-tag {
-  color: rgba(var(--color-accent-rgb), 0.8);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-}
-
-.gate-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--color-text);
-  text-shadow: 0 0 24px rgba(var(--color-primary-rgb), 0.4);
-}
-
-.gate-subtitle {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  color: rgba(var(--color-primary-rgb), 0.7);
-  max-width: 420px;
-}
-
-.gate-button {
-  margin-top: 18px;
-  padding: 16px 34px;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
 
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 
-  background: rgba(var(--color-primary-rgb), 0.1);
-  border: 1.5px solid rgba(var(--color-primary-rgb), 0.55);
+  padding: 10px 20px;
 
-  color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.06);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
+
+  color: rgba(var(--color-primary-rgb), 0.75);
   font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
 
-  animation: gate-pulse 2s ease-in-out infinite;
-  transition: background 0.25s ease, transform 0.15s ease;
+  transition: 0.25s;
 }
 
-.gate-button:hover {
-  background: rgba(var(--color-primary-rgb), 0.22);
-  transform: translateY(-2px);
+.particle-intro-skip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.12);
 }
 
-.gate-button:active {
-  transform: translateY(0);
+.particle-intro-skip-arrow {
+  transition: transform 0.25s ease;
 }
 
-.gate-button-bracket {
-  opacity: 0.5;
-}
-
-@keyframes gate-pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.3);
-  }
-  50% {
-    box-shadow: 0 0 0 10px rgba(var(--color-primary-rgb), 0);
-  }
+.particle-intro-skip:hover .particle-intro-skip-arrow {
+  transform: translateX(3px);
 }
 
 /* ===== BRIEF — hồ sơ nhân sự mở rộng (thay thế phần tên+terminal) ===== */
@@ -1185,7 +1154,6 @@
   .particle-intro-radar::before,
   .particle-intro-bootlog p,
   .term-line,
-  .gate-button,
   .briefing-ready-dot,
   .briefing-row,
   .briefing-quote,

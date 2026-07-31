@@ -41,7 +41,7 @@ describe("ErrorBoundary", () => {
       </ErrorBoundary>,
     );
 
-    expect(screen.getByText("😵 Đã có lỗi xảy ra")).toBeInTheDocument();
+    expect(screen.getByText("Đã có lỗi xảy ra")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Tải Lại Trang" })).toBeInTheDocument();
   });
 });
