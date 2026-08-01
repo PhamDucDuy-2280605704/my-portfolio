@@ -71,6 +71,7 @@ function ProjectCard({ project, code }) {
               href={project.demo}
               target="_blank"
               rel="noreferrer"
+              onClick={() => playUiSound("card")}
             >
               <FaExternalLinkAlt /> Xem trực tiếp
             </a>
@@ -85,6 +86,7 @@ function ProjectCard({ project, code }) {
               href={project.source}
               target="_blank"
               rel="noreferrer"
+              onClick={() => playUiSound("card")}
             >
               <FaGithub /> Mã nguồn
             </a>

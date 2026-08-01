@@ -107,27 +107,33 @@ function randomHex(len) {
 // bộ tiếng bíp/tĩnh điện được tạo bằng oscillator/noise buffer ngay trong
 // trình duyệt, nên không cần asset ngoài và không phát sinh HTTP request. =====
 
-function playBeep(audioCtx, { freq = 880, duration = 0.08, type = "sine", gain = 0.05 } = {}) {
+function playBeep(audioCtx, { freq = 880, duration = 0.08, type = "triangle", gain = 0.09 } = {}) {
   if (!audioCtx) return;
   const osc = audioCtx.createOscillator();
   const gainNode = audioCtx.createGain();
+  const t0 = audioCtx.currentTime;
   osc.type = type;
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  gainNode.gain.setValueAtTime(gain, audioCtx.currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+  osc.frequency.setValueAtTime(freq, t0);
+  // Attack ramp ngắn thay vì nhảy thẳng lên gain -> tiếng êm hơn, đỡ "tách" khô.
+  gainNode.gain.setValueAtTime(0.0001, t0);
+  gainNode.gain.exponentialRampToValueAtTime(gain, t0 + 0.008);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
   osc.connect(gainNode);
   gainNode.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + duration);
+  osc.start(t0);
+  osc.stop(t0 + duration + 0.02);
 }
 
+// Chuỗi 3 nốt lên tông (thay vì 2 nốt sine trước đây) — nghe giống 1 tiếng
+// "xác nhận thành công" rõ ràng và dễ chịu hơn, kiểu HUD trong phim/game.
 function playConfirmChime(audioCtx) {
   if (!audioCtx) return;
-  playBeep(audioCtx, { freq: 520, duration: 0.09, gain: 0.045 });
-  setTimeout(() => playBeep(audioCtx, { freq: 780, duration: 0.14, gain: 0.05 }), 90);
+  playBeep(audioCtx, { freq: 440, duration: 0.1, gain: 0.08, type: "triangle" });
+  setTimeout(() => playBeep(audioCtx, { freq: 660, duration: 0.11, gain: 0.085, type: "triangle" }), 90);
+  setTimeout(() => playBeep(audioCtx, { freq: 880, duration: 0.16, gain: 0.09, type: "triangle" }), 180);
 }
 
-function playStaticBurst(audioCtx, duration = 0.22, gain = 0.02) {
+function playStaticBurst(audioCtx, duration = 0.22, gain = 0.038) {
   if (!audioCtx) return;
   const bufferSize = Math.floor(audioCtx.sampleRate * duration);
   const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -257,7 +263,7 @@ function ParticleIntro({ onFinish }) {
     timers.push(
       setTimeout(() => {
         setUiPhase("assemble");
-        beep({ freq: 620, duration: 0.1, gain: 0.04 });
+        beep({ freq: 620, duration: 0.11, gain: 0.075, type: "triangle" });
       }, SCAN_DURATION + WARP_DURATION)
     );
 
@@ -273,7 +279,7 @@ function ParticleIntro({ onFinish }) {
     timers.push(
       setTimeout(() => {
         setUiPhase("brief");
-        staticBurst(0.16, 0.02);
+        staticBurst(0.18, 0.045);
 
         [
           { delay: 400, freq: 720 },
@@ -282,7 +288,7 @@ function ParticleIntro({ onFinish }) {
           { delay: 1600, freq: 900 },
         ].forEach(({ delay, freq }) => {
           timers.push(
-            setTimeout(() => beep({ freq, duration: 0.05, gain: 0.03 }), delay)
+            setTimeout(() => beep({ freq, duration: 0.06, gain: 0.065, type: "triangle" }), delay)
           );
         });
       }, SCAN_DURATION + WARP_DURATION + ASSEMBLE_DURATION + HOLD_DURATION)
@@ -305,7 +311,7 @@ function ParticleIntro({ onFinish }) {
       timers.push(
         setTimeout(() => {
           setBootLineCount(i + 1);
-          beep({ freq: 1100 + i * 60, duration: 0.03, gain: 0.02 });
+          beep({ freq: 1100 + i * 60, duration: 0.04, gain: 0.05, type: "triangle" });
         }, stepTime * (i + 1))
       );
     });
@@ -350,9 +356,9 @@ function ParticleIntro({ onFinish }) {
       const briefTimer = setTimeout(() => {
         setUiPhase("brief");
         if (!mutedRef.current) {
-          staticBurst(0.16, 0.02);
+          staticBurst(0.18, 0.045);
           [720, 780, 840, 900].forEach((freq, i) => {
-            setTimeout(() => beep({ freq, duration: 0.05, gain: 0.03 }), i * 260);
+            setTimeout(() => beep({ freq, duration: 0.06, gain: 0.065, type: "triangle" }), i * 260);
           });
         }
         if (progressBarRef.current) progressBarRef.current.style.width = "100%";

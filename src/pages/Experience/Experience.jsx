@@ -9,6 +9,7 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
+import { playUiSound } from "../../utils/uiSound";
 
 // Nhãn trạng thái nhỏ cho mỗi chứng chỉ: "Đã hoàn thành" (xanh lá) hoặc "Đang học" (xanh dương).
 function StatusBadge({ status }) {
@@ -116,6 +117,7 @@ function Experience() {
                       href={job.report}
                       download
                       className="work-card-report"
+                      onClick={() => playUiSound("card")}
                     >
                       <FaFileAlt /> Tải Báo Cáo Thực Tập
                     </a>

@@ -9,6 +9,7 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import ContactForm from "./ContactForm";
+import { playUiSound } from "../../utils/uiSound";
 
 // Danh sách kênh liên hệ hiển thị dạng card. href lấy từ data/social.js,
 // còn name/hint/value/icon/color khai báo trực tiếp ở đây vì gắn liền với
@@ -94,6 +95,7 @@ function Contact() {
             target="_blank"
             rel="noreferrer"
             className="contact-card"
+            onClick={() => playUiSound("card")}
           >
 
             {/* --badge-color: CSS variable truyền màu động cho từng kênh

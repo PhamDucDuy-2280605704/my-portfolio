@@ -43,43 +43,49 @@ function getCtx() {
   return sharedCtx;
 }
 
-function beep(ctx, { freq = 880, duration = 0.05, type = "sine", gain = 0.035, delay = 0 } = {}) {
+function beep(ctx, { freq = 880, duration = 0.05, type = "sine", gain = 0.07, delay = 0 } = {}) {
   if (!ctx) return;
   const osc = ctx.createOscillator();
   const gainNode = ctx.createGain();
+  const t0 = ctx.currentTime + delay;
   osc.type = type;
-  osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-  gainNode.gain.setValueAtTime(gain, ctx.currentTime + delay);
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + duration);
+  osc.frequency.setValueAtTime(freq, t0);
+  // Attack ramp rất ngắn (thay vì nhảy thẳng lên gain) để tiếng nghe êm hơn,
+  // đỡ bị "tách" khô khốc ở đầu mỗi tiếng bíp.
+  gainNode.gain.setValueAtTime(0.0001, t0);
+  gainNode.gain.exponentialRampToValueAtTime(gain, t0 + 0.008);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
   osc.connect(gainNode);
   gainNode.connect(ctx.destination);
-  osc.start(ctx.currentTime + delay);
-  osc.stop(ctx.currentTime + delay + duration);
+  osc.start(t0);
+  osc.stop(t0 + duration + 0.02);
 }
 
-// Mỗi "khu vực" 1 âm sắc riêng biệt:
+// Mỗi "khu vực" 1 âm sắc riêng biệt — tăng âm lượng (gain) rõ rệt so với
+// bản đầu (quá nhỏ) và đổi 1 số nốt sang "triangle" (ấm hơn "square"/"sine"
+// trơn) để nghe dễ chịu hơn khi bấm liên tục:
 //  - nav      : menu điều hướng (Navbar desktop + mobile) — tiếng "tick" cao, gọn
 //  - navActive: mục đang active trong menu — thêm 1 nốt cao hơn ngay sau
 //  - action   : nút hành động chính (Button component: tải CV, gửi liên hệ...) — 2 nốt trầm hơn, chắc tay
 //  - toggle   : chuyển đổi theme sáng/tối — 2 tick nhanh kiểu công tắc
 //  - tab      : tab lọc (VD tab dự án) — 1 tiếng "cạch" trung tính
-//  - card     : thẻ/link phụ (dự án, kinh nghiệm, nhật ký...) — tiếng rất nhỏ, tinh tế
+//  - card     : thẻ/link phụ (dự án, kinh nghiệm, nhật ký, liên hệ...) — gọn nhẹ nhưng vẫn nghe rõ
 const PRESETS = {
-  nav: (ctx) => beep(ctx, { freq: 1180, duration: 0.045, gain: 0.03, type: "square" }),
+  nav: (ctx) => beep(ctx, { freq: 1180, duration: 0.06, gain: 0.07, type: "triangle" }),
   navActive: (ctx) => {
-    beep(ctx, { freq: 1180, duration: 0.04, gain: 0.03, type: "square" });
-    beep(ctx, { freq: 1480, duration: 0.05, gain: 0.03, delay: 0.045 });
+    beep(ctx, { freq: 1180, duration: 0.055, gain: 0.07, type: "triangle" });
+    beep(ctx, { freq: 1480, duration: 0.07, gain: 0.06, type: "triangle", delay: 0.045 });
   },
   action: (ctx) => {
-    beep(ctx, { freq: 480, duration: 0.06, gain: 0.045 });
-    beep(ctx, { freq: 700, duration: 0.09, gain: 0.05, delay: 0.05 });
+    beep(ctx, { freq: 480, duration: 0.08, gain: 0.08 });
+    beep(ctx, { freq: 700, duration: 0.11, gain: 0.09, delay: 0.055 });
   },
   toggle: (ctx) => {
-    beep(ctx, { freq: 820, duration: 0.03, gain: 0.03, type: "triangle" });
-    beep(ctx, { freq: 1100, duration: 0.03, gain: 0.03, type: "triangle", delay: 0.05 });
+    beep(ctx, { freq: 820, duration: 0.04, gain: 0.065, type: "triangle" });
+    beep(ctx, { freq: 1100, duration: 0.04, gain: 0.065, type: "triangle", delay: 0.05 });
   },
-  tab: (ctx) => beep(ctx, { freq: 640, duration: 0.05, gain: 0.035, type: "sine" }),
-  card: (ctx) => beep(ctx, { freq: 980, duration: 0.025, gain: 0.02 }),
+  tab: (ctx) => beep(ctx, { freq: 640, duration: 0.06, gain: 0.07, type: "triangle" }),
+  card: (ctx) => beep(ctx, { freq: 980, duration: 0.045, gain: 0.055, type: "triangle" }),
 };
 
 /**
