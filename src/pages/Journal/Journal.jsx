@@ -4,7 +4,6 @@ import { FaRegCalendarAlt, FaTag, FaArrowRight } from "react-icons/fa";
 import "./Journal.css";
 
 import journal from "../../data/journal";
-import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
@@ -26,13 +25,11 @@ function formatDate(dateStr) {
 // Mỗi bài chỉ hiện đoạn tóm tắt (excerpt) trước; bấm "Đọc tiếp" mới render
 // toàn bộ nội dung (entry.content) — dùng state openId để chỉ mở 1 bài tại 1 lúc.
 function Journal() {
-  usePageTitle("Nhật Ký | Phạm Đức Duy");
-
   // id của bài đang được mở rộng (null = chưa mở bài nào).
   const [openId, setOpenId] = useState(null);
 
   return (
-    <section className="journal-page">
+    <section className="journal-page" id="journal">
 
       <SectionTitle
         subtitle="Ghi Chép Của Mình"

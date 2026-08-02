@@ -5,7 +5,6 @@ import "./Experience.css";
 import education from "../../data/education";
 import workExperience from "../../data/workExperience";
 import certificates from "../../data/certificates";
-import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
@@ -37,10 +36,8 @@ function BlockTitle({ code, children }) {
 // Trang "/experience" — gồm 2 khối: timeline Học vấn (data/education.js)
 // và lưới Chứng chỉ & Kỹ năng (data/certificates.js).
 function Experience() {
-  usePageTitle("Kinh Nghiệm | Phạm Đức Duy");
-
   return (
-    <section className="experience-page">
+    <section className="experience-page" id="experience">
 
       <SectionTitle
         subtitle="Hành Trình Của Mình"

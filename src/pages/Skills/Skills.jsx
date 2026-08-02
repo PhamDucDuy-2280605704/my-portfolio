@@ -16,7 +16,6 @@ import {
 import "./Skills.css";
 
 import skills from "../../data/skills";
-import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
@@ -83,10 +82,11 @@ function SkillGrid({ items }) {
 
 // Trang "/skills" — liệt kê kỹ năng theo 4 nhóm: Frontend, Backend, Mobile, Tools.
 function Skills() {
-  usePageTitle("Kỹ Năng | Phạm Đức Duy");
-
   return (
-    <section className="skills-page">
+    <section
+      className="skills-page"
+      id="skills"
+    >
 
       <SectionTitle
         subtitle="Những Gì Mình Biết"

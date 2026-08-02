@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
 import { IoClose, IoMenu } from "react-icons/io5";
 import "./Navbar.css";
 
 import logo from "../../../assets/images/logo.jpg";
 import profile from "../../../data/profile";
 import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
+import useActiveSection from "../../../hooks/useActiveSection";
 import { playUiSound } from "../../../utils/uiSound";
 
 // Đồng hồ giờ:phút:giây kiểu HUD, luôn 2 chữ số (dùng lại ở góc phải Navbar).
@@ -14,10 +14,27 @@ function formatClock(date) {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 
-// Thanh điều hướng chung cho mọi trang, dựng theo phong cách HUD (bảng điều
-// khiển kỹ thuật): 1 dải nhãn mã hiệu mỏng phía trên + thanh menu chính bên
-// dưới. Vẫn giữ nguyên 3 phần logic gốc:
-//   1. Logo (chỉ hiện ở trang Home, bấm vào phóng to xem toàn màn hình)
+// Site giờ là 1 trang chủ duy nhất, cuộn dài từ trên xuống dưới (xem
+// Home.jsx) — menu không còn điều hướng sang route khác nữa, mà là các thẻ
+// <a href="#id"> nhảy thẳng tới section tương ứng. Trình duyệt tự cuộn mượt
+// (scroll-behavior:smooth) và tự chừa đúng khoảng trống cho Navbar sticky
+// (scroll-padding-top, khai báo trong styles/reset.css) — không cần
+// scrollIntoView bằng tay.
+const SECTIONS = [
+  { id: "home", name: "Trang Chủ", code: "SEC.01" },
+  { id: "about", name: "Giới Thiệu", code: "SEC.02" },
+  { id: "skills", name: "Kỹ Năng", code: "SEC.03" },
+  { id: "projects", name: "Dự Án", code: "SEC.04" },
+  { id: "experience", name: "Kinh Nghiệm", code: "SEC.05" },
+  { id: "journal", name: "Nhật Ký", code: "SEC.06" },
+  { id: "contact", name: "Liên Hệ", code: "SEC.07" },
+];
+
+const SECTION_IDS = SECTIONS.map((s) => s.id);
+
+// Thanh điều hướng chung, dựng theo phong cách HUD (bảng điều khiển kỹ
+// thuật): 1 dải nhãn mã hiệu mỏng phía trên + thanh menu chính bên dưới.
+//   1. Logo (bấm vào phóng to xem toàn màn hình)
 //   2. Menu ngang (desktop) — tự ẩn thành nút hamburger khi màn hình hẹp (≤1080px)
 //   3. Menu full-screen (mobile) — hiện khi bấm nút hamburger
 function Navbar() {
@@ -25,8 +42,7 @@ function Navbar() {
   const [isZoomed, setIsZoomed] = useState(false);
   // isMenuOpen: đang mở menu full-screen trên mobile hay không.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // Đồng hồ hệ thống — đặt cố định ở góc phải Navbar (sticky) để luôn thấy
-  // ngay, không phải cuộn xuống cuối trang mới thấy như bản Footer cũ.
+  // Đồng hồ hệ thống — đặt cố định ở góc phải Navbar (sticky) để luôn thấy ngay.
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -34,22 +50,10 @@ function Navbar() {
     return () => clearInterval(timer);
   }, []);
 
-  // Biết đang ở trang nào để quyết định có hiện logo hay không, và để hiện
-  // nhãn "mã hiệu" của khu vực đang xem (VD "SECTION 02 · GIỚI THIỆU").
-  const { pathname } = useLocation();
-  const isHome = pathname === "/";
-
-  const menus = [
-    { name: "Trang Chủ", path: "/", code: "SEC.01" },
-    { name: "Giới Thiệu", path: "/about", code: "SEC.02" },
-    { name: "Kỹ Năng", path: "/skills", code: "SEC.03" },
-    { name: "Dự Án", path: "/projects", code: "SEC.04" },
-    { name: "Kinh Nghiệm", path: "/experience", code: "SEC.05" },
-    { name: "Nhật Ký", path: "/journal", code: "SEC.06" },
-    { name: "Liên Hệ", path: "/contact", code: "SEC.07" },
-  ];
-
-  const activeItem = menus.find((item) => item.path === pathname) || menus[0];
+  // Section nào đang hiện rõ nhất trong khung nhìn -> dùng để highlight
+  // menu item tương ứng + hiện nhãn "SEC.0x · TÊN MỤC" ở dải meta phía trên.
+  const activeId = useActiveSection(SECTION_IDS);
+  const activeItem = SECTIONS.find((s) => s.id === activeId) || SECTIONS[0];
 
   // Khi 1 trong 2 overlay (phóng to logo / menu mobile) đang mở:
   // - khoá cuộn trang nền (tránh cuộn nền trong khi xem overlay)
@@ -96,19 +100,15 @@ function Navbar() {
       </div>
 
       <nav className="navbar">
-        {/* Logo: chỉ hiện ở trang Home (class "logo-hidden" ẩn nhưng vẫn giữ
-            chỗ bằng visibility:hidden, để menu bên cạnh không bị lệch vị trí
-            khi chuyển qua lại giữa Home và các trang khác). */}
+        {/* Logo — bấm vào mở overlay phóng to (site giờ chỉ có 1 trang nên
+            logo luôn hiện, không còn ẩn/hiện theo route như trước). */}
         <button
           type="button"
-          className={`logo ${isHome ? "" : "logo-hidden"}`}
+          className="logo"
           onClick={() => {
-            if (!isHome) return;
             playUiSound("card");
             setIsZoomed(true);
           }}
-          tabIndex={isHome ? 0 : -1}
-          aria-hidden={!isHome}
         >
           <span className="logo-frame">
             <img
@@ -120,23 +120,25 @@ function Navbar() {
 
         {/* Gom nhóm bên phải (menu + toggle theme + hamburger) vào 1 wrapper,
             để .navbar chỉ còn 2 "khối" chính (logo | navbar-right) — logo luôn
-            bám sát trái, cả nhóm bên phải luôn bám sát phải, không bị
-            justify-content:space-between dàn cách đều sai lệch khi thêm/bớt
-            phần tử bên trong. */}
+            bám sát trái, cả nhóm bên phải luôn bám sát phải. */}
         <div className="navbar-right">
 
-          {/* Menu ngang — ẩn qua CSS (display:none) khi màn hình ≤1080px */}
+          {/* Menu ngang — ẩn qua CSS (display:none) khi màn hình ≤1080px.
+              Mỗi mục là 1 thẻ <a href="#id"> thật (không phải NavLink) —
+              trình duyệt tự cuộn mượt tới đúng section, hoạt động cả khi
+              JS chưa kịp chạy, và vẫn Ctrl/Cmd+click mở tab mới được. */}
           <ul className="menu">
-            {menus.map((item) => (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
+            {SECTIONS.map((item) => (
+              <li key={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  className={activeId === item.id ? "active" : ""}
                   onClick={() =>
-                    playUiSound(item.path === pathname ? "navActive" : "nav")
+                    playUiSound(activeId === item.id ? "navActive" : "nav")
                   }
                 >
                   {item.name}
-                </NavLink>
+                </a>
               </li>
             ))}
           </ul>
@@ -159,7 +161,7 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* Menu full-screen cho mobile, đóng lại ngay khi bấm 1 mục để điều hướng */}
+      {/* Menu full-screen cho mobile, đóng lại ngay khi bấm 1 mục để cuộn tới đúng chỗ */}
       {isMenuOpen && (
         <div className="mobile-menu">
           <button
@@ -175,26 +177,27 @@ function Navbar() {
           </button>
 
           <ul>
-            {menus.map((item) => (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
+            {SECTIONS.map((item) => (
+              <li key={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  className={activeId === item.id ? "active" : ""}
                   onClick={() => {
-                    playUiSound(item.path === pathname ? "navActive" : "nav");
+                    playUiSound(activeId === item.id ? "navActive" : "nav");
                     setIsMenuOpen(false);
                   }}
                 >
                   <span className="mobile-menu-code hud-readout">{item.code}</span>
                   {item.name}
-                </NavLink>
+                </a>
               </li>
             ))}
           </ul>
         </div>
       )}
 
-      {/* Overlay phóng to logo — chỉ có thể mở khi đang ở Home (isHome) */}
-      {isZoomed && isHome && (
+      {/* Overlay phóng to logo */}
+      {isZoomed && (
         <div
           className="logo-overlay"
           onClick={() => setIsZoomed(false)}

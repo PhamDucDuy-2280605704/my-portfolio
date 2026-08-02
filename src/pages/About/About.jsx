@@ -1,19 +1,20 @@
 import "./About.css";
 
 import profile from "../../data/profile";
-import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import Button from "../../components/common/Button/Button";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
 
-// Trang "/about" — bio đầy đủ (khác với Hero ở Home, vốn chỉ có mô tả ngắn).
-// Toàn bộ nội dung (bio, ngày sinh, email, CV...) lấy từ data/profile.js.
+// Section "Giới thiệu" — giờ là 1 khối trong trang chủ dài (Home.jsx ghép
+// tất cả section lại), không còn là route "/about" riêng. id="about" để
+// Navbar cuộn thẳng tới đây khi bấm menu.
 function About() {
-  usePageTitle("Giới Thiệu | Phạm Đức Duy");
-
   return (
-    <section className="about-page">
+    <section
+      className="about-page"
+      id="about"
+    >
 
       <SectionTitle
         subtitle="Tìm Hiểu Về Mình"

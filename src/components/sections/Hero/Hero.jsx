@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import Button from "../../common/Button/Button";
 import CornerFlourish from "../../common/CornerFlourish/CornerFlourish";
 import HudFrame from "../../common/HudFrame/HudFrame";
@@ -15,7 +13,10 @@ const highlights = ["Frontend", "Backend", "Mobile"];
 // nên muốn đổi tên/vai trò/câu quote... chỉ cần sửa file đó, không cần sửa ở đây.
 function Hero() {
   return (
-    <section className="hero">
+    <section
+      className="hero"
+      id="home"
+    >
 
       {/* 4 góc hoa văn trang trí rất nhẹ, đồng bộ hoạ tiết với SplashScreen —
           chỉ mang tính trang trí (aria-hidden ở CornerFlourish), không ảnh
@@ -50,9 +51,9 @@ function Hero() {
         <p className="quote">“{profile.quote}”</p>
 
         <div className="buttons">
-          <Link to="/contact">
+          <a href="#contact">
             <Button variant="primary">Liên Hệ Với Mình</Button>
-          </Link>
+          </a>
         </div>
       </div>
 

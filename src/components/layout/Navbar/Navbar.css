@@ -108,11 +108,6 @@
   cursor: pointer;
 }
 
-.logo-hidden {
-  visibility: hidden;
-  pointer-events: none;
-}
-
 /* Khung góc bracket quanh logo, đồng bộ HudFrame — biến logo thành 1
    "module" nhỏ trên HUD thay vì ảnh trơn. */
 .logo-frame {

@@ -11,7 +11,6 @@ import {
 import "./Projects.css";
 
 import projects from "../../data/projects";
-import usePageTitle from "../../hooks/usePageTitle";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
@@ -107,15 +106,13 @@ function ProjectCard({ project, code }) {
 // Trang "/projects" — dùng tab để chuyển qua lại giữa 2 danh sách dự án,
 // chỉ 1 danh sách hiển thị tại 1 thời điểm (activeTab quyết định).
 function Projects() {
-  usePageTitle("Dự Án | Phạm Đức Duy");
-
   const [activeTab, setActiveTab] = useState("completed");
 
   // Danh sách dự án đang hiển thị, ứng với tab đang chọn.
   const activeList = projects[activeTab] ?? [];
 
   return (
-    <section className="projects-page">
+    <section className="projects-page" id="projects">
 
       <SectionTitle
         subtitle="Dự Án Của Mình"

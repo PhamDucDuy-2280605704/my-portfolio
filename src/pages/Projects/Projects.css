@@ -1,7 +1,23 @@
 .projects-page {
+  position: relative;
+
   max-width: 1100px;
   margin: 0 auto;
-  padding: 120px 24px;
+  padding: 90px 24px;
+}
+
+/* Vạch phân cách mảnh, TRÀN HẾT chiều rộng màn hình (không bị giới hạn bởi
+   max-width:1100px của chính section) -> đánh dấu rõ ranh giới giữa các
+   section khi giờ tất cả xếp chồng liên tiếp trên 1 trang dài. */
+.projects-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 1px;
+  background: var(--color-border);
 }
 
 .projects-tabs {

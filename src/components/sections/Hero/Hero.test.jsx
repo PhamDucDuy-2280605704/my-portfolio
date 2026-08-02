@@ -1,16 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
 
 import Hero from "./Hero";
 import profile from "../../../data/profile";
 
+// Hero không còn dùng react-router (nút Liên hệ giờ là anchor "#contact"
+// cuộn trong cùng trang, không điều hướng route) -> không cần MemoryRouter.
 function renderHero() {
-  return render(
-    <MemoryRouter>
-      <Hero />
-    </MemoryRouter>,
-  );
+  return render(<Hero />);
 }
 
 describe("Hero", () => {
@@ -30,11 +27,11 @@ describe("Hero", () => {
     });
   });
 
-  it("nút 'Liên Hệ Với Mình' dẫn tới route /contact", () => {
+  it("nút 'Liên Hệ Với Mình' cuộn thẳng tới section #contact", () => {
     renderHero();
 
     const contactLink = screen.getByText("Liên Hệ Với Mình").closest("a");
-    expect(contactLink).toHaveAttribute("href", "/contact");
+    expect(contactLink).toHaveAttribute("href", "#contact");
   });
 
   it("KHÔNG còn nút Download CV (đã bỏ theo yêu cầu, chỉ còn Contact Me)", () => {

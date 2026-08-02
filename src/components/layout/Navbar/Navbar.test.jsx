@@ -1,23 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
 
 import Navbar from "./Navbar";
 
-// Helper: render Navbar tại 1 đường dẫn (route) cụ thể để test hành vi phụ thuộc route
-// (VD: logo chỉ hiện ở "/").
-function renderAt(path) {
-  return render(
-    <MemoryRouter initialEntries={[path]}>
-      <Navbar />
-    </MemoryRouter>,
-  );
-}
-
+// Site giờ là 1 trang chủ duy nhất (không còn route riêng cho từng mục) ->
+// Navbar không dùng react-router nữa, không cần bọc MemoryRouter khi test.
 describe("Navbar", () => {
   it("hiển thị đủ 7 mục menu", () => {
-    renderAt("/");
+    render(<Navbar />);
 
     const expectedLabels = [
       "Trang Chủ",
@@ -30,26 +21,27 @@ describe("Navbar", () => {
     ];
 
     expectedLabels.forEach((label) => {
-      // getAllByText vì menu desktop dùng chung nhãn (không nhân bản trong DOM ở test này)
+      // getAllByText vì menu desktop + menu mobile cùng render nhãn này trong DOM
       expect(screen.getAllByText(label).length).toBeGreaterThan(0);
     });
   });
 
-  it("logo KHÔNG bị ẩn (không có class logo-hidden) khi đang ở trang Home", () => {
-    const { container } = renderAt("/");
+  it("mỗi mục menu là 1 link neo (#id) trỏ đúng section tương ứng", () => {
+    render(<Navbar />);
 
-    expect(container.querySelector(".logo")).not.toHaveClass("logo-hidden");
+    expect(screen.getAllByText("Giới Thiệu")[0].closest("a")).toHaveAttribute("href", "#about");
+    expect(screen.getAllByText("Dự Án")[0].closest("a")).toHaveAttribute("href", "#projects");
   });
 
-  it("logo BỊ ẩn (có class logo-hidden) khi ở các trang khác", () => {
-    const { container } = renderAt("/about");
+  it("logo luôn hiển thị (site chỉ còn 1 trang duy nhất)", () => {
+    const { container } = render(<Navbar />);
 
-    expect(container.querySelector(".logo")).toHaveClass("logo-hidden");
+    expect(container.querySelector(".logo")).toBeInTheDocument();
   });
 
   it("bấm nút hamburger sẽ mở menu full-screen trên mobile", async () => {
     const user = userEvent.setup();
-    renderAt("/");
+    render(<Navbar />);
 
     // Menu mobile chưa hiện lúc đầu
     expect(screen.queryByLabelText("Đóng menu")).not.toBeInTheDocument();
@@ -60,9 +52,9 @@ describe("Navbar", () => {
     expect(screen.getByLabelText("Đóng menu")).toBeInTheDocument();
   });
 
-  it("bấm vào logo ở Home sẽ mở overlay phóng to, bấm nút Đóng sẽ tắt overlay", async () => {
+  it("bấm vào logo sẽ mở overlay phóng to, bấm nút Đóng sẽ tắt overlay", async () => {
     const user = userEvent.setup();
-    const { container } = renderAt("/");
+    const { container } = render(<Navbar />);
 
     expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
 
@@ -75,20 +67,12 @@ describe("Navbar", () => {
 
   it("nhấn phím Esc sẽ đóng overlay phóng to logo đang mở", async () => {
     const user = userEvent.setup();
-    const { container } = renderAt("/");
+    const { container } = render(<Navbar />);
 
     await user.click(container.querySelector(".logo"));
     expect(container.querySelector(".logo-overlay")).toBeInTheDocument();
 
     await user.keyboard("{Escape}");
-    expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
-  });
-
-  it("bấm vào logo ở trang khác (không phải Home) sẽ KHÔNG mở overlay", async () => {
-    const user = userEvent.setup();
-    const { container } = renderAt("/about");
-
-    await user.click(container.querySelector(".logo"));
     expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
   });
 });
