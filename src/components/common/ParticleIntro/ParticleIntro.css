@@ -904,6 +904,9 @@
 }
 
 .briefing-tag {
+  /* Chữ này có tiếng Việt ("HỒ SƠ NHÂN SỰ") -> ghi đè font-mono kế thừa từ
+     class dùng chung .hud-readout bằng font-display (có bộ dấu đầy đủ). */
+  font-family: var(--font-display);
   color: var(--color-accent);
   font-size: 10px;
   letter-spacing: 0.16em;
@@ -981,7 +984,9 @@
 }
 
 .briefing-row span {
-  font-family: var(--font-mono);
+  /* Nhãn "VAI TRÒ / ĐỊA ĐIỂM / TRẠNG THÁI" có dấu tiếng Việt -> dùng
+     font-display, KHÔNG dùng font-mono (thiếu bộ dấu). */
+  font-family: var(--font-display);
   font-size: 10px;
   letter-spacing: 0.1em;
   color: rgba(var(--color-primary-rgb), 0.55);

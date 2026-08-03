@@ -76,7 +76,10 @@
 }
 
 .timeline-period {
-  font-family: var(--font-mono);
+  /* item.period có thể là tiếng Việt (VD "Đang cập nhật") -> dùng
+     font-display, KHÔNG dùng font-mono (thiếu bộ dấu tiếng Việt, khiến các
+     ký tự có dấu bị lấy từ font dự phòng khác, độ rộng lệch nhau). */
+  font-family: var(--font-display);
   font-size: 13px;
   color: var(--color-accent);
   font-weight: 600;

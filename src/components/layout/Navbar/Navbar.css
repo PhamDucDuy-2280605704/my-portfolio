@@ -17,7 +17,13 @@
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
 
-  font-family: var(--font-mono);
+  /* QUAN TRỌNG: dùng font-display (Chakra Petch, có bộ dấu tiếng Việt đầy
+     đủ), KHÔNG dùng font-mono (Share Tech Mono) — vì dải này hiển thị tên
+     và tên mục bằng tiếng Việt (VD "PHẠM ĐỨC DUY", "GIỚI THIỆU"). Share Tech
+     Mono thiếu glyph dấu, khiến trình duyệt phải lấy các ký tự có dấu từ
+     font dự phòng khác -> độ rộng ký tự lệch nhau, nhìn "không đều" giữa
+     các chữ trong cùng 1 từ. */
+  font-family: var(--font-display);
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;

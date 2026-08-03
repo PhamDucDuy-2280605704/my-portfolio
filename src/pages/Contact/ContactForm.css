@@ -67,7 +67,9 @@
 }
 
 .contact-form-field label {
-  font-family: var(--font-mono);
+  /* Nhãn tiếng Việt (VD "Họ tên", "Lời nhắn") -> dùng font-display, KHÔNG
+     dùng font-mono (thiếu bộ dấu tiếng Việt, gây lệch độ rộng ký tự). */
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;

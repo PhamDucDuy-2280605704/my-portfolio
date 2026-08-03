@@ -3,6 +3,23 @@
 
 const journal = [
   {
+    id: "5-dieu-minh-tu-nhac-minh",
+    date: "2026-07-28",
+    title: "5 điều mình muốn nhắc lại với chính mình",
+    excerpt:
+      "Vài điều ngắn mình hay tự nhắc lại với bản thân dạo gần đây — về sự đơn giản, ranh giới cảm xúc, ý nghĩa, khả năng thích nghi, và cách mình nhìn mọi thứ.",
+    tags: ["Suy Ngẫm", "Cá Nhân"],
+    content: [
+      "Dạo này mình hay dừng lại giữa ngày, viết vài câu ngắn để tự nhắc bản thân — không phải để đăng ở đâu, chỉ để đọc lại khi cần. Hôm nay mình gom chúng vào đây, một phần cũng để tập diễn đạt lại ý của mình cho rõ ràng, thay vì chỉ giữ nguyên câu chữ của người khác trong đầu.",
+      "Điều đầu tiên: càng học nhiều, mình càng thấy sự đơn giản mới là thứ khó đạt được nhất. Một đoạn code ngắn gọn, một lời giải thích dễ hiểu, một quyết định rõ ràng — tất cả đều đòi hỏi mình hiểu vấn đề sâu hơn là khi mình làm nó rối rắm. Rối rắm thường là dấu hiệu mình chưa hiểu hết, chứ không phải là mình giỏi.",
+      "Điều thứ hai, mình học cách phân biệt giữa việc bị tổn thương và việc chọn để bị tổn thương. Người khác có thể nói những điều không hay, nhưng cảm giác tổn thương thật sự chỉ xảy ra khi mình cho phép lời nói đó có quyền lên tiếng trong đầu mình. Đó không phải là vô cảm, mà là biết giữ ranh giới cho chính mình.",
+      "Điều thứ ba: mình không còn tự hỏi 'mình có đang sống không', mà là 'những gì mình đang làm có ý nghĩa với mình không'. Có những ngày trôi qua rất nhanh vì mình chỉ đang tồn tại theo quán tính — học vì phải học, làm vì phải làm. Mình muốn ít những ngày như vậy hơn.",
+      "Điều thứ tư, về việc không phải lúc nào mình cũng kiểm soát được hoàn cảnh — deadline gấp, dự án đổi hướng, kế hoạch học tập bị xáo trộn. Nhưng cách mình phản ứng lại với chuyện đó, mình luôn điều chỉnh được. Gió thổi hướng nào không phải việc của mình; chỉnh lại cánh buồm mới là việc của mình.",
+      "Và điều cuối cùng, có lẽ là điều mình phải nhắc đi nhắc lại nhiều nhất: phần lớn những gì làm mình khó chịu không đến từ chính sự việc, mà đến từ cách mình diễn giải nó. Một lời góp ý có thể là sự công kích, hoặc là một dữ liệu hữu ích để mình làm tốt hơn — tuỳ vào cách mình chọn nhìn nó.",
+      "Ghi lại đây, không phải vì mình đã làm được hết, mà để sau này đọc lại còn biết mình đã từng nghĩ như vậy.",
+    ],
+  },
+  {
     id: "ranh-gioi-bong-toi-va-phep-mau",
     date: "2026-07-11",
     title: "Ranh giới giữa bóng tối và phép màu",
