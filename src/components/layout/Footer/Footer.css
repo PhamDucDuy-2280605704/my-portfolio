@@ -8,6 +8,10 @@
   gap: 16px;
 
   height: 34px;
+  /* Chừa thêm khoảng dưới bằng đúng chiều cao BottomDock (dock nổi fixed,
+     không chiếm chỗ trong luồng trang) + khoảng cách -> khi cuộn hết trang,
+     dock không đè mất nội dung Footer. */
+  margin-bottom: 78px;
   padding: 0 24px;
 
   background: var(--color-bg);

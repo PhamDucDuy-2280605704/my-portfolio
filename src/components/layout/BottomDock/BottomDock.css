@@ -1,0 +1,179 @@
+.bottom-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 1200;
+}
+
+.bottom-dock-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 8px;
+
+  list-style: none;
+
+  /* Hiệu ứng kính (glassmorphism): nền tối trong suốt + làm mờ hậu cảnh
+     phía sau, viền cyan rất mảnh phát sáng nhẹ -> vẫn giữ tinh thần HUD dù
+     bo tròn hoàn toàn khác phong cách góc vuông dùng ở phần còn lại của site
+     (cố ý — dock nổi tự do trên mọi nền nên cần "nhẹ" và trung tính hơn). */
+  background: rgba(8, 18, 24, 0.55);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.22);
+  border-radius: var(--radius-full);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+
+  box-shadow:
+    0 8px 32px -8px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 0 24px -6px rgba(var(--color-primary-rgb), 0.25);
+}
+
+.bottom-dock-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+
+  transition: color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+}
+
+.bottom-dock-icon {
+  display: flex;
+  font-size: 21px;
+}
+
+/* Nhãn tên mục — vẫn nằm trong DOM (đọc được bởi trình đọc màn hình / khi
+   zoom chữ) nhưng ẩn khỏi hiển thị thông thường, giữ dock gọn gàng chỉ-icon
+   đúng như tham chiếu (kiểu Instagram). */
+.bottom-dock-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.bottom-dock-item:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Tooltip: ẩn mặc định (opacity:0 + dịch xuống nhẹ), hiện khi hover/focus
+   vào icon cha — luôn bật phía TRÊN icon (dock nằm sát đáy màn hình, bật
+   xuống dưới sẽ tràn ra ngoài viewport). */
+.bottom-dock-tooltip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+
+  width: max-content;
+  max-width: 180px;
+  padding: 8px 12px;
+
+  background: rgba(6, 14, 19, 0.92);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  border-radius: var(--radius-md);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.6);
+
+  text-align: center;
+  pointer-events: none;
+
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.bottom-dock-tooltip strong {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.bottom-dock-tooltip span {
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+/* Mũi tên nhỏ trỏ xuống đúng icon, đồng màu viền với tooltip */
+.bottom-dock-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 8px;
+  height: 8px;
+
+  background: rgba(6, 14, 19, 0.92);
+  border-right: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  transform: translateX(-50%) rotate(45deg) translateY(-4px);
+}
+
+.bottom-dock-item:hover .bottom-dock-tooltip,
+.bottom-dock-item:focus-visible .bottom-dock-tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Mục đang active: nền pill nổi bật + icon đặc màu cyan, giống hệt cách
+   Instagram tô nền xám cho tab đang chọn ở ảnh tham chiếu. */
+.bottom-dock-item.active {
+  color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.16);
+  transform: translateY(-2px);
+}
+
+.bottom-dock-item.active .bottom-dock-icon {
+  filter: drop-shadow(0 0 6px rgba(var(--color-primary-rgb), 0.6));
+}
+
+@media (max-width: 480px) {
+  .bottom-dock {
+    bottom: 14px;
+  }
+
+  .bottom-dock-item {
+    width: 42px;
+    height: 42px;
+  }
+
+  .bottom-dock-icon {
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-dock-item {
+    transition: none;
+  }
+
+  .bottom-dock-item.active {
+    transform: none;
+  }
+}

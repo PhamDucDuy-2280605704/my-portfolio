@@ -24,8 +24,8 @@ describe("MainLayout", () => {
       </MemoryRouter>,
     );
 
-    // Navbar: kiểm tra 1 mục menu bất kỳ có mặt
-    expect(screen.getByText("Trang Chủ")).toBeInTheDocument();
+    // BottomDock (menu điều hướng chính giờ nằm ở đây): kiểm tra 1 mục bất kỳ có mặt
+    expect(screen.getByLabelText("Trang Chủ")).toBeInTheDocument();
 
     // Outlet: nội dung trang con phải render đúng vị trí
     expect(screen.getByText("Nội dung trang con")).toBeInTheDocument();

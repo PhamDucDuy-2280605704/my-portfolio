@@ -5,7 +5,10 @@
 .replay-intro-btn {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  /* Nâng lên trên BottomDock (dock cao ~62px, nổi cách đáy 20px) để 2 nút
+     không đè lên nhau, nhất là trên màn hình hẹp khi dock chiếm gần hết
+     chiều ngang. */
+  bottom: 92px;
   z-index: 40;
 
   display: flex;
@@ -56,7 +59,7 @@
 @media (max-width: 480px) {
   .replay-intro-btn {
     right: 12px;
-    bottom: 12px;
+    bottom: 78px;
     padding: 8px 13px;
   }
 }
