@@ -52,7 +52,7 @@ const contacts = [
   },
   {
     name: "Discord",
-    hint: "Chat, cùng mình",
+    hint: "Chat cùng mình",
     value: "phamduy1410",
     href: social.discord,
     icon: FaDiscord,
