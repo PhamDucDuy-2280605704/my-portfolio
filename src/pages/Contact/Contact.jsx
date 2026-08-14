@@ -17,7 +17,7 @@ import { playUiSound } from "../../utils/uiSound";
 const contacts = [
   {
     name: "Email",
-    hint: "Phản hồi trong vòng 24h",
+    hint: "Phản hồi trong vòng 12h",
     value: profile.email,
     href: social.email,
     icon: FaEnvelope,
@@ -52,7 +52,7 @@ const contacts = [
   },
   {
     name: "Discord",
-    hint: "Chat, cùng chơi game",
+    hint: "Chat, cùng mình",
     value: "phamduy1410",
     href: social.discord,
     icon: FaDiscord,
