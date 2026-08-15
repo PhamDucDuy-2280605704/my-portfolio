@@ -30,6 +30,26 @@
   color: var(--color-text-secondary);
 }
 
+/* Sọc cảnh báo (hazard tape) mảnh sát mép dưới dải mã hiệu — cùng ngôn ngữ
+   thị giác với ParticleIntro (đã đổi tông cyan), giúp header mọi trang liên
+   kết trực quan với màn hình mở đầu thay vì chỉ xuất hiện đúng lúc intro. */
+.navbar-meta::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(var(--color-primary-rgb), 0.65) 0px,
+    rgba(var(--color-primary-rgb), 0.65) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  opacity: 0.55;
+}
+
 .navbar-meta-item {
   display: flex;
   align-items: center;
@@ -48,12 +68,20 @@
    dán ở góc phải (navbar-meta sticky top:0) nên không cần cuộn xuống mới
    thấy như bản đặt ở Footer trước đây. */
 .navbar-clock {
-  gap: 0;
+  gap: 6px;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--color-primary);
   text-shadow: 0 0 12px rgba(var(--color-primary-rgb), 0.45);
+}
+
+.navbar-biohazard {
+  width: 13px;
+  height: 13px;
+  color: var(--color-primary);
+  opacity: 0.75;
+  filter: drop-shadow(0 0 3px rgba(var(--color-primary-rgb), 0.6));
 }
 
 .navbar-meta-dot {

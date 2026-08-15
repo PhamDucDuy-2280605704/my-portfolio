@@ -6,6 +6,28 @@
   z-index: 1200;
 }
 
+/* 2 chấm "rivet" nhỏ 2 đầu dock — cùng chi tiết với góc HudFrame/dossier
+   trong ParticleIntro, giúp dock (điểm chạm chính của cả site) liên kết thị
+   giác với hệ thống HUD dùng ở nơi khác thay vì chỉ là 1 viên kính trơn. */
+.bottom-dock::before,
+.bottom-dock::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(var(--color-primary-rgb), 0.55);
+  box-shadow: 0 0 4px rgba(var(--color-primary-rgb), 0.6);
+  transform: translateY(-50%);
+}
+.bottom-dock::before {
+  left: -10px;
+}
+.bottom-dock::after {
+  right: -10px;
+}
+
 .bottom-dock-list {
   display: flex;
   align-items: center;

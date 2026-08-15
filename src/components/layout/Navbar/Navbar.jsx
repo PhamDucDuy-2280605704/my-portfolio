@@ -73,6 +73,49 @@ function Navbar() {
           {activeItem.code} &middot; {activeItem.name.toUpperCase()}
         </span>
         <span className="navbar-meta-item navbar-clock hud-readout">
+          {/* Ký hiệu biohazard mini — cùng "chữ ký" thị giác với màn hình
+              intro, lặp lại ở đây để hệ thống HUD cảm giác xuyên suốt cả
+              site chứ không chỉ xuất hiện đúng lúc mở đầu. Đây là ký hiệu
+              nguy hại sinh học quốc tế (không phải logo riêng của ai). */}
+          <svg
+            className="navbar-biohazard"
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+          >
+            <mask id="navbar-biohazard-mask">
+              <rect
+                width="32"
+                height="32"
+                fill="black"
+              />
+              {[-90, 30, 150].map((deg) => {
+                const rad = (deg * Math.PI) / 180;
+                const cx = 16 + Math.cos(rad) * 6.6;
+                const cy = 16 + Math.sin(rad) * 6.6;
+                return (
+                  <circle
+                    key={deg}
+                    cx={cx}
+                    cy={cy}
+                    r="6.4"
+                    fill="white"
+                  />
+                );
+              })}
+              <circle
+                cx="16"
+                cy="16"
+                r="3.1"
+                fill="black"
+              />
+            </mask>
+            <rect
+              width="32"
+              height="32"
+              fill="currentColor"
+              mask="url(#navbar-biohazard-mask)"
+            />
+          </svg>
           {formatClock(now)}
         </span>
       </div>

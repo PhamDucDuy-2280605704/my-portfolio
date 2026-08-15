@@ -5,18 +5,23 @@ import "./ParticleIntro.css";
 
 import profile from "../../../data/profile";
 
-// Intro kiểu "briefing nhập vai" — lấy cảm hứng từ màn hình khởi động chiến
-// dịch của Tom Clancy's Ghost Recon: Wildlands (không sao chép nội dung/hình
-// ảnh cụ thể nào, chỉ mượn tinh thần: quét dữ liệu -> khoá hồ sơ -> hiện
-// briefing kèm hiệu ứng âm thanh máy, không có giọng đọc). Các bước:
-//   1. SCAN      — tự chạy ngay khi mount, frame 4 góc quét từ mép màn hình vào.
-//   2. WARP      — khối pixel lạnh bay vào theo hiệu ứng warp.
-//   3. ASSEMBLE  — pixel ráp thành hình tên bạn, 1 nhịp glitch nhẹ khi vừa xong.
+// Intro kiểu "báo động sinh học" — lấy cảm hứng từ tinh thần thẩm mỹ dòng
+// game kinh dị sinh tồn Resident Evil / các tập đoàn dược-sinh học hư cấu
+// kiểu Umbrella: báo động (tông cyan), ký hiệu nguy hại sinh học (biohazard — ký hiệu
+// quốc tế, không phải logo riêng của hãng nào), terminal an ninh, hồ sơ mật
+// đóng dấu DUYỆT. KHÔNG dùng logo, wordmark hay tên thương hiệu thật của bất
+// kỳ hãng nào — chỉ mượn KHÔNG KHÍ. Các bước:
+//   1. SCAN      — còi báo động chớp cyan 2 nhịp, khung quét 4 góc dò từ mép
+//      vào, log terminal "đang chặn tín hiệu".
+//   2. WARP      — tàn lửa cyan/xanh biển bay vào tâm màn hình theo hiệu ứng warp.
+//   3. ASSEMBLE  — tàn lửa ráp thành ký hiệu biohazard + tên bạn, nhiễu sóng
+//      (glitch) nhẹ đúng lúc vừa ráp xong.
 //   4. HOLD      — chữ THẬT (DOM, sắc nét) đè lên đúng chỗ vừa ráp + terminal
-//      log ACCESS GRANTED / USER / ROLE / STATUS.
-//   5. BRIEF     — "hồ sơ nhân sự" mở rộng (vai trò, địa điểm, trạng thái,
-//      quote cá nhân) + chuỗi bíp máy quét nhẹ mỗi khi 1 dòng hồ sơ hiện ra.
-//   6. FADE      — toàn màn hình mờ dần, gọi onFinish().
+//      log ACCESS GRANTED / USER / ROLE / STATUS: CLEARED.
+//   5. DOSSIER   — "hồ sơ mật" mở rộng dạng file kẹp giấy (vai trò, địa
+//      điểm, trạng thái, trích dẫn cá nhân) + con dấu cyan "ĐÃ DUYỆT" đóng
+//      xuống kèm tiếng thịch, tiếng máy chữ lách cách mỗi khi 1 dòng hiện ra.
+//   6. FADE      — toàn màn hình mờ dần về đen, gọi onFinish().
 //
 // KHÔNG bắt buộc phải bấm gì để bắt đầu (tự chạy ngay) — nhưng bấm vào BẤT
 // KỲ đâu trên màn hình (hoặc nút "Bỏ qua") sẽ bỏ qua toàn bộ, vào thẳng
@@ -26,26 +31,26 @@ import profile from "../../../data/profile";
 // -> App.jsx set isLoading=false. Xem lại: remount bằng key={introKey} ở App.jsx.
 
 const PARTICLE_COUNT = 340;
-const SCAN_DURATION = 700; // ms
-const WARP_DURATION = 1250; // ms
-const ASSEMBLE_DURATION = 1350; // ms
-const HOLD_DURATION = 2200; // ms
-const BRIEF_DURATION = 5200; // ms
+const SCAN_DURATION = 750; // ms — còi báo động + khung quét
+const WARP_DURATION = 1200; // ms
+const ASSEMBLE_DURATION = 1300; // ms
+const HOLD_DURATION = 2100; // ms
+const DOSSIER_DURATION = 5200; // ms
 const FADE_DURATION = 650; // ms
 
-// Tông cyan đồng bộ với --color-primary (#22d3ee) / bản đậm hơn của nó,
-// khớp với CSS (rgba(var(--color-primary-rgb), *))
-const COLD_A = [34, 211, 238];
-const COLD_B = [14, 165, 190];
+// Tông cyan báo động — khớp --color-primary (#22d3ee) của toàn site — hạt
+// sáng bay vào rồi nguội dần thành xanh biển đậm.
+const EMBER_A = [34, 211, 238]; // cyan sáng, khớp --color-primary
+const EMBER_B = [14, 116, 144]; // xanh biển đậm, "tín hiệu nguội"
 
-const PHASE_ORDER = ["scan", "warp", "assemble", "hold", "brief", "fade"];
+const PHASE_ORDER = ["scan", "warp", "assemble", "hold", "dossier", "fade"];
 
-// Vài dòng "log khởi động" chạy nhanh lúc quét — thuần hiệu ứng, tăng cảm
-// giác "hệ thống đang truy cập", không phải log thật.
+// Log terminal chạy nhanh lúc còi báo động/quét — thuần hiệu ứng, tăng cảm
+// giác "hệ thống an ninh đang chặn/giải mã tín hiệu", không phải log thật.
 const BOOT_LINES = [
-  "INIT KERNEL...",
-  "MOUNTING SECURE_FS...",
-  "DECRYPTING PROFILE...",
+  "SIGNAL INTERCEPTED...",
+  "DECRYPTING PERSONNEL ARCHIVE...",
+  "BIOHAZARD PROTOCOL: STANDBY...",
   "HANDSHAKE OK",
 ];
 
@@ -56,25 +61,56 @@ function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-function sampleTextPoints(line1, line2, width, height, count) {
+// Vẽ ký hiệu biohazard (3 vòng tròn lớn xếp 120°, khoét lỗ tâm) + tên + vai
+// trò lên canvas ẩn, rồi lấy mẫu toạ độ các điểm không-trong-suốt để làm
+// đích cho hạt bay tới. Đây LÀ ký hiệu nguy hại sinh học quốc tế (chuẩn ISO
+// 7010 / công cộng), không phải tài sản riêng của bất kỳ studio/hãng nào.
+function sampleDossierPoints(line1, line2, width, height, count) {
   const off = document.createElement("canvas");
   off.width = width;
   off.height = height;
   const ctx = off.getContext("2d");
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = "#fff";
+
+  // --- Ký hiệu biohazard, đặt hơi lệch trên tâm để chừa chỗ cho tên bên dưới
+  const symR = Math.max(34, Math.min(width, height) * 0.075);
+  const symCx = width / 2;
+  const symCy = height / 2 - symR * 2.05;
+  const offset = symR * 0.98;
+
+  ctx.globalCompositeOperation = "source-over";
+  [-90, 30, 150].forEach((deg) => {
+    const rad = (deg * Math.PI) / 180;
+    ctx.beginPath();
+    ctx.arc(symCx + Math.cos(rad) * offset, symCy + Math.sin(rad) * offset, symR, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.beginPath();
+  ctx.arc(symCx, symCy, symR * 0.46, 0, Math.PI * 2);
+  ctx.fill();
+  // 3 lỗ nhỏ giữa các cánh để tách rõ 3 vòng, đúng tinh thần ký hiệu gốc
+  [-90, 30, 150].forEach((deg) => {
+    const rad = (deg * Math.PI) / 180;
+    ctx.beginPath();
+    ctx.arc(symCx + Math.cos(rad) * offset * 1.55, symCy + Math.sin(rad) * offset * 1.55, symR * 0.62, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalCompositeOperation = "source-over";
+
+  // --- Tên + vai trò, bên dưới ký hiệu
+  const nameSize = Math.max(26, Math.min(width * 0.068, 78));
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-
-  const nameSize = Math.max(28, Math.min(width * 0.075, 88));
   ctx.font = `700 ${nameSize}px "Courier New", monospace`;
-  const nameY = height / 2 - nameSize * 0.34;
+  const nameY = height / 2 + nameSize * 0.55;
   ctx.fillText(line1, width / 2, nameY);
 
   if (line2) {
-    const subSize = Math.max(11, nameSize * 0.2);
+    const subSize = Math.max(11, nameSize * 0.22);
     ctx.font = `600 ${subSize}px "Courier New", monospace`;
-    ctx.fillText(line2, width / 2, nameY + nameSize * 0.6);
+    ctx.fillText(line2, width / 2, nameY + nameSize * 0.62);
   }
 
   const { data } = ctx.getImageData(0, 0, width, height);
@@ -104,8 +140,8 @@ function randomHex(len) {
 }
 
 // ===== Âm thanh tổng hợp bằng Web Audio API — KHÔNG dùng file audio, toàn
-// bộ tiếng bíp/tĩnh điện được tạo bằng oscillator/noise buffer ngay trong
-// trình duyệt, nên không cần asset ngoài và không phát sinh HTTP request. =====
+// bộ tiếng còi/tĩnh điện/máy chữ được tạo bằng oscillator/noise buffer ngay
+// trong trình duyệt, không cần asset ngoài, không phát sinh HTTP request. =====
 
 function playBeep(audioCtx, { freq = 880, duration = 0.08, type = "triangle", gain = 0.09 } = {}) {
   if (!audioCtx) return;
@@ -114,7 +150,6 @@ function playBeep(audioCtx, { freq = 880, duration = 0.08, type = "triangle", ga
   const t0 = audioCtx.currentTime;
   osc.type = type;
   osc.frequency.setValueAtTime(freq, t0);
-  // Attack ramp ngắn thay vì nhảy thẳng lên gain -> tiếng êm hơn, đỡ "tách" khô.
   gainNode.gain.setValueAtTime(0.0001, t0);
   gainNode.gain.exponentialRampToValueAtTime(gain, t0 + 0.008);
   gainNode.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
@@ -124,13 +159,49 @@ function playBeep(audioCtx, { freq = 880, duration = 0.08, type = "triangle", ga
   osc.stop(t0 + duration + 0.02);
 }
 
-// Chuỗi 3 nốt lên tông (thay vì 2 nốt sine trước đây) — nghe giống 1 tiếng
-// "xác nhận thành công" rõ ràng và dễ chịu hơn, kiểu HUD trong phim/game.
-function playConfirmChime(audioCtx) {
+// Còi báo động 2 nhịp lên/xuống (sóng vuông, thô hơn triangle) — mở đầu pha
+// "scan", kiểu còi an ninh khẩn cấp thay vì tiếng chuông xác nhận êm dịu.
+function playAlarm(audioCtx) {
   if (!audioCtx) return;
-  playBeep(audioCtx, { freq: 440, duration: 0.1, gain: 0.08, type: "triangle" });
-  setTimeout(() => playBeep(audioCtx, { freq: 660, duration: 0.11, gain: 0.085, type: "triangle" }), 90);
-  setTimeout(() => playBeep(audioCtx, { freq: 880, duration: 0.16, gain: 0.09, type: "triangle" }), 180);
+  [0, 260].forEach((delay) => {
+    setTimeout(() => {
+      playBeep(audioCtx, { freq: 880, duration: 0.14, gain: 0.075, type: "square" });
+      setTimeout(() => playBeep(audioCtx, { freq: 660, duration: 0.16, gain: 0.075, type: "square" }), 130);
+    }, delay);
+  });
+}
+
+// Tiếng "khoá hồ sơ" khi chữ vừa ráp xong — 2 nốt trầm xuống, dứt khoát hơn
+// tiếng chuông xác nhận thông thường.
+function playLockChime(audioCtx) {
+  if (!audioCtx) return;
+  playBeep(audioCtx, { freq: 520, duration: 0.12, gain: 0.085, type: "sawtooth" });
+  setTimeout(() => playBeep(audioCtx, { freq: 340, duration: 0.2, gain: 0.09, type: "sawtooth" }), 90);
+}
+
+// Tiếng lách cách máy chữ — cực ngắn, dùng cho mỗi dòng hồ sơ hiện ra.
+function playTypewriterClack(audioCtx, gain = 0.05) {
+  if (!audioCtx) return;
+  const bufferSize = Math.floor(audioCtx.sampleRate * 0.02);
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.setValueAtTime(gain, audioCtx.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.02);
+  noise.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  noise.start();
+  playBeep(audioCtx, { freq: 2200, duration: 0.015, gain: gain * 0.6, type: "square" });
+}
+
+// Tiếng "thịch" đóng dấu — 1 nốt trầm ngắn kèm tiếng vỡ nhỏ.
+function playStampThud(audioCtx) {
+  if (!audioCtx) return;
+  playBeep(audioCtx, { freq: 90, duration: 0.16, gain: 0.13, type: "sine" });
+  playBeep(audioCtx, { freq: 1400, duration: 0.03, gain: 0.05, type: "square" });
 }
 
 function playStaticBurst(audioCtx, duration = 0.22, gain = 0.038) {
@@ -158,22 +229,23 @@ function ParticleIntro({ onFinish }) {
   const glitchTickRef = useRef(0);
   const progressBarRef = useRef(null);
   const audioCtxRef = useRef(null);
-  const briefTriggeredRef = useRef(false);
   const mutedRef = useRef(false);
   const finishedRef = useRef(false);
 
-  // uiPhase: scan -> warp -> assemble -> hold -> brief -> fade
+  // uiPhase: scan -> warp -> assemble -> hold -> dossier -> fade
   const [uiPhase, setUiPhase] = useState("scan");
   const [muted, setMuted] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(1);
   const [hexTag, setHexTag] = useState(randomHex(8));
   const [bootLineCount, setBootLineCount] = useState(0);
+  const [alarmFlash, setAlarmFlash] = useState(false);
+  const [stamped, setStamped] = useState(false);
   const [caseId, setCaseId] = useState(() => String(Math.floor(Math.random() * 900000) + 100000));
 
   const phaseIndex = PHASE_ORDER.indexOf(uiPhase);
 
   const totalDuration =
-    SCAN_DURATION + WARP_DURATION + ASSEMBLE_DURATION + HOLD_DURATION + BRIEF_DURATION;
+    SCAN_DURATION + WARP_DURATION + ASSEMBLE_DURATION + HOLD_DURATION + DOSSIER_DURATION;
 
   useEffect(() => {
     mutedRef.current = muted;
@@ -187,6 +259,11 @@ function ParticleIntro({ onFinish }) {
   const staticBurst = useCallback((duration, gain) => {
     if (mutedRef.current) return;
     playStaticBurst(audioCtxRef.current, duration, gain);
+  }, []);
+
+  const clack = useCallback((gain) => {
+    if (mutedRef.current) return;
+    playTypewriterClack(audioCtxRef.current, gain);
   }, []);
 
   // Gọi onFinish đúng 1 lần — dùng chung cho cả "chạy hết tự nhiên" lẫn
@@ -207,13 +284,10 @@ function ParticleIntro({ onFinish }) {
     [finish]
   );
 
-  // Mở AudioContext ngay khi component mount (không cần chờ bấm gì) — nhiều
-  // trình duyệt sẽ tạo nó ở trạng thái "suspended" cho tới khi có cử chỉ
-  // người dùng đầu tiên (click/gõ phím) trên trang, nên các tiếng bíp ở đầu
-  // intro có thể im lặng nếu người dùng chưa từng tương tác với trang lần
-  // nào — đây là giới hạn của trình duyệt, không phải lỗi. Ngay khi có cử
-  // chỉ đầu tiên (kể cả bấm để bỏ qua), context sẽ tự "resume" và các tiếng
-  // bíp sau đó phát bình thường.
+  // Mở AudioContext ngay khi component mount — nhiều trình duyệt tạo nó ở
+  // trạng thái "suspended" cho tới cử chỉ người dùng đầu tiên, nên còi báo
+  // động ở đầu intro có thể im lặng nếu người dùng chưa từng tương tác với
+  // trang lần nào — đây là giới hạn trình duyệt, không phải lỗi.
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -258,60 +332,71 @@ function ParticleIntro({ onFinish }) {
   useEffect(() => {
     const timers = [];
 
+    // Còi báo động chớp 2 nhịp ngay lúc mở màn. setState hoãn sang tick kế
+    // tiếp (setTimeout 0) để tránh cascading render ngay trong thân effect.
+    timers.push(setTimeout(() => setAlarmFlash(true), 0));
+    playAlarm(mutedRef.current ? null : audioCtxRef.current);
+    timers.push(setTimeout(() => setAlarmFlash(false), SCAN_DURATION - 80));
+
     timers.push(setTimeout(() => setUiPhase("warp"), SCAN_DURATION));
 
     timers.push(
       setTimeout(() => {
         setUiPhase("assemble");
-        beep({ freq: 620, duration: 0.11, gain: 0.075, type: "triangle" });
+        beep({ freq: 500, duration: 0.11, gain: 0.07, type: "sawtooth" });
       }, SCAN_DURATION + WARP_DURATION)
     );
 
     timers.push(
       setTimeout(() => {
         setUiPhase("hold");
-        playConfirmChime(audioCtxRef.current && !mutedRef.current ? audioCtxRef.current : null);
+        playLockChime(mutedRef.current ? null : audioCtxRef.current);
       }, SCAN_DURATION + WARP_DURATION + ASSEMBLE_DURATION)
     );
 
-    // Bước sang "brief": phát tiếng tĩnh điện ngắn, rồi 1 tiếng bíp nhỏ mỗi
-    // khi 1 dòng hồ sơ hiện ra (khớp với delay-1/2/3/4 trong CSS).
+    // Bước sang "dossier": tĩnh điện ngắn, rồi 1 tiếng lách cách máy chữ mỗi
+    // khi 1 dòng hồ sơ hiện ra (khớp delay-1/2/3 trong CSS), cuối cùng là
+    // tiếng đóng dấu "thịch".
     timers.push(
       setTimeout(() => {
-        setUiPhase("brief");
+        setUiPhase("dossier");
         staticBurst(0.18, 0.045);
 
         [
-          { delay: 400, freq: 720 },
-          { delay: 800, freq: 780 },
-          { delay: 1200, freq: 840 },
-          { delay: 1600, freq: 900 },
-        ].forEach(({ delay, freq }) => {
-          timers.push(
-            setTimeout(() => beep({ freq, duration: 0.06, gain: 0.065, type: "triangle" }), delay)
-          );
+          { delay: 350, gain: 0.05 },
+          { delay: 750, gain: 0.05 },
+          { delay: 1150, gain: 0.05 },
+        ].forEach(({ delay, gain }) => {
+          timers.push(setTimeout(() => clack(gain), delay));
         });
+
+        timers.push(
+          setTimeout(() => {
+            setStamped(true);
+            playStampThud(mutedRef.current ? null : audioCtxRef.current);
+          }, 1650)
+        );
       }, SCAN_DURATION + WARP_DURATION + ASSEMBLE_DURATION + HOLD_DURATION)
     );
 
     const hexTimer = setInterval(() => setHexTag(randomHex(8)), 140);
 
-    // Case ID "chạy số" ngẫu nhiên (như khoá vân tay) trong lúc scan+warp,
-    // rồi ĐỨNG YÊN (khoá lại) ngay khi bước vào assemble.
+    // Case ID "chạy số" ngẫu nhiên trong lúc scan+warp, rồi ĐỨNG YÊN (khoá
+    // lại) ngay khi bước vào assemble.
     const assembleStartsAt = SCAN_DURATION + WARP_DURATION;
     const caseIdTimer = setInterval(() => {
       setCaseId(String(Math.floor(Math.random() * 900000) + 100000));
     }, 70);
     timers.push(setTimeout(() => clearInterval(caseIdTimer), assembleStartsAt));
 
-    // Boot log chạy nhanh trong pha scan+warp, xong trước khi vào assemble.
+    // Log terminal chạy nhanh trong pha scan+warp, xong trước khi vào assemble.
     const bootWindow = SCAN_DURATION + WARP_DURATION;
     const stepTime = bootWindow / (BOOT_LINES.length + 1);
     BOOT_LINES.forEach((_, i) => {
       timers.push(
         setTimeout(() => {
           setBootLineCount(i + 1);
-          beep({ freq: 1100 + i * 60, duration: 0.04, gain: 0.05, type: "triangle" });
+          beep({ freq: 1000 + i * 70, duration: 0.035, gain: 0.045, type: "square" });
         }, stepTime * (i + 1))
       );
     });
@@ -321,7 +406,7 @@ function ParticleIntro({ onFinish }) {
       clearInterval(hexTimer);
       clearInterval(caseIdTimer);
     };
-  }, [beep, staticBurst]);
+  }, [beep, staticBurst, clack]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -340,7 +425,7 @@ function ParticleIntro({ onFinish }) {
     ctx.scale(devicePixelRatio, devicePixelRatio);
 
     initParticles();
-    targetsRef.current = sampleTextPoints(
+    targetsRef.current = sampleDossierPoints(
       profile.fullName.toUpperCase(),
       profile.role.toUpperCase(),
       cw,
@@ -351,15 +436,15 @@ function ParticleIntro({ onFinish }) {
     if (reducedMotion) {
       queueMicrotask(() => setUiPhase("hold"));
       if (progressBarRef.current) progressBarRef.current.style.width = "60%";
-      playConfirmChime(mutedRef.current ? null : audioCtxRef.current);
+      playLockChime(mutedRef.current ? null : audioCtxRef.current);
 
-      const briefTimer = setTimeout(() => {
-        setUiPhase("brief");
+      const dossierTimer = setTimeout(() => {
+        setUiPhase("dossier");
         if (!mutedRef.current) {
           staticBurst(0.18, 0.045);
-          [720, 780, 840, 900].forEach((freq, i) => {
-            setTimeout(() => beep({ freq, duration: 0.06, gain: 0.065, type: "triangle" }), i * 260);
-          });
+          setTimeout(() => setStamped(true), 900);
+        } else {
+          setStamped(true);
         }
         if (progressBarRef.current) progressBarRef.current.style.width = "100%";
       }, 2400);
@@ -370,7 +455,7 @@ function ParticleIntro({ onFinish }) {
       }, 2400 + 3600);
 
       return () => {
-        clearTimeout(briefTimer);
+        clearTimeout(dossierTimer);
         clearTimeout(finishTimer);
       };
     }
@@ -380,14 +465,14 @@ function ParticleIntro({ onFinish }) {
     const warpStart = SCAN_DURATION;
     const assembleStart = SCAN_DURATION + WARP_DURATION;
     const holdStart = assembleStart + ASSEMBLE_DURATION;
-    const briefStart = holdStart + HOLD_DURATION;
+    const dossierStart = holdStart + HOLD_DURATION;
 
     function draw(ts) {
       if (startRef.current === null) startRef.current = ts;
       const elapsed = ts - startRef.current;
 
       ctx.clearRect(0, 0, cw, ch);
-      ctx.fillStyle = "#05090c";
+      ctx.fillStyle = "#07070a";
       ctx.fillRect(0, 0, cw, ch);
 
       const particles = particlesRef.current;
@@ -426,15 +511,15 @@ function ParticleIntro({ onFinish }) {
         const alpha =
           (assembleEase > 0 ? 0.55 + assembleEase * 0.4 : Math.min(0.85, persp * 0.3)) * particleFade;
 
-        const [r1, g1, b1] = COLD_A;
-        const [r2, g2, b2] = COLD_B;
+        const [r1, g1, b1] = EMBER_A;
+        const [r2, g2, b2] = EMBER_B;
         const r = Math.round(r1 * (1 - p.mix) + r2 * p.mix);
         const g = Math.round(g1 * (1 - p.mix) + g2 * p.mix);
         const b = Math.round(b1 * (1 - p.mix) + b2 * p.mix);
 
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
         ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
-        ctx.shadowBlur = assembleEase > 0.6 ? 6 : 2;
+        ctx.shadowBlur = assembleEase > 0.6 ? 7 : 2;
         ctx.fillRect(x - size / 2, y - size / 2, size, size);
       }
       ctx.shadowBlur = 0;
@@ -444,26 +529,22 @@ function ParticleIntro({ onFinish }) {
         if (glitchTickRef.current % 16 === 0) {
           const bandH = 3 + Math.random() * 7;
           const bandY = Math.random() * ch;
-          const shift = (Math.random() - 0.5) * 12;
+          const shift = (Math.random() - 0.5) * 14;
           const slice = ctx.getImageData(0, bandY, cw, bandH);
           ctx.putImageData(slice, shift, bandY);
         }
       }
 
       if (elapsed > holdStart) {
-        const glowSpan = elapsed > briefStart ? BRIEF_DURATION : HOLD_DURATION;
-        const glowElapsed = elapsed > briefStart ? elapsed - briefStart : elapsed - holdStart;
+        const glowSpan = elapsed > dossierStart ? DOSSIER_DURATION : HOLD_DURATION;
+        const glowElapsed = elapsed > dossierStart ? elapsed - dossierStart : elapsed - holdStart;
         const glowT = Math.min(1, glowElapsed / glowSpan);
-        const pulse = 0.5 + 0.5 * Math.sin(glowT * Math.PI * 2 * 0.55);
-        const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 280);
-        grad.addColorStop(0, `rgba(${COLD_A[0]}, ${COLD_A[1]}, ${COLD_A[2]}, ${0.05 + pulse * 0.025})`);
+        const pulse = 0.5 + 0.5 * Math.sin(glowT * Math.PI * 2 * 0.5);
+        const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 300);
+        grad.addColorStop(0, `rgba(${EMBER_A[0]}, ${EMBER_A[1]}, ${EMBER_A[2]}, ${0.045 + pulse * 0.025})`);
         grad.addColorStop(1, "rgba(34, 211, 238, 0)");
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, cw, ch);
-      }
-
-      if (elapsed >= briefStart && !briefTriggeredRef.current) {
-        briefTriggeredRef.current = true;
       }
 
       if (progressBarRef.current) {
@@ -502,7 +583,7 @@ function ParticleIntro({ onFinish }) {
       canvas.style.height = h + "px";
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(devicePixelRatio, devicePixelRatio);
-      targetsRef.current = sampleTextPoints(
+      targetsRef.current = sampleDossierPoints(
         profile.fullName.toUpperCase(),
         profile.role.toUpperCase(),
         w,
@@ -530,50 +611,52 @@ function ParticleIntro({ onFinish }) {
   }, []);
 
   const showCrispText = uiPhase === "hold";
-  const showBriefing = uiPhase === "brief" || uiPhase === "fade";
+  const showDossier = uiPhase === "dossier" || uiPhase === "fade";
 
   return (
-    <div className="particle-intro" style={{ opacity: overlayOpacity }}>
+    <div className="re-intro" style={{ opacity: overlayOpacity }}>
       {/* Toàn bộ nội dung trực quan bên dưới thuần trang trí -> ẩn khỏi
           trình đọc màn hình. Nút "Bỏ qua" thật (không aria-hidden) nằm
           riêng ngay dưới đây mới là điều khiển có thể tiếp cận được. */}
-      <div
-        className="particle-intro-visuals"
-        aria-hidden="true"
-        onClick={handleSkip}
-      >
-        <canvas ref={canvasRef} className="particle-intro-canvas" />
+      <div className="re-intro-visuals" aria-hidden="true" onClick={handleSkip}>
+        <canvas ref={canvasRef} className="re-intro-canvas" />
 
-        <div className="particle-intro-grid" />
+        <div className="re-intro-grid" />
+        <div className="re-intro-scanlines" />
+        <div className="re-intro-vignette" />
+        <div className="re-intro-glitch" />
+        <div className="re-intro-grain" />
 
-        <div className="particle-intro-scanlines" />
-        <div className="particle-intro-vignette" />
-        <div className="particle-intro-glitch" />
-        <div className="particle-intro-grain" />
+        {/* Chớp báo động cyan toàn màn hình, 2 nhịp ngay lúc mở màn */}
+        <div className={`re-intro-alarmflash ${alarmFlash ? "is-on" : ""}`} />
+
+        {/* Sọc cảnh báo (hazard tape) trên/dưới màn hình */}
+        <div className="re-intro-hazardbar top" />
+        <div className="re-intro-hazardbar bottom" />
 
         {/* 1 nhịp quét sáng dọc màn hình, chỉ chạy trong pha scan */}
-        {uiPhase === "scan" && <div className="particle-intro-scanbeam" />}
+        {uiPhase === "scan" && <div className="re-intro-scanbeam" />}
 
-        {/* Chấm đỏ nhỏ kiểu "đang bị giám sát" */}
-        <div className="particle-intro-rec">
+        {/* Chấm cyan nhỏ kiểu "đang bị giám sát" */}
+        <div className="re-intro-rec">
           <span className="rec-dot" />
           REC
         </div>
 
-        {/* Boot log chạy nhanh lúc quét/warp */}
+        {/* Log terminal chạy nhanh lúc còi báo động/quét */}
         {bootLineCount > 0 && (uiPhase === "scan" || uiPhase === "warp") && (
-          <div className="particle-intro-bootlog">
+          <div className="re-intro-bootlog">
             {BOOT_LINES.slice(0, bootLineCount).map((line) => (
               <p key={line}>{line}</p>
             ))}
           </div>
         )}
 
-        {/* Nhịp "chụp" trắng nhanh đúng lúc chữ vừa khoá lại xong */}
-        {uiPhase === "hold" && <div className="particle-intro-flash" />}
+        {/* Nhịp "chụp" cyan nhanh đúng lúc chữ vừa khoá lại xong */}
+        {uiPhase === "hold" && <div className="re-intro-flash" />}
 
-        {/* Frame quét 4 góc + cross-line */}
-        <div className={`particle-intro-frame phase-${uiPhase}`}>
+        {/* Khung quét 4 góc + cross-line, kiểu reticle an ninh */}
+        <div className={`re-intro-frame phase-${uiPhase}`}>
           <span className="corner tl" />
           <span className="corner tr" />
           <span className="corner bl" />
@@ -583,50 +666,50 @@ function ParticleIntro({ onFinish }) {
         </div>
 
         {/* HUD 3 góc */}
-        <div className="particle-intro-hud hud-tl">
-          <div className="hud-label">SYS.SCAN</div>
+        <div className="re-intro-hud hud-tl">
+          <div className="hud-label">T-SCAN</div>
           <div className="hud-value">{hexTag}</div>
         </div>
-        <div className="particle-intro-hud hud-tr">
-          <div className="hud-label">NODE.STATE</div>
+        <div className="re-intro-hud hud-tr">
+          <div className="hud-label">THREAT LV</div>
           <div className="hud-value">{uiPhase.toUpperCase()}</div>
-          <span className="particle-intro-radar" aria-hidden="true" />
+          <span className="re-intro-radar" aria-hidden="true" />
         </div>
-        <div className="particle-intro-hud hud-bl">
-          <div className="hud-label">CASE FILE</div>
+        <div className="re-intro-hud hud-bl">
+          <div className="hud-label">FILE NO.</div>
           <div className="hud-value">#{caseId}</div>
         </div>
 
-        {/* 4 status dot: sáng dần theo tiến độ intro (LINK/AUTH/SYNC/BRIEF) */}
-        <div className="particle-intro-status">
+        {/* 4 status dot: sáng dần theo tiến độ intro (SCAN/LOCK/PURGE/FILE) */}
+        <div className="re-intro-status">
           <div className="status-row">
             <span className={`status-dot ${phaseIndex >= 1 ? "" : "off"}`} />
-            <span className="status-label">LINK</span>
+            <span className="status-label">SCAN</span>
           </div>
           <div className="status-row">
             <span className={`status-dot ${phaseIndex >= 2 ? "" : "off"}`} />
-            <span className="status-label">AUTH</span>
+            <span className="status-label">LOCK</span>
           </div>
           <div className="status-row">
             <span className={`status-dot ${phaseIndex >= 3 ? "" : "off"}`} />
-            <span className="status-label">SYNC</span>
+            <span className="status-label">PURGE</span>
           </div>
           <div className="status-row">
             <span className={`status-dot ${phaseIndex >= 4 ? "" : "off"}`} />
-            <span className="status-label">BRIEF</span>
+            <span className="status-label">FILE</span>
           </div>
-          <div className="status-footnote">ENCRYPTION: AES-256</div>
+          <div className="status-footnote">CONTAINMENT: AES-256</div>
         </div>
 
         {/* Progress bar tổng thời lượng intro */}
-        <div className="particle-intro-progress">
+        <div className="re-intro-progress">
           <div className="progress-bar" ref={progressBarRef} />
         </div>
 
         {/* Chữ THẬT, sắc nét — đè lên đúng vị trí pixel vừa ráp */}
         {showCrispText && (
-          <div className="particle-intro-name-wrap">
-            <p className="intro-caption">TARGET ACQUIRED</p>
+          <div className="re-intro-name-wrap">
+            <p className="intro-caption">SUBJECT IDENTIFIED</p>
             <h1 className="intro-name">{profile.fullName}</h1>
             <div className="intro-divider">
               <span />
@@ -639,51 +722,55 @@ function ParticleIntro({ onFinish }) {
 
         {/* Terminal log mở rộng */}
         {showCrispText && (
-          <div className="particle-intro-terminal">
+          <div className="re-intro-terminal">
             <p className="term-line term-access">&gt; ACCESS GRANTED</p>
             <p className="term-line term-info delay-1">&gt; USER: {profile.fullName}</p>
             <p className="term-line term-info delay-2">&gt; ROLE: {profile.role}</p>
             <p className="term-line term-prompt delay-3">
-              &gt; STATUS: ONLINE_<span className="cursor-blink" />
+              &gt; STATUS: CLEARED_<span className="cursor-blink" />
             </p>
           </div>
         )}
 
-        {/* ===== BRIEF — hồ sơ nhân sự mở rộng ===== */}
-        {showBriefing && (
-          <div className="particle-intro-briefing">
-            <span className="briefing-corner tl" />
-            <span className="briefing-corner tr" />
-            <span className="briefing-corner bl" />
-            <span className="briefing-corner br" />
+        {/* ===== DOSSIER — hồ sơ mật dạng file kẹp giấy ===== */}
+        {showDossier && (
+          <div className="re-intro-dossier">
+            <span className="dossier-rivet tl" />
+            <span className="dossier-rivet tr" />
+            <span className="dossier-rivet bl" />
+            <span className="dossier-rivet br" />
+            <div className="dossier-hazardstrip" />
 
-            <p className="briefing-tag hud-readout">
-              FILE.{caseId} // HỒ SƠ NHÂN SỰ
+            <p className="dossier-tag hud-readout">
+              FILE.{caseId} // HỒ SƠ MẬT — NHÂN SỰ
             </p>
 
-            <h2 className="briefing-name">{profile.fullName}</h2>
+            <h2 className="dossier-name">{profile.fullName}</h2>
 
-            <div className="briefing-rows">
-              <div className="briefing-row delay-1">
+            <div className="dossier-rows">
+              <div className="dossier-row delay-1">
                 <span>VAI TRÒ</span>
                 <strong>{profile.role}</strong>
               </div>
 
-              <div className="briefing-row delay-2">
+              <div className="dossier-row delay-2">
                 <span>ĐỊA ĐIỂM</span>
                 <strong>{profile.location}</strong>
               </div>
 
-              <div className="briefing-row delay-3">
+              <div className="dossier-row delay-3">
                 <span>TRẠNG THÁI</span>
-                <strong className="briefing-ready">
-                  <i className="briefing-ready-dot" />
+                <strong className="dossier-ready">
+                  <i className="dossier-ready-dot" />
                   SẴN SÀNG TRIỂN KHAI
                 </strong>
               </div>
             </div>
 
-            <p className="briefing-quote delay-4">&ldquo;{profile.quote}&rdquo;</p>
+            <p className="dossier-quote delay-4">&ldquo;{profile.quote}&rdquo;</p>
+
+            {/* Con dấu cyan "ĐÃ DUYỆT" đóng xuống chéo góc, kèm tiếng thịch */}
+            <div className={`dossier-stamp ${stamped ? "is-stamped" : ""}`}>ĐÃ DUYỆT</div>
           </div>
         )}
       </div>
@@ -691,7 +778,7 @@ function ParticleIntro({ onFinish }) {
       {/* Nút bật/tắt âm thanh — điều khiển thật, có thể tiếp cận (không aria-hidden) */}
       <button
         type="button"
-        className="particle-intro-mute"
+        className="re-intro-mute"
         onClick={(e) => {
           e.stopPropagation();
           setMuted((m) => !m);
@@ -703,12 +790,8 @@ function ParticleIntro({ onFinish }) {
 
       {/* Nút "Bỏ qua" thật — điều khiển có thể tiếp cận (bàn phím/trình đọc
           màn hình), tương đương việc bấm vào bất kỳ đâu trên overlay. */}
-      <button
-        type="button"
-        className="particle-intro-skip"
-        onClick={handleSkip}
-      >
-        Bỏ qua intro <span className="particle-intro-skip-arrow">→</span>
+      <button type="button" className="re-intro-skip" onClick={handleSkip}>
+        Bỏ qua intro <span className="re-intro-skip-arrow">→</span>
       </button>
     </div>
   );
