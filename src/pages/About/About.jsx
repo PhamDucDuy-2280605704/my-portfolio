@@ -6,7 +6,6 @@ import aboutPhoto from "../../assets/images/avatar-about.jpg";
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import Button from "../../components/common/Button/Button";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
-import ZoomableImage from "../../components/common/ZoomableImage/ZoomableImage";
 
 // Section "Giới thiệu" — giờ là 1 khối trong trang chủ dài (Home.jsx ghép
 // tất cả section lại), không còn là route "/about" riêng. id="about" để
@@ -27,7 +26,7 @@ function About() {
 
         <div className="about-page-image">
           <HudFrame label="IDENT.01">
-            <ZoomableImage
+            <img
               src={aboutPhoto}
               alt={profile.fullName}
             />
