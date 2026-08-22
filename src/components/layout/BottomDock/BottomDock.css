@@ -178,15 +178,53 @@
 @media (max-width: 480px) {
   .bottom-dock {
     bottom: 14px;
+    /* Trên điện thoại hẹp, dock có thể rộng hơn viewport nếu đủ nhiều mục
+       -> giới hạn theo viewport và cho cuộn ngang trong chính viên kính,
+       thay vì để icon cuối bị cắt cụt mất (lỗi cũ, không liên quan tới
+       rivet nhưng tiện sửa luôn trong đợt canh chỉnh mobile này). */
+    max-width: calc(100vw - 24px);
+  }
+
+  .bottom-dock-list {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .bottom-dock-list::-webkit-scrollbar {
+    display: none;
   }
 
   .bottom-dock-item {
     width: 42px;
     height: 42px;
+    flex-shrink: 0;
   }
 
   .bottom-dock-icon {
     font-size: 19px;
+  }
+
+  /* Thu nhỏ + rút ngắn khoảng đưa ra ngoài của rivet trên điện thoại, để
+     không bao giờ tràn khỏi mép màn hình kể cả trên máy rất hẹp (~320px). */
+  .bottom-dock::before,
+  .bottom-dock::after {
+    width: 3px;
+    height: 3px;
+  }
+  .bottom-dock::before {
+    left: -6px;
+  }
+  .bottom-dock::after {
+    right: -6px;
+  }
+}
+
+/* Máy siêu nhỏ (iPhone SE đời đầu, Android giá rẻ ~320px): ẩn hẳn rivet để
+   tránh mọi rủi ro tràn ngang, ưu tiên vùng chạm của dock hơn chi tiết trang trí. */
+@media (max-width: 360px) {
+  .bottom-dock::before,
+  .bottom-dock::after {
+    display: none;
   }
 }
 

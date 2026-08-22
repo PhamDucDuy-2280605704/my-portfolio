@@ -9,7 +9,12 @@
 }
 
 html{
-    scroll-behavior:smooth;
+    /* Cuộn "mượt" giờ do Lenis đảm nhiệm (xem SmoothScroll.jsx) — để lại
+       scroll-behavior:smooth gốc của trình duyệt dễ "đánh nhau" với vòng
+       lặp cuộn của Lenis mỗi khi có link neo/scrollIntoView, gây giật nhẹ.
+       scroll-padding-top vẫn cần giữ (Lenis tôn trọng giá trị này khi cuộn
+       tới #hash) để phần đầu section không bị Navbar sticky che mất. */
+    scroll-behavior:auto;
     scroll-padding-top:120px;
 }
 

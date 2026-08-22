@@ -490,8 +490,8 @@
 .intro-divider i {
   width: 5px;
   height: 5px;
+  border-radius: 999px;
   background: var(--re-red-bright);
-  transform: rotate(45deg);
   box-shadow: 0 0 6px rgba(var(--re-red-rgb), 0.8);
 }
 .intro-role {
@@ -842,40 +842,95 @@
   .re-intro-frame {
     inset: 18px;
   }
+  /* Bracket 4 góc gốc (34px) được thiết kế cho màn desktop rộng — thu nhỏ
+     lại trên điện thoại để không "đè" lên chữ HUD ngay sát đó. */
+  .re-intro-frame .corner {
+    width: 22px;
+    height: 22px;
+  }
   .hud-tl,
   .hud-tr {
-    top: 40px;
+    top: 48px;
   }
   .hud-tl,
   .hud-bl {
-    left: 22px;
+    left: 20px;
   }
   .hud-tr {
-    right: 22px;
+    right: 20px;
+  }
+  .re-intro-hud .hud-label {
+    font-size: 0.58rem;
+  }
+  .re-intro-hud .hud-value {
+    font-size: 0.82rem;
+  }
+  .re-intro-radar {
+    right: -22px;
+  }
+  .hud-bl {
+    bottom: 92px;
   }
   .re-intro-status {
-    bottom: 96px;
-    right: 22px;
+    bottom: 104px;
+    right: 20px;
   }
   .re-intro-progress {
-    left: 22px;
-    right: 22px;
-    bottom: 62px;
+    left: 20px;
+    right: 20px;
+    bottom: 66px;
   }
   .re-intro-bootlog {
     left: 14px;
-    max-width: 72vw;
+    bottom: 84px;
+    max-width: 66vw;
+    font-size: 0.66rem;
+  }
+  .re-intro-rec {
+    top: 16px;
   }
   .re-intro-dossier {
-    padding: 24px 20px 20px;
+    width: min(94vw, 420px);
+    padding: 22px 18px 18px;
+  }
+  .dossier-name {
+    margin-bottom: 14px;
   }
   .dossier-stamp {
-    font-size: 0.9rem;
-    right: 4%;
+    font-size: 0.84rem;
+    top: 20%;
+    right: 5%;
+    padding: 5px 11px;
   }
   .re-intro-mute,
   .re-intro-skip {
-    bottom: 18px;
+    bottom: 16px;
+  }
+  .re-intro-skip {
+    padding: 9px 14px;
+    font-size: 0.72rem;
+  }
+}
+
+/* Điện thoại rất hẹp (~360px trở xuống): giấu bớt chi tiết trang trí rìa
+   màn hình (log terminal, HUD trái/phải) để tập trung vào tên + dossier —
+   nội dung chính vẫn đầy đủ, chỉ đỡ rối trên khổ máy nhỏ nhất. */
+@media (max-width: 380px) {
+  .re-intro-bootlog,
+  .hud-bl,
+  .re-intro-status .status-footnote {
+    display: none;
+  }
+  .re-intro-dossier {
+    width: 94vw;
+    padding: 20px 16px 16px;
+  }
+  .dossier-row {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  .dossier-row strong {
+    text-align: left;
   }
 }
 

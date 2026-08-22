@@ -5,6 +5,7 @@ import "./App.css";
 import AppRoutes from "./routes/AppRoutes";
 import Background from "./components/common/Background/Background";
 import ParticleIntro from "./components/common/ParticleIntro/ParticleIntro";
+import SmoothScroll from "./components/common/SmoothScroll/SmoothScroll";
 import ErrorBoundary from "./components/common/ErrorBoundary/ErrorBoundary";
 import IntroReplayContext from "./context/IntroReplayContext";
 
@@ -49,6 +50,7 @@ function App() {
     <IntroReplayContext.Provider value={handleReplayIntro}>
       {isLoading && <ParticleIntro key={introKey} onFinish={() => setIsLoading(false)} />}
 
+      <SmoothScroll />
       <Background />
 
       <div className="app-content">

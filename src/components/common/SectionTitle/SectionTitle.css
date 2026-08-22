@@ -70,9 +70,10 @@
   height: 6px;
   flex-shrink: 0;
 
-  /* Vuông thay vì tròn, xoay 45° -> giống 1 pixel/tick đo lường kỹ thuật */
-  border-radius: 1px;
-  transform: rotate(45deg);
+  /* Tròn (rivet) thay vì vuông xoay 45° — đồng bộ đúng 1 kiểu "chấm" với
+     góc HudFrame và 2 đầu BottomDock, thay vì 2 hình dạng chấm khác nhau
+     cùng tồn tại trên site. */
+  border-radius: 999px;
 
   background: var(--color-accent);
   box-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.5);

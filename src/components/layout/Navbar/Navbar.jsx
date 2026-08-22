@@ -8,6 +8,7 @@ import navSections from "../../../data/navSections";
 import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
 import useActiveSection from "../../../hooks/useActiveSection";
 import { playUiSound } from "../../../utils/uiSound";
+import { stopLenis, startLenis } from "../../../lib/lenis";
 
 // Đồng hồ giờ:phút:giây kiểu HUD, luôn 2 chữ số (dùng lại ở góc phải Navbar).
 function formatClock(date) {
@@ -44,6 +45,10 @@ function Navbar() {
     if (!isZoomed) return;
 
     document.body.style.overflow = "hidden";
+    // Lenis tự bắt sự kiện wheel/touch để làm mượt cuộn, KHÔNG dựa vào
+    // overflow của body -> nếu không stop() riêng, nền vẫn cuộn được dù
+    // overlay đang mở và body đã "hidden".
+    stopLenis();
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") setIsZoomed(false);
@@ -53,6 +58,7 @@ function Navbar() {
 
     return () => {
       document.body.style.overflow = "";
+      startLenis();
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isZoomed]);

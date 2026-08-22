@@ -103,11 +103,28 @@
 
   .about-page-image {
     position: static;
+    /* Vốn 350px cố định — trên tablet/điện thoại co lại theo chiều rộng
+       thật của màn hình thay vì giữ nguyên 350px (có thể tràn ngang trên
+       máy hẹp hơn 350px, hoặc trông "to đùng" lệch tỉ lệ trên máy vừa). */
+    width: 100%;
+    max-width: 320px;
   }
 }
 
 @media (max-width: 640px) {
   .about-page {
     padding: 80px 20px;
+  }
+
+  .about-page-image {
+    max-width: 260px;
+  }
+
+  .about-page-info h3 {
+    font-size: 28px;
+  }
+
+  .about-page-details li {
+    padding: 9px 14px;
   }
 }

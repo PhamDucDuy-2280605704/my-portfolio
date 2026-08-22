@@ -130,4 +130,11 @@
     width: 10px;
     height: 10px;
   }
+
+  /* Chấm rivet co lại theo tỉ lệ góc nhỏ hơn trên điện thoại — giữ đúng
+     tỉ lệ với bracket 10x10px thay vì trông to lệch như trên desktop. */
+  .hud-frame-corner::after {
+    width: 3px;
+    height: 3px;
+  }
 }

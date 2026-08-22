@@ -8,6 +8,7 @@ import Experience from "../Experience/Experience";
 import Journal from "../Journal/Journal";
 import Contact from "../Contact/Contact";
 import usePageTitle from "../../hooks/usePageTitle";
+import { getLenisInstance } from "../../lib/lenis";
 
 // Trang chủ duy nhất của site — thay vì mỗi mục (About, Skills, Projects...)
 // là 1 route riêng như trước, giờ TẤT CẢ được ghép chung vào đây thành 1
@@ -33,7 +34,14 @@ function Home() {
     if (target) {
       // Đợi 1 nhịp để layout (đặc biệt là ảnh trong Hero) ổn định vị trí
       // trước khi cuộn, tránh cuộn tới sai chỗ do trang còn đang "nhảy" layout.
-      requestAnimationFrame(() => target.scrollIntoView({ behavior: "smooth" }));
+      requestAnimationFrame(() => {
+        const lenis = getLenisInstance();
+        if (lenis) {
+          lenis.scrollTo(target, { immediate: false });
+        } else {
+          target.scrollIntoView({ behavior: "smooth" });
+        }
+      });
     }
   }, []);
 

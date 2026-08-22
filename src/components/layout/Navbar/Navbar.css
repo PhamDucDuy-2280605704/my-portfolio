@@ -291,4 +291,26 @@
   .navbar-meta {
     padding: 0 14px;
   }
+
+  /* Sọc hazard mắt nhỏ lại theo tỉ lệ dải mã hiệu mỏng hơn trên điện thoại
+     — pattern 8/16px gốc trông quá thô khi bar chỉ còn ~30px chiều cao. */
+  .navbar-meta::after {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(var(--color-primary-rgb), 0.65) 0px,
+      rgba(var(--color-primary-rgb), 0.65) 5px,
+      transparent 5px,
+      transparent 10px
+    );
+  }
+
+  .navbar-clock {
+    gap: 4px;
+    font-size: 13px;
+  }
+
+  .navbar-biohazard {
+    width: 11px;
+    height: 11px;
+  }
 }

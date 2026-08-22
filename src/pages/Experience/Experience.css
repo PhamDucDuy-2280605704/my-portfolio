@@ -59,8 +59,10 @@
   position: relative;
 }
 
-/* Chấm mốc timeline giờ là hình thoi (vuông xoay 45°) thay vì tròn — đồng
-   bộ .section-title-divider-dot / .intro-divider i */
+/* Chấm mốc timeline — hình tròn (rivet), đồng bộ với chấm ở SectionTitle,
+   HudFrame và 2 đầu BottomDock, thay vì hình thoi vuông xoay 45° trước đây
+   (khi đó SectionTitle cũng đang là hình thoi — giờ cả hệ thống dùng chung
+   1 kiểu chấm tròn duy nhất). */
 .timeline-dot {
   position: absolute;
   left: -41px;
@@ -68,8 +70,7 @@
 
   width: 10px;
   height: 10px;
-  border-radius: 1px;
-  transform: rotate(45deg);
+  border-radius: 999px;
 
   background: var(--color-primary);
   box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.15);

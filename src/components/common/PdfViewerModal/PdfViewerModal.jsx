@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 
 import "./PdfViewerModal.css";
+import { stopLenis, startLenis } from "../../../lib/lenis";
 
 // Modal xem PDF ngay trong trang (dùng <iframe>) — đảm bảo LUÔN xem trực tiếp,
 // bất kể trình duyệt của người dùng có bật cài đặt "luôn tải PDF về máy" hay
@@ -10,6 +11,9 @@ import "./PdfViewerModal.css";
 function PdfViewerModal({ src, title, onClose }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    // Xem giải thích ở Navbar.jsx: Lenis bắt wheel/touch riêng, phải stop()
+    // thủ công thì nền mới thực sự hết cuộn được khi modal đang mở.
+    stopLenis();
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") onClose();
@@ -19,6 +23,7 @@ function PdfViewerModal({ src, title, onClose }) {
 
     return () => {
       document.body.style.overflow = "";
+      startLenis();
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
