@@ -14,6 +14,11 @@ import Home from "../pages/Home/Home";
 
 const NotFound = lazy(() => import("../pages/NotFound/NotFound"));
 
+// Trang bí mật — KHÔNG hiện trên Navbar/BottomDock, chỉ ai biết đường dẫn
+// mới vào được. Lazy-load vì hiếm khi được truy cập. Xem chi tiết/nội dung/
+// mật khẩu ở pages/Zone/Zone.jsx.
+const Zone = lazy(() => import("../pages/Zone/Zone"));
+
 // Các route cũ (/about, /skills, /projects...) từ thời site còn nhiều
 // trang riêng — giữ lại dưới dạng REDIRECT sang đúng section tương ứng
 // trên trang chủ (VD "/about" -> "/#about"), để link cũ đã chia sẻ/bookmark
@@ -48,6 +53,14 @@ function AppRoutes() {
               element={<Home />}
             />
           </Route>
+
+          {/* Trang bí mật — đứng riêng, KHÔNG bọc MainLayout (không có
+              Navbar/Footer/BottomDock của site) vì cần toàn quyền tự thiết
+              kế 1 màn hình PDA riêng biệt, không lẫn với giao diện portfolio. */}
+          <Route
+            path="/zone"
+            element={<Zone />}
+          />
 
           {LEGACY_REDIRECTS.map(([from, toHash]) => (
             <Route
