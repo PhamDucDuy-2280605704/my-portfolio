@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 
 import "./Zone.css";
 
 import usePageTitle from "../../hooks/usePageTitle";
+import HudFrame from "../../components/common/HudFrame/HudFrame";
 
 // ============================================================================
 // TRANG BÍ MẬT — /zone
@@ -38,6 +40,41 @@ const LAST_ACCESS_KEY = "zone-last-access";
 // PDA/máy ATM khoá tạm sau nhiều lần sai) + khoá bao nhiêu giây.
 const LOCKOUT_THRESHOLD = 3;
 const LOCKOUT_SECONDS = 12;
+
+// Danh sách ghi chú lưu trong localStorage của TRÌNH DUYỆT NÀY (không gửi
+// đi bất kỳ server nào) -> thêm/xoá ghi chú ngay trong lúc đang mở khoá,
+// lần sau quay lại vẫn còn nguyên trên cùng máy/trình duyệt.
+const ENTRIES_KEY = "zone-entries";
+
+const DEFAULT_ENTRIES = [
+  {
+    id: "note-01",
+    title: "GHI CHÚ // 01",
+    body: 'Bấm "+ Thêm ghi chú" bên dưới để viết bí mật đầu tiên của bạn — mọi ghi chú lưu ngay trên trình duyệt này (localStorage), không gửi đi đâu cả.',
+    decrypt: true,
+  },
+];
+
+function loadEntries() {
+  try {
+    const raw = window.localStorage.getItem(ENTRIES_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {
+    // JSON hỏng hoặc localStorage bị chặn -> dùng mặc định
+  }
+  return DEFAULT_ENTRIES;
+}
+
+function saveEntries(entries) {
+  try {
+    window.localStorage.setItem(ENTRIES_KEY, JSON.stringify(entries));
+  } catch {
+    // bỏ qua nếu không lưu được (VD: chế độ ẩn danh nghiêm ngặt)
+  }
+}
 
 // ===== Âm thanh tổng hợp bằng Web Audio API — cùng kỹ thuật với
 // ParticleIntro.jsx (oscillator/noise buffer thuần, không dùng file audio). =====
@@ -171,7 +208,6 @@ function DecryptText({ text, startDelay = 0, onTick }) {
   const [shown, setShown] = useState("");
 
   useEffect(() => {
-    setShown("");
     let i = 0;
     let intervalId;
 
@@ -213,26 +249,6 @@ const ZONE_SIGNAL_LOGS = [
   "GHI NHỚ ĐƯỜNG VÀO — CÓ THỂ KHÔNG CÓ ĐƯỜNG RA.",
 ];
 
-// Placeholder nội dung bên trong Zone — SỬA/THAY THẾ mảng này bằng bí mật
-// thật của bạn. Mỗi phần tử là 1 "tệp tin" hiện trong màn hình sau khi mở khoá.
-const ZONE_ENTRIES = [
-  {
-    id: "note-01",
-    title: "GHI CHÚ // 01",
-    body: "Viết nội dung bí mật đầu tiên của bạn vào đây — sửa trong mảng ZONE_ENTRIES ở Zone.jsx.",
-  },
-  {
-    id: "note-02",
-    title: "GHI CHÚ // 02",
-    body: "Có thể là 1 câu chuyện, 1 kế hoạch, 1 ghi chú riêng tư... tuỳ bạn.",
-  },
-  {
-    id: "note-03",
-    title: "TỌA ĐỘ ẨN GIẤU",
-    body: "Hoặc xoá bớt/thêm entry tuỳ ý — chỉ là mảng dữ liệu JS bình thường.",
-  },
-];
-
 function Zone() {
   usePageTitle("ЗОНА | Truy Cập Hạn Chế");
 
@@ -253,9 +269,26 @@ function Zone() {
   const [cooldown, setCooldown] = useState(0);
   const [lastAccess, setLastAccess] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
+  const [muted, setMuted] = useState(false);
+  const [entries, setEntries] = useState(() => loadEntries());
+  const [newTitle, setNewTitle] = useState("");
+  const [newBody, setNewBody] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const audioCtxRef = useRef(null);
   const inputRef = useRef(null);
+  const mutedRef = useRef(false);
+
+  useEffect(() => {
+    mutedRef.current = muted;
+  }, [muted]);
+
+  // Tất cả tiếng động trong trang đi qua hàm này thay vì gọi getAudioCtx
+  // trực tiếp -> bấm tắt tiếng là im re toàn bộ, kể cả tiếng Geiger counter
+  // chạy ngầm.
+  function ctx() {
+    return mutedRef.current ? null : getAudioCtx(audioCtxRef);
+  }
 
   // Đã mở khoá trong tab này từ trước (sessionStorage) -> đọc ngay lúc khởi
   // tạo state ở trên (useState lazy initializer), khỏi cần effect riêng.
@@ -280,8 +313,7 @@ function Zone() {
 
     const tickTimer = setInterval(
       () => {
-        const ctx = getAudioCtx(audioCtxRef);
-        playTick(ctx, 1200 + Math.random() * 800);
+        playTick(ctx(), 1200 + Math.random() * 800);
       },
       900 + Math.random() * 1400
     );
@@ -312,7 +344,7 @@ function Zone() {
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [unlocked]);
 
   // Dọn dẹp: đóng AudioContext khi component unmount hẳn (rời khỏi /zone).
@@ -328,11 +360,10 @@ function Zone() {
     e.preventDefault();
     if (cooldown > 0 || granting) return;
 
-    const ctx = getAudioCtx(audioCtxRef);
     const isCorrect = input.trim().toLowerCase() === ZONE_PASSWORD.toLowerCase();
 
     if (isCorrect) {
-      playGranted(ctx);
+      playGranted(ctx());
       setGranting(true);
       setTimeout(() => {
         // Đọc mốc truy cập LẦN TRƯỚC (nếu có) trước khi ghi đè bằng mốc mới.
@@ -352,7 +383,7 @@ function Zone() {
         }
       }, 900);
     } else {
-      playDenied(ctx);
+      playDenied(ctx());
       setInput("");
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 420);
@@ -366,7 +397,7 @@ function Zone() {
   }
 
   function handleLockAgain() {
-    playLockAgain(getAudioCtx(audioCtxRef));
+    playLockAgain(ctx());
     try {
       window.sessionStorage.removeItem(SESSION_KEY);
     } catch {
@@ -378,12 +409,41 @@ function Zone() {
   }
 
   function handleCopy(entry) {
-    playCopyTick(getAudioCtx(audioCtxRef));
+    playCopyTick(ctx());
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(entry.body).catch(() => {});
     }
     setCopiedId(entry.id);
     setTimeout(() => setCopiedId((id) => (id === entry.id ? null : id)), 1600);
+  }
+
+  function handleAddEntry(e) {
+    e.preventDefault();
+    if (!newBody.trim()) return;
+
+    const entry = {
+      id: `note-${Date.now()}`,
+      title: newTitle.trim() || `GHI CHÚ // ${entries.length + 1}`,
+      body: newBody.trim(),
+      // Ghi chú TỰ TAY người dùng vừa gõ -> hiện ngay, không cần hiệu ứng
+      // "giải mã" (hiệu ứng đó dành cho nội dung như thể đã có sẵn từ trước).
+      decrypt: false,
+    };
+
+    const next = [...entries, entry];
+    setEntries(next);
+    saveEntries(next);
+    setNewTitle("");
+    setNewBody("");
+    setShowAddForm(false);
+    playGranted(ctx());
+  }
+
+  function handleDeleteEntry(id) {
+    const next = entries.filter((entry) => entry.id !== id);
+    setEntries(next);
+    saveEntries(next);
+    playLockAgain(ctx());
   }
 
   return (
@@ -397,22 +457,31 @@ function Zone() {
       <div className="zone-hazardbar bottom" aria-hidden="true" />
 
       <div className="zone-pda">
-        <span className="zone-rivet tl" />
-        <span className="zone-rivet tr" />
-        <span className="zone-rivet bl" />
-        <span className="zone-rivet br" />
+        <HudFrame label="ZONE.TERMINAL">
+          <div className="zone-pda-topbar">
+            <span className="zone-pda-brand">P.D.A. // ZONE TERMINAL</span>
+            <div className="zone-pda-topbar-right">
+              <span
+                className="zone-pda-signal"
+                aria-hidden="true"
+              >
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+              <button
+                type="button"
+                className="zone-mute-btn"
+                onClick={() => setMuted((m) => !m)}
+                aria-label={muted ? "Bật âm thanh" : "Tắt âm thanh"}
+              >
+                {muted ? <HiSpeakerXMark /> : <HiSpeakerWave />}
+              </button>
+            </div>
+          </div>
 
-        <div className="zone-pda-topbar">
-          <span className="zone-pda-brand">P.D.A. // ZONE TERMINAL</span>
-          <span className="zone-pda-signal" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <i />
-          </span>
-        </div>
-
-        {!unlocked ? (
+          {!unlocked ? (
           <div className={`zone-lock ${isShaking ? "is-shaking" : ""} ${granting ? "is-granting" : ""}`}>
             <svg
               className="zone-radiation-icon"
@@ -459,24 +528,29 @@ function Zone() {
                 value={input}
                 onChange={(e) => {
                   setInput(e.target.value);
-                  playKeypress(getAudioCtx(audioCtxRef));
+                  playKeypress(ctx());
                 }}
                 className="zone-input"
                 placeholder="••••"
                 autoComplete="off"
                 spellCheck="false"
-                disabled={granting}
+                disabled={granting || cooldown > 0}
               />
               <button
                 type="submit"
                 className="zone-submit"
-                disabled={granting}
+                disabled={granting || cooldown > 0}
               >
-                {granting ? "ĐANG XÁC MINH..." : "TRUY CẬP"}
+                {granting ? "ĐANG XÁC MINH..." : cooldown > 0 ? `KHOÁ (${cooldown}s)` : "TRUY CẬP"}
               </button>
             </form>
 
-            {attempts > 0 && !granting && <p className="zone-denied">TỪ CHỐI TRUY CẬP — SAI MẬT KHẨU ({attempts})</p>}
+            {cooldown > 0 && (
+              <p className="zone-denied">HỆ THỐNG TẠM KHOÁ SAU NHIỀU LẦN SAI — CHỜ {cooldown}S</p>
+            )}
+            {attempts > 0 && !granting && cooldown === 0 && (
+              <p className="zone-denied">TỪ CHỐI TRUY CẬP — SAI MẬT KHẨU ({attempts})</p>
+            )}
             {granting && <p className="zone-granted-msg">ACCESS GRANTED_</p>}
 
             <Link
@@ -489,16 +563,105 @@ function Zone() {
         ) : (
           <div className="zone-content">
             <p className="zone-content-tag">TRUY CẬP: ĐÃ CẤP QUYỀN — CHÀO MỪNG TRỞ LẠI</p>
+            {lastAccess && (
+              <p className="zone-last-access">
+                LẦN TRUY CẬP TRƯỚC: {new Date(lastAccess).toLocaleString("vi-VN")}
+              </p>
+            )}
+            <p className="zone-hotkey-hint">Mẹo: bấm Esc để khoá lại ngay lập tức.</p>
 
-            {ZONE_ENTRIES.map((entry) => (
+            {entries.map((entry, i) => (
               <article
                 key={entry.id}
                 className="zone-entry"
               >
-                <h2>{entry.title}</h2>
-                <p>{entry.body}</p>
+                <div className="zone-entry-head">
+                  <h2>{entry.title}</h2>
+                  <div className="zone-entry-actions">
+                    <button
+                      type="button"
+                      className="zone-copy-btn"
+                      onClick={() => handleCopy(entry)}
+                    >
+                      {copiedId === entry.id ? "Đã copy ✓" : "Copy"}
+                    </button>
+                    <button
+                      type="button"
+                      className="zone-copy-btn zone-delete-btn"
+                      onClick={() => handleDeleteEntry(entry.id)}
+                      aria-label={`Xoá ${entry.title}`}
+                    >
+                      Xoá
+                    </button>
+                  </div>
+                </div>
+                <p>
+                  {entry.decrypt ? (
+                    <DecryptText
+                      text={entry.body}
+                      startDelay={i * 450}
+                      onTick={() => playKeypress(ctx())}
+                    />
+                  ) : (
+                    entry.body
+                  )}
+                </p>
               </article>
             ))}
+
+            {entries.length === 0 && <p className="zone-empty">Chưa có ghi chú nào. Thêm cái đầu tiên bên dưới.</p>}
+
+            {showAddForm ? (
+              <form
+                onSubmit={handleAddEntry}
+                className="zone-add-form"
+              >
+                <input
+                  type="text"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="zone-add-title"
+                  placeholder={`GHI CHÚ // ${String(entries.length + 1).padStart(2, "0")}`}
+                  maxLength={40}
+                />
+                <textarea
+                  value={newBody}
+                  onChange={(e) => setNewBody(e.target.value)}
+                  className="zone-add-body"
+                  placeholder="Nội dung ghi chú..."
+                  rows={3}
+                  autoFocus
+                />
+                <div className="zone-add-actions">
+                  <button
+                    type="button"
+                    className="zone-lock-again"
+                    onClick={() => {
+                      setShowAddForm(false);
+                      setNewTitle("");
+                      setNewBody("");
+                    }}
+                  >
+                    Huỷ
+                  </button>
+                  <button
+                    type="submit"
+                    className="zone-submit"
+                    disabled={!newBody.trim()}
+                  >
+                    Lưu ghi chú
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <button
+                type="button"
+                className="zone-add-toggle"
+                onClick={() => setShowAddForm(true)}
+              >
+                + Thêm ghi chú
+              </button>
+            )}
 
             <div className="zone-content-actions">
               <button
@@ -517,6 +680,7 @@ function Zone() {
             </div>
           </div>
         )}
+        </HudFrame>
       </div>
     </div>
   );
