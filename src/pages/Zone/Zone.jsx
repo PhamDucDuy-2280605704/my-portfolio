@@ -29,6 +29,16 @@ const ZONE_PASSWORD = "9029";
 // mật khẩu mới vào được" thay vì mở khoá vĩnh viễn trên máy.
 const SESSION_KEY = "zone-unlocked";
 
+// Mốc thời gian lần cuối mở khoá thành công — dùng localStorage (KHÔNG xoá
+// khi đóng tab như sessionStorage) vì đây chỉ là 1 dòng "nhật ký truy cập"
+// mang tính khí quyển, không phải thông tin cần bảo mật.
+const LAST_ACCESS_KEY = "zone-last-access";
+
+// Sau bao nhiêu lần nhập sai liên tiếp thì tạm khoá bàn phím 1 lúc (giống
+// PDA/máy ATM khoá tạm sau nhiều lần sai) + khoá bao nhiêu giây.
+const LOCKOUT_THRESHOLD = 3;
+const LOCKOUT_SECONDS = 12;
+
 // ===== Âm thanh tổng hợp bằng Web Audio API — cùng kỹ thuật với
 // ParticleIntro.jsx (oscillator/noise buffer thuần, không dùng file audio). =====
 
@@ -115,6 +125,80 @@ function playGranted(ctx) {
   });
 }
 
+function playCopyTick(ctx) {
+  if (!ctx) return;
+  [880, 1180].forEach((freq, i) => {
+    setTimeout(() => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime;
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, t0);
+      gain.gain.setValueAtTime(0.06, t0);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.06);
+    }, i * 40);
+  });
+}
+
+function playLockAgain(ctx) {
+  if (!ctx) return;
+  [900, 500].forEach((freq, i) => {
+    setTimeout(() => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime;
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(freq, t0);
+      gain.gain.setValueAtTime(0.07, t0);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.12);
+    }, i * 70);
+  });
+}
+
+// "Giải mã" chữ kiểu terminal — hiện từng ký tự một thay vì hiện nguyên cả
+// khối văn bản cùng lúc, giống cảm giác 1 tệp tin đang được giải mã. Luôn
+// vẫn render nguyên văn bản đầy đủ trong DOM cho trình đọc màn hình (không
+// phụ thuộc animation để đọc được nội dung).
+function DecryptText({ text, startDelay = 0, onTick }) {
+  const [shown, setShown] = useState("");
+
+  useEffect(() => {
+    setShown("");
+    let i = 0;
+    let intervalId;
+
+    const startTimer = setTimeout(() => {
+      intervalId = setInterval(() => {
+        i += 1;
+        setShown(text.slice(0, i));
+        if (onTick && i % 3 === 0) onTick();
+        if (i >= text.length) clearInterval(intervalId);
+      }, 16);
+    }, startDelay);
+
+    return () => {
+      clearTimeout(startTimer);
+      clearInterval(intervalId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, startDelay]);
+
+  return (
+    <>
+      <span aria-hidden="true">{shown}</span>
+      <span className="zone-sr-only">{text}</span>
+    </>
+  );
+}
+
 // "Log tín hiệu" — dòng chữ ngắn hiện ngẫu nhiên trên màn hình khoá, đổi
 // mỗi vài giây, để không khí đỡ trống trải trong lúc gõ mật khẩu. ĐÂY LÀ
 // VĂN BẢN TỰ VIẾT (không phải lời thoại thật trong bất kỳ game nào) — mang
@@ -166,6 +250,9 @@ function Zone() {
   const [radiation, setRadiation] = useState(0.18);
   const [granting, setGranting] = useState(false);
   const [logIndex, setLogIndex] = useState(0);
+  const [cooldown, setCooldown] = useState(0);
+  const [lastAccess, setLastAccess] = useState(null);
+  const [copiedId, setCopiedId] = useState(null);
 
   const audioCtxRef = useRef(null);
   const inputRef = useRef(null);
@@ -209,6 +296,25 @@ function Zone() {
     if (!unlocked) inputRef.current?.focus();
   }, [unlocked]);
 
+  // Đếm ngược lúc bị "tạm khoá" sau nhiều lần nhập sai liên tiếp.
+  useEffect(() => {
+    if (cooldown <= 0) return undefined;
+    const timer = setTimeout(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
+
+  // Phím tắt "khoá khẩn cấp": đang mở khoá mà bấm Esc -> khoá lại ngay lập
+  // tức, kiểu phản xạ rời khỏi máy nhanh khi có người đi ngang qua.
+  useEffect(() => {
+    if (!unlocked) return undefined;
+    function handleKeyDown(e) {
+      if (e.key === "Escape") handleLockAgain();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlocked]);
+
   // Dọn dẹp: đóng AudioContext khi component unmount hẳn (rời khỏi /zone).
   useEffect(() => {
     return () => {
@@ -220,6 +326,8 @@ function Zone() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (cooldown > 0 || granting) return;
+
     const ctx = getAudioCtx(audioCtxRef);
     const isCorrect = input.trim().toLowerCase() === ZONE_PASSWORD.toLowerCase();
 
@@ -227,6 +335,15 @@ function Zone() {
       playGranted(ctx);
       setGranting(true);
       setTimeout(() => {
+        // Đọc mốc truy cập LẦN TRƯỚC (nếu có) trước khi ghi đè bằng mốc mới.
+        let previous = null;
+        try {
+          previous = window.localStorage.getItem(LAST_ACCESS_KEY);
+          window.localStorage.setItem(LAST_ACCESS_KEY, new Date().toISOString());
+        } catch {
+          // bỏ qua nếu không lưu được
+        }
+        setLastAccess(previous);
         setUnlocked(true);
         try {
           window.sessionStorage.setItem(SESSION_KEY, "1");
@@ -236,14 +353,20 @@ function Zone() {
       }, 900);
     } else {
       playDenied(ctx);
-      setAttempts((a) => a + 1);
-      setIsShaking(true);
       setInput("");
+      setIsShaking(true);
       setTimeout(() => setIsShaking(false), 420);
+
+      setAttempts((a) => {
+        const next = a + 1;
+        if (next % LOCKOUT_THRESHOLD === 0) setCooldown(LOCKOUT_SECONDS);
+        return next;
+      });
     }
   }
 
   function handleLockAgain() {
+    playLockAgain(getAudioCtx(audioCtxRef));
     try {
       window.sessionStorage.removeItem(SESSION_KEY);
     } catch {
@@ -252,6 +375,15 @@ function Zone() {
     setUnlocked(false);
     setGranting(false);
     setInput("");
+  }
+
+  function handleCopy(entry) {
+    playCopyTick(getAudioCtx(audioCtxRef));
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(entry.body).catch(() => {});
+    }
+    setCopiedId(entry.id);
+    setTimeout(() => setCopiedId((id) => (id === entry.id ? null : id)), 1600);
   }
 
   return (
