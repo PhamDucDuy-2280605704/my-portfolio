@@ -41,6 +41,13 @@ const LAST_ACCESS_KEY = "zone-last-access";
 const LOCKOUT_THRESHOLD = 3;
 const LOCKOUT_SECONDS = 12;
 
+// Sau bao nhiêu mili-giây KHÔNG có tương tác (chuột/bàn phím) thì tự khoá
+// lại — phòng trường hợp mở khoá xong rồi quên đó, đi làm việc khác.
+const AUTO_LOCK_MS = 3 * 60 * 1000; // 3 phút
+
+// Tên file .txt xuất ra khi bấm "Xuất file".
+const EXPORT_FILENAME = "zone-notes.txt";
+
 // Danh sách ghi chú lưu trong localStorage của TRÌNH DUYỆT NÀY (không gửi
 // đi bất kỳ server nào) -> thêm/xoá ghi chú ngay trong lúc đang mở khoá,
 // lần sau quay lại vẫn còn nguyên trên cùng máy/trình duyệt.
@@ -52,6 +59,7 @@ const DEFAULT_ENTRIES = [
     title: "GHI CHÚ // 01",
     body: 'Bấm "+ Thêm ghi chú" bên dưới để viết bí mật đầu tiên của bạn — mọi ghi chú lưu ngay trên trình duyệt này (localStorage), không gửi đi đâu cả.',
     decrypt: true,
+    createdAt: null,
   },
 ];
 
@@ -274,10 +282,17 @@ function Zone() {
   const [newTitle, setNewTitle] = useState("");
   const [newBody, setNewBody] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pendingDelete, setPendingDelete] = useState(null);
 
   const audioCtxRef = useRef(null);
   const inputRef = useRef(null);
   const mutedRef = useRef(false);
+  const autoLockTimerRef = useRef(null);
+  const undoTimerRef = useRef(null);
 
   useEffect(() => {
     mutedRef.current = muted;
@@ -335,6 +350,31 @@ function Zone() {
     return () => clearTimeout(timer);
   }, [cooldown]);
 
+  // Tự khoá lại sau 1 khoảng thời gian KHÔNG có tương tác nào (chuột/bàn
+  // phím/cảm ứng) — phòng trường hợp mở khoá xong rồi bỏ đi làm việc khác,
+  // quên khoá lại bằng tay. Mỗi lần có tương tác -> huỷ hẹn giờ cũ, đặt lại
+  // hẹn giờ mới từ đầu.
+  useEffect(() => {
+    if (!unlocked) return undefined;
+
+    function resetTimer() {
+      clearTimeout(autoLockTimerRef.current);
+      autoLockTimerRef.current = setTimeout(() => {
+        handleLockAgain();
+      }, AUTO_LOCK_MS);
+    }
+
+    const events = ["mousemove", "keydown", "touchstart", "wheel"];
+    events.forEach((evt) => window.addEventListener(evt, resetTimer));
+    resetTimer();
+
+    return () => {
+      clearTimeout(autoLockTimerRef.current);
+      events.forEach((evt) => window.removeEventListener(evt, resetTimer));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlocked]);
+
   // Phím tắt "khoá khẩn cấp": đang mở khoá mà bấm Esc -> khoá lại ngay lập
   // tức, kiểu phản xạ rời khỏi máy nhanh khi có người đi ngang qua.
   useEffect(() => {
@@ -353,6 +393,7 @@ function Zone() {
       if (audioCtxRef.current) {
         audioCtxRef.current.close().catch(() => {});
       }
+      clearTimeout(undoTimerRef.current);
     };
   }, []);
 
@@ -428,6 +469,8 @@ function Zone() {
       // Ghi chú TỰ TAY người dùng vừa gõ -> hiện ngay, không cần hiệu ứng
       // "giải mã" (hiệu ứng đó dành cho nội dung như thể đã có sẵn từ trước).
       decrypt: false,
+      createdAt: new Date().toISOString(),
+      pinned: false,
     };
 
     const next = [...entries, entry];
@@ -440,11 +483,111 @@ function Zone() {
   }
 
   function handleDeleteEntry(id) {
-    const next = entries.filter((entry) => entry.id !== id);
+    const entry = entries.find((e) => e.id === id);
+    if (!entry) return;
+
+    // Xoá "mềm" — ẩn khỏi danh sách ngay lập tức nhưng chưa lưu xuống
+    // localStorage, cho phép bấm "Hoàn tác" trong 5s trước khi xoá thật.
+    const next = entries.filter((e) => e.id !== id);
+    setEntries(next);
+    playLockAgain(ctx());
+
+    clearTimeout(undoTimerRef.current);
+    setPendingDelete({ entry, index: entries.indexOf(entry) });
+    undoTimerRef.current = setTimeout(() => {
+      saveEntries(next);
+      setPendingDelete(null);
+    }, 5000);
+  }
+
+  function handleUndoDelete() {
+    if (!pendingDelete) return;
+    clearTimeout(undoTimerRef.current);
+
+    setEntries((current) => {
+      const restored = [...current];
+      restored.splice(pendingDelete.index, 0, pendingDelete.entry);
+      saveEntries(restored);
+      return restored;
+    });
+    setPendingDelete(null);
+    playGranted(ctx());
+  }
+
+  function handleTogglePin(id) {
+    const next = entries.map((entry) => (entry.id === id ? { ...entry, pinned: !entry.pinned } : entry));
     setEntries(next);
     saveEntries(next);
-    playLockAgain(ctx());
+    playCopyTick(ctx());
   }
+
+  function handleStartEdit(entry) {
+    setEditingId(entry.id);
+    setEditTitle(entry.title);
+    setEditBody(entry.body);
+    playCopyTick(ctx());
+  }
+
+  function handleCancelEdit() {
+    setEditingId(null);
+    setEditTitle("");
+    setEditBody("");
+  }
+
+  function handleSaveEdit(e) {
+    e.preventDefault();
+    if (!editBody.trim()) return;
+
+    const next = entries.map((entry) =>
+      entry.id === editingId
+        ? {
+            ...entry,
+            title: editTitle.trim() || entry.title,
+            body: editBody.trim(),
+            // Đã sửa tay -> không cần hiệu ứng "giải mã" nữa lần sau hiện lại.
+            decrypt: false,
+            editedAt: new Date().toISOString(),
+          }
+        : entry
+    );
+
+    setEntries(next);
+    saveEntries(next);
+    playGranted(ctx());
+    handleCancelEdit();
+  }
+
+  // Xuất toàn bộ ghi chú thành 1 file .txt tải về máy — bản sao lưu thủ
+  // công, phòng trường hợp xoá cache trình duyệt/đổi máy sẽ mất hết
+  // localStorage. Không gửi lên server nào, tạo file thẳng trong trình duyệt.
+  function handleExport() {
+    const lines = entries.map((entry) => {
+      const date = entry.createdAt ? new Date(entry.createdAt).toLocaleString("vi-VN") : "";
+      return `${entry.title}${date ? ` (${date})` : ""}\n${"-".repeat(40)}\n${entry.body}\n`;
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = EXPORT_FILENAME;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    playCopyTick(ctx());
+  }
+
+  // Danh sách hiện thực tế trên màn hình: ghim lên đầu trước, rồi lọc theo
+  // ô tìm kiếm (khớp tiêu đề HOẶC nội dung, không phân biệt hoa/thường).
+  const visibleEntries = entries
+    .filter((entry) => {
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      return entry.title.toLowerCase().includes(q) || entry.body.toLowerCase().includes(q);
+    })
+    .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
 
   return (
     <div className="zone-page">
@@ -568,48 +711,140 @@ function Zone() {
                 LẦN TRUY CẬP TRƯỚC: {new Date(lastAccess).toLocaleString("vi-VN")}
               </p>
             )}
-            <p className="zone-hotkey-hint">Mẹo: bấm Esc để khoá lại ngay lập tức.</p>
+            <p className="zone-hotkey-hint">Mẹo: bấm Esc để khoá lại ngay lập tức. Tự khoá sau 3 phút không thao tác.</p>
 
-            {entries.map((entry, i) => (
+            {/* Chỉ hiện thanh tìm kiếm khi có từ 3 ghi chú trở lên — ít hơn
+                thì tìm kiếm không thực sự cần thiết, chỉ chiếm chỗ. */}
+            {entries.length >= 3 && (
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="zone-search"
+                placeholder="Tìm trong ghi chú..."
+              />
+            )}
+
+            {pendingDelete && (
+              <div className="zone-undo-toast">
+                <span>Đã xoá &ldquo;{pendingDelete.entry.title}&rdquo;</span>
+                <button
+                  type="button"
+                  onClick={handleUndoDelete}
+                >
+                  Hoàn tác
+                </button>
+              </div>
+            )}
+
+            {visibleEntries.map((entry, i) => (
               <article
                 key={entry.id}
                 className="zone-entry"
               >
-                <div className="zone-entry-head">
-                  <h2>{entry.title}</h2>
-                  <div className="zone-entry-actions">
-                    <button
-                      type="button"
-                      className="zone-copy-btn"
-                      onClick={() => handleCopy(entry)}
-                    >
-                      {copiedId === entry.id ? "Đã copy ✓" : "Copy"}
-                    </button>
-                    <button
-                      type="button"
-                      className="zone-copy-btn zone-delete-btn"
-                      onClick={() => handleDeleteEntry(entry.id)}
-                      aria-label={`Xoá ${entry.title}`}
-                    >
-                      Xoá
-                    </button>
-                  </div>
-                </div>
-                <p>
-                  {entry.decrypt ? (
-                    <DecryptText
-                      text={entry.body}
-                      startDelay={i * 450}
-                      onTick={() => playKeypress(ctx())}
+                {editingId === entry.id ? (
+                  <form
+                    onSubmit={handleSaveEdit}
+                    className="zone-add-form"
+                  >
+                    <input
+                      type="text"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      className="zone-add-title"
+                      maxLength={40}
                     />
-                  ) : (
-                    entry.body
-                  )}
-                </p>
+                    <textarea
+                      value={editBody}
+                      onChange={(e) => setEditBody(e.target.value)}
+                      className="zone-add-body"
+                      rows={3}
+                      maxLength={2000}
+                      autoFocus
+                    />
+                    <span className="zone-char-count">{editBody.length}/2000</span>
+                    <div className="zone-add-actions">
+                      <button
+                        type="button"
+                        className="zone-lock-again"
+                        onClick={handleCancelEdit}
+                      >
+                        Huỷ
+                      </button>
+                      <button
+                        type="submit"
+                        className="zone-submit"
+                        disabled={!editBody.trim()}
+                      >
+                        Lưu thay đổi
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    <div className="zone-entry-head">
+                      <h2>
+                        {entry.pinned && <span className="zone-pin-badge">📌</span>}
+                        {entry.title}
+                      </h2>
+                      <div className="zone-entry-actions">
+                        <button
+                          type="button"
+                          className="zone-copy-btn"
+                          onClick={() => handleTogglePin(entry.id)}
+                        >
+                          {entry.pinned ? "Bỏ ghim" : "Ghim"}
+                        </button>
+                        <button
+                          type="button"
+                          className="zone-copy-btn"
+                          onClick={() => handleCopy(entry)}
+                        >
+                          {copiedId === entry.id ? "Đã copy ✓" : "Copy"}
+                        </button>
+                        <button
+                          type="button"
+                          className="zone-copy-btn"
+                          onClick={() => handleStartEdit(entry)}
+                        >
+                          Sửa
+                        </button>
+                        <button
+                          type="button"
+                          className="zone-copy-btn zone-delete-btn"
+                          onClick={() => handleDeleteEntry(entry.id)}
+                          aria-label={`Xoá ${entry.title}`}
+                        >
+                          Xoá
+                        </button>
+                      </div>
+                    </div>
+                    <p>
+                      {entry.decrypt ? (
+                        <DecryptText
+                          text={entry.body}
+                          startDelay={i * 450}
+                          onTick={() => playKeypress(ctx())}
+                        />
+                      ) : (
+                        entry.body
+                      )}
+                    </p>
+                    {entry.createdAt && (
+                      <p className="zone-entry-timestamp">
+                        {entry.editedAt ? "Đã sửa" : "Tạo lúc"}:{" "}
+                        {new Date(entry.editedAt || entry.createdAt).toLocaleString("vi-VN")}
+                      </p>
+                    )}
+                  </>
+                )}
               </article>
             ))}
 
             {entries.length === 0 && <p className="zone-empty">Chưa có ghi chú nào. Thêm cái đầu tiên bên dưới.</p>}
+            {entries.length > 0 && visibleEntries.length === 0 && (
+              <p className="zone-empty">Không tìm thấy ghi chú nào khớp với &ldquo;{searchQuery}&rdquo;.</p>
+            )}
 
             {showAddForm ? (
               <form
@@ -630,8 +865,10 @@ function Zone() {
                   className="zone-add-body"
                   placeholder="Nội dung ghi chú..."
                   rows={3}
+                  maxLength={2000}
                   autoFocus
                 />
+                <span className="zone-char-count">{newBody.length}/2000</span>
                 <div className="zone-add-actions">
                   <button
                     type="button"
@@ -664,6 +901,14 @@ function Zone() {
             )}
 
             <div className="zone-content-actions">
+              <button
+                type="button"
+                className="zone-lock-again"
+                onClick={handleExport}
+                disabled={entries.length === 0}
+              >
+                Xuất file .txt
+              </button>
               <button
                 type="button"
                 className="zone-lock-again"

@@ -4,6 +4,7 @@ import { FaPaperPlane, FaCheckCircle } from "react-icons/fa";
 import "./ContactForm.css";
 
 import social from "../../data/social";
+import useLanguage from "../../hooks/useLanguage";
 import { playUiSound } from "../../utils/uiSound";
 
 // Trạng thái gửi form: idle (chưa gửi) -> sending (đang gửi) -> success | error.
@@ -18,6 +19,7 @@ const STATUS = {
 // submit form từ site tĩnh (không cần tự viết backend) rồi chuyển tiếp về email.
 // Endpoint thật lấy từ social.formspree (data/social.js).
 function ContactForm() {
+  const { t } = useLanguage();
   const [status, setStatus] = useState(STATUS.IDLE);
 
   async function handleSubmit(e) {
@@ -67,8 +69,8 @@ function ContactForm() {
         aria-live="polite"
       >
         <FaCheckCircle />
-        <h3>Đã gửi thành công!</h3>
-        <p>Cảm ơn bạn đã nhắn tin, mình sẽ phản hồi sớm nhất có thể.</p>
+        <h3>{t("contactFormSuccessTitle")}</h3>
+        <p>{t("contactFormSuccessBody")}</p>
 
         <button
           type="button"
@@ -78,7 +80,7 @@ function ContactForm() {
             setStatus(STATUS.IDLE);
           }}
         >
-          Gửi tin nhắn khác
+          {t("contactFormSendAnother")}
         </button>
       </div>
     );
@@ -90,8 +92,8 @@ function ContactForm() {
       onSubmit={handleSubmit}
     >
       <div className="contact-form-header">
-        <h3>Gửi Tin Nhắn Trực Tiếp</h3>
-        <p>Điền vài thông tin bên dưới, mình sẽ đọc và phản hồi sớm nhất có thể.</p>
+        <h3>{t("contactFormTitle")}</h3>
+        <p>{t("contactFormSubtitle")}</p>
       </div>
 
       {/* Hidden field: đặt tiêu đề email rõ ràng thay vì Formspree tự đặt
@@ -99,7 +101,7 @@ function ContactForm() {
       <input
         type="hidden"
         name="_subject"
-        value="📬 Tin nhắn mới từ Portfolio"
+        value={t("contactFormSubjectValue")}
       />
 
       {/* Honeypot chống spam bot — xem giải thích ở handleSubmit(). Ẩn hoàn
@@ -117,18 +119,18 @@ function ContactForm() {
 
       <div className="contact-form-row">
         <div className="contact-form-field">
-          <label htmlFor="name">Họ tên</label>
+          <label htmlFor="name">{t("contactFormName")}</label>
           <input
             id="name"
             name="name"
             type="text"
-            placeholder="Tên của bạn"
+            placeholder={t("contactFormNamePlaceholder")}
             required
           />
         </div>
 
         <div className="contact-form-field">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t("contactFormEmail")}</label>
           <input
             id="email"
             name="email"
@@ -140,12 +142,12 @@ function ContactForm() {
       </div>
 
       <div className="contact-form-field">
-        <label htmlFor="message">Lời nhắn</label>
+        <label htmlFor="message">{t("contactFormMessage")}</label>
         <textarea
           id="message"
           name="message"
           rows={5}
-          placeholder="Bạn muốn trao đổi điều gì?"
+          placeholder={t("contactFormMessagePlaceholder")}
           required
         />
       </div>
@@ -155,7 +157,7 @@ function ContactForm() {
           className="contact-form-error"
           role="alert"
         >
-          Gửi thất bại — có thể do mất kết nối mạng. Bạn thử lại hoặc liên hệ qua các kênh phía trên nhé.
+          {t("contactFormError")}
         </p>
       )}
 
@@ -164,16 +166,14 @@ function ContactForm() {
         className="contact-form-submit"
         disabled={status === STATUS.SENDING}
       >
-        {status === STATUS.SENDING ? "Đang gửi..." : (
+        {status === STATUS.SENDING ? t("contactFormSending") : (
           <>
-            <FaPaperPlane /> Gửi Tin Nhắn
+            <FaPaperPlane /> {t("contactFormSubmit")}
           </>
         )}
       </button>
 
-      <p className="contact-form-note">
-        ✉️ Tin nhắn được gửi thẳng đến email của mình qua Formspree — không lưu trữ hay chia sẻ cho bên thứ ba nào khác.
-      </p>
+      <p className="contact-form-note">{t("contactFormNote")}</p>
     </form>
   );
 }

@@ -6,7 +6,9 @@ import logo from "../../../assets/images/logo.jpg";
 import profile from "../../../data/profile";
 import navSections from "../../../data/navSections";
 import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
+import LanguageToggle from "../../common/LanguageToggle/LanguageToggle";
 import useActiveSection from "../../../hooks/useActiveSection";
+import useLanguage from "../../../hooks/useLanguage";
 import { playUiSound } from "../../../utils/uiSound";
 import { stopLenis, startLenis } from "../../../lib/lenis";
 
@@ -19,11 +21,12 @@ function formatClock(date) {
 const SECTION_IDS = navSections.map((s) => s.id);
 
 // Navbar giờ CHỈ còn: dải mã hiệu (tên + mục đang xem + đồng hồ), logo, và
-// nút chuyển theme — menu điều hướng đã chuyển hẳn xuống <BottomDock />
-// (dock nổi kính, căn giữa dưới màn hình) nên không còn menu chữ ở góc
-// phải, cũng không cần hamburger/menu full-screen cho mobile nữa (dock dưới
-// đã tự hoạt động tốt ở mọi kích thước màn hình).
+// nút chuyển theme/ngôn ngữ — menu điều hướng đã chuyển hẳn xuống
+// <BottomDock /> (dock nổi kính, căn giữa dưới màn hình) nên không còn menu
+// chữ ở góc phải, cũng không cần hamburger/menu full-screen cho mobile nữa
+// (dock dưới đã tự hoạt động tốt ở mọi kích thước màn hình).
 function Navbar() {
+  const { t, tr } = useLanguage();
   // isZoomed: đang mở overlay phóng to logo hay không.
   const [isZoomed, setIsZoomed] = useState(false);
   // Đồng hồ hệ thống — đặt cố định ở góc phải Navbar (sticky) để luôn thấy ngay.
@@ -76,7 +79,7 @@ function Navbar() {
           {profile.fullName.toUpperCase()}
         </span>
         <span className="navbar-meta-item navbar-meta-item-center">
-          {activeItem.code} &middot; {activeItem.name.toUpperCase()}
+          {activeItem.code} &middot; {tr(activeItem.name).toUpperCase()}
         </span>
         <span className="navbar-meta-item navbar-clock hud-readout">
           {/* Ký hiệu biohazard mini — cùng "chữ ký" thị giác với màn hình
@@ -144,7 +147,10 @@ function Navbar() {
           </span>
         </button>
 
-        <ThemeToggle />
+        <div className="navbar-controls">
+          <LanguageToggle />
+          <ThemeToggle />
+        </div>
       </nav>
 
       {/* Overlay phóng to logo */}
@@ -160,7 +166,7 @@ function Navbar() {
               playUiSound("card");
               setIsZoomed(false);
             }}
-            aria-label="Đóng"
+            aria-label={t("closeLabel")}
           >
             <IoClose />
           </button>

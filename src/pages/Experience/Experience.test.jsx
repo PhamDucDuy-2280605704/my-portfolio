@@ -1,14 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import Experience from "./Experience";
 import education from "../../data/education";
 import workExperience from "../../data/workExperience";
 import certificates from "../../data/certificates";
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 function renderExperience() {
-  return render(
+  return renderWithLanguage(
     <MemoryRouter>
       <Experience />
     </MemoryRouter>,
@@ -20,7 +21,7 @@ describe("Experience page", () => {
     renderExperience();
 
     education.forEach((item) => {
-      expect(screen.getByText(item.school)).toBeInTheDocument();
+      expect(screen.getByText(item.school.vi)).toBeInTheDocument();
     });
   });
 
@@ -28,11 +29,11 @@ describe("Experience page", () => {
     renderExperience();
 
     workExperience.forEach((job) => {
-      expect(screen.getByText(job.company)).toBeInTheDocument();
-      expect(screen.getByText(job.role)).toBeInTheDocument();
+      expect(screen.getByText(job.company.vi)).toBeInTheDocument();
+      expect(screen.getByText(job.role.vi)).toBeInTheDocument();
 
       job.highlights.forEach((point) => {
-        expect(screen.getByText(point)).toBeInTheDocument();
+        expect(screen.getByText(point.vi)).toBeInTheDocument();
       });
     });
   });
@@ -61,7 +62,7 @@ describe("Experience page", () => {
     renderExperience();
 
     certificates.forEach((cert) => {
-      expect(screen.getByText(cert.name)).toBeInTheDocument();
+      expect(screen.getByText(cert.name.vi)).toBeInTheDocument();
     });
   });
 });

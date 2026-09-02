@@ -1,5 +1,6 @@
 import navSections from "../../../data/navSections";
 import useActiveSection from "../../../hooks/useActiveSection";
+import useLanguage from "../../../hooks/useLanguage";
 import { playUiSound } from "../../../utils/uiSound";
 import "./BottomDock.css";
 
@@ -14,24 +15,26 @@ const SECTION_IDS = navSections.map((s) => s.id);
 // Dùng chung useActiveSection với Navbar để biết đang ở section nào (cả 2
 // nơi tự đồng bộ theo vị trí cuộn, không cần truyền state qua lại).
 function BottomDock() {
+  const { t, tr } = useLanguage();
   const activeId = useActiveSection(SECTION_IDS);
 
   return (
     <nav
       className="bottom-dock"
-      aria-label="Điều hướng nhanh"
+      aria-label={t("navAriaLabel")}
     >
       <ul className="bottom-dock-list">
         {navSections.map((item) => {
           const isActive = activeId === item.id;
           const Icon = isActive ? item.iconActive : item.icon;
+          const name = tr(item.name);
 
           return (
             <li key={item.id}>
               <a
                 href={`#${item.id}`}
                 className={`bottom-dock-item ${isActive ? "active" : ""}`}
-                aria-label={item.name}
+                aria-label={name}
                 aria-current={isActive ? "true" : undefined}
                 onClick={() => playUiSound(isActive ? "navActive" : "nav")}
               >
@@ -48,14 +51,14 @@ function BottomDock() {
                   className="bottom-dock-tooltip"
                   aria-hidden="true"
                 >
-                  <strong>{item.name}</strong>
-                  <span>{item.description}</span>
+                  <strong>{name}</strong>
+                  <span>{tr(item.description)}</span>
                 </span>
 
                 {/* Chữ tên mục vẫn có trong DOM cho trình đọc màn hình +
                     người dùng có thể phóng to chữ (zoom) mà không mất
                     thông tin, chỉ ẩn về mặt hình ảnh bằng CSS. */}
-                <span className="bottom-dock-label">{item.name}</span>
+                <span className="bottom-dock-label">{name}</span>
               </a>
             </li>
           );

@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import Contact from "./Contact";
 import social from "../../data/social";
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 function renderContact() {
-  return render(
+  return renderWithLanguage(
     <MemoryRouter>
       <Contact />
     </MemoryRouter>,

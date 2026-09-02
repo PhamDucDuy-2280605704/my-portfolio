@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import Skills from "./Skills";
 import skills from "../../data/skills";
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 function renderSkills() {
-  return render(
+  return renderWithLanguage(
     <MemoryRouter>
       <Skills />
     </MemoryRouter>,

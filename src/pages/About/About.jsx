@@ -2,6 +2,7 @@ import "./About.css";
 
 import profile from "../../data/profile";
 import aboutPhoto from "../../assets/images/avatar-about.jpg";
+import useLanguage from "../../hooks/useLanguage";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import Button from "../../components/common/Button/Button";
@@ -11,6 +12,8 @@ import HudFrame from "../../components/common/HudFrame/HudFrame";
 // tất cả section lại), không còn là route "/about" riêng. id="about" để
 // Navbar cuộn thẳng tới đây khi bấm menu.
 function About() {
+  const { t, tr } = useLanguage();
+
   return (
     <section
       className="about-page"
@@ -18,8 +21,8 @@ function About() {
     >
 
       <SectionTitle
-        subtitle="Tìm Hiểu Về Mình"
-        title="Về Tôi"
+        subtitle={t("aboutSubtitle")}
+        title={t("aboutTitle")}
       />
 
       <div className="about-page-content">
@@ -37,28 +40,28 @@ function About() {
 
           <h3>{profile.fullName}</h3>
 
-          <p className="about-page-role">{profile.role}</p>
+          <p className="about-page-role">{tr(profile.role)}</p>
 
-          {/* profile.bio là mảng nhiều đoạn văn -> mỗi đoạn render thành 1 thẻ <p> */}
+          {/* profile.bio là mảng nhiều đoạn văn song ngữ -> mỗi đoạn render thành 1 thẻ <p> */}
           {profile.bio.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
+            <p key={index}>{tr(paragraph)}</p>
           ))}
 
           <ul className="about-page-details">
 
             <li>
-              <span className="detail-code hud-readout">DOB</span>
+              <span className="detail-code hud-readout">{t("aboutDob")}</span>
               <span>{profile.birthday}</span>
             </li>
 
             <li>
-              <span className="detail-code hud-readout">MAIL</span>
+              <span className="detail-code hud-readout">{t("aboutMail")}</span>
               <span>{profile.email}</span>
             </li>
 
             <li>
-              <span className="detail-code hud-readout">LOC</span>
-              <span>{profile.location}</span>
+              <span className="detail-code hud-readout">{t("aboutLoc")}</span>
+              <span>{tr(profile.location)}</span>
             </li>
 
           </ul>
@@ -70,14 +73,14 @@ function About() {
               href={profile.resume}
               download
             >
-              <Button variant="primary">Tải CV</Button>
+              <Button variant="primary">{t("downloadCv")}</Button>
             </a>
           ) : (
             <Button
               variant="primary"
               disabled
             >
-              CV sẽ cập nhật sau
+              {t("cvComingSoon")}
             </Button>
           )}
 

@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./MainLayout";
+import renderWithLanguage from "../test/renderWithLanguage";
 
 // Trang con giả để kiểm tra <Outlet /> có render đúng nội dung route con không.
 function FakePage() {
@@ -11,7 +12,7 @@ function FakePage() {
 
 describe("MainLayout", () => {
   it("render Navbar, nội dung route con (qua Outlet), và Footer cùng lúc", () => {
-    render(
+    renderWithLanguage(
       <MemoryRouter initialEntries={["/fake"]}>
         <Routes>
           <Route element={<MainLayout />}>
@@ -35,7 +36,7 @@ describe("MainLayout", () => {
   });
 
   it("có link 'Bỏ qua đến nội dung chính' trỏ tới #main-content (accessibility)", () => {
-    render(
+    renderWithLanguage(
       <MemoryRouter initialEntries={["/fake"]}>
         <Routes>
           <Route element={<MainLayout />}>

@@ -5,19 +5,21 @@ import "./Contact.css";
 
 import profile from "../../data/profile";
 import social from "../../data/social";
+import useLanguage from "../../hooks/useLanguage";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import ContactForm from "./ContactForm";
 import { playUiSound } from "../../utils/uiSound";
 
 // Danh sách kênh liên hệ hiển thị dạng card. href lấy từ data/social.js,
-// còn name/hint/value/icon/color khai báo trực tiếp ở đây vì gắn liền với
-// cách hiển thị (mỗi kênh 1 icon + màu thương hiệu riêng).
+// name cố định (tên thương hiệu), hintKey trỏ vào từ điển uiText — còn
+// value/icon/color khai báo trực tiếp ở đây vì gắn liền với cách hiển thị
+// (mỗi kênh 1 icon + màu thương hiệu riêng).
 // Thêm kênh mới: thêm link vào data/social.js rồi thêm 1 object vào mảng này.
 const contacts = [
   {
     name: "Email",
-    hint: "Phản hồi trong vòng 12h",
+    hintKey: "contactEmailHint",
     value: profile.email,
     href: social.email,
     icon: FaEnvelope,
@@ -25,7 +27,7 @@ const contacts = [
   },
   {
     name: "GitHub",
-    hint: "Xem các dự án của mình",
+    hintKey: "contactGithubHint",
     value: "PhamDucDuy-2280605704",
     href: social.github,
     icon: FaGithub,
@@ -36,7 +38,7 @@ const contacts = [
   },
   {
     name: "Facebook",
-    hint: "Kết nối, trò chuyện nhanh",
+    hintKey: "contactFacebookHint",
     value: "Phạm Đức Duy",
     href: social.facebook,
     icon: FaFacebook,
@@ -44,7 +46,7 @@ const contacts = [
   },
   {
     name: "Zalo",
-    hint: "Nhắn tin trực tiếp",
+    hintKey: "contactZaloHint",
     value: "0924 834 155",
     href: social.zalo,
     icon: SiZalo,
@@ -52,7 +54,7 @@ const contacts = [
   },
   {
     name: "Discord",
-    hint: "Chat cùng mình",
+    hintKey: "contactDiscordHint",
     value: "phamduy1410",
     href: social.discord,
     icon: FaDiscord,
@@ -60,7 +62,7 @@ const contacts = [
   },
   {
     name: "TikTok",
-    hint: "Xem video của mình",
+    hintKey: "contactTiktokHint",
     value: "@phamduy1410",
     href: social.tiktok,
     icon: FaTiktok,
@@ -71,21 +73,21 @@ const contacts = [
 
 // Trang "/contact" — lưới card liên kết tới các kênh liên hệ.
 function Contact() {
+  const { t } = useLanguage();
+
   return (
     <section className="contact-page" id="contact">
 
       <SectionTitle
-        subtitle="Kết Nối Với Mình"
-        title="Liên Hệ"
+        subtitle={t("contactSubtitle")}
+        title={t("contactTitle")}
       />
 
-      <p className="contact-intro">
-        Mọi trao đổi về công việc hay ý tưởng hợp tác, đừng ngần ngại liên hệ với mình qua các kênh dưới đây.
-      </p>
+      <p className="contact-intro">{t("contactIntro")}</p>
 
       <div className="contact-grid">
 
-        {contacts.map(({ name, hint, value, href, icon: Icon, color }) => (
+        {contacts.map(({ name, hintKey, value, href, icon: Icon, color }) => (
           <a
             key={name}
             href={href}
@@ -112,7 +114,7 @@ function Contact() {
               >
                 {value}
               </p>
-              <span className="contact-hint">{hint}</span>
+              <span className="contact-hint">{t(hintKey)}</span>
             </div>
 
             <FaArrowRight className="contact-arrow" />

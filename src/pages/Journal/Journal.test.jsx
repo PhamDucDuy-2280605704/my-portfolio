@@ -1,13 +1,14 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 import Journal from "./Journal";
 import journal from "../../data/journal";
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 function renderJournal() {
-  return render(
+  return renderWithLanguage(
     <MemoryRouter>
       <Journal />
     </MemoryRouter>,
@@ -20,8 +21,8 @@ describe("Journal page", () => {
 
     const firstEntry = journal[0];
 
-    expect(screen.getByText(firstEntry.excerpt)).toBeInTheDocument();
-    expect(screen.queryByText(firstEntry.content[0])).not.toBeInTheDocument();
+    expect(screen.getByText(firstEntry.excerpt.vi)).toBeInTheDocument();
+    expect(screen.queryByText(firstEntry.content[0].vi)).not.toBeInTheDocument();
   });
 
   it("bấm 'Đọc tiếp' sẽ hiện nội dung đầy đủ của đúng bài đó", async () => {
@@ -33,7 +34,7 @@ describe("Journal page", () => {
 
     await user.click(toggleButtons[0]);
 
-    expect(screen.getByText(firstEntry.content[0])).toBeInTheDocument();
+    expect(screen.getByText(firstEntry.content[0].vi)).toBeInTheDocument();
     // Nút chuyển thành "Thu gọn" sau khi mở
     expect(screen.getAllByText(/Thu gọn/).length).toBeGreaterThan(0);
   });
@@ -42,7 +43,7 @@ describe("Journal page", () => {
     renderJournal();
 
     journal.forEach((entry) => {
-      expect(screen.getByText(entry.title)).toBeInTheDocument();
+      expect(screen.getByText(entry.title.vi)).toBeInTheDocument();
     });
   });
 });

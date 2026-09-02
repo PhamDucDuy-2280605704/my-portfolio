@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import NotFound from "./NotFound";
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 describe("NotFound page", () => {
   it("hiển thị mã lỗi 404 và thông báo", () => {
-    render(
+    renderWithLanguage(
       <MemoryRouter>
         <NotFound />
       </MemoryRouter>,
@@ -17,7 +18,7 @@ describe("NotFound page", () => {
   });
 
   it("có nút dẫn về Trang Chủ ('/')", () => {
-    render(
+    renderWithLanguage(
       <MemoryRouter>
         <NotFound />
       </MemoryRouter>,

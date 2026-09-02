@@ -1,13 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
 import Hero from "./Hero";
 import profile from "../../../data/profile";
+import renderWithLanguage from "../../../test/renderWithLanguage";
 
 // Hero không còn dùng react-router (nút Liên hệ giờ là anchor "#contact"
 // cuộn trong cùng trang, không điều hướng route) -> không cần MemoryRouter.
+// Cần LanguageProvider vì Hero gọi useLanguage() để dịch role/quote/description.
 function renderHero() {
-  return render(<Hero />);
+  return renderWithLanguage(<Hero />);
 }
 
 describe("Hero", () => {
@@ -15,8 +17,8 @@ describe("Hero", () => {
     renderHero();
 
     expect(screen.getByRole("heading", { level: 1, name: profile.fullName })).toBeInTheDocument();
-    expect(screen.getByText(profile.role)).toBeInTheDocument();
-    expect(screen.getByText(`“${profile.quote}”`)).toBeInTheDocument();
+    expect(screen.getByText(profile.role.vi)).toBeInTheDocument();
+    expect(screen.getByText(`“${profile.quote.vi}”`)).toBeInTheDocument();
   });
 
   it("hiển thị đủ 3 nhãn Frontend/Backend/Mobile", () => {

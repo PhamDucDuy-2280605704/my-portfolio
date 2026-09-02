@@ -8,6 +8,7 @@ import ParticleIntro from "./components/common/ParticleIntro/ParticleIntro";
 import SmoothScroll from "./components/common/SmoothScroll/SmoothScroll";
 import ErrorBoundary from "./components/common/ErrorBoundary/ErrorBoundary";
 import IntroReplayContext from "./context/IntroReplayContext";
+import LanguageProvider from "./context/LanguageProvider";
 
 // Component gốc của toàn bộ ứng dụng.
 // Cấu trúc (từ dưới lên trên):
@@ -47,18 +48,20 @@ function App() {
   };
 
   return (
-    <IntroReplayContext.Provider value={handleReplayIntro}>
-      {isLoading && <ParticleIntro key={introKey} onFinish={() => setIsLoading(false)} />}
+    <LanguageProvider>
+      <IntroReplayContext.Provider value={handleReplayIntro}>
+        {isLoading && <ParticleIntro key={introKey} onFinish={() => setIsLoading(false)} />}
 
-      <SmoothScroll />
-      <Background />
+        <SmoothScroll />
+        <Background />
 
-      <div className="app-content">
-        <ErrorBoundary>
-          <AppRoutes />
-        </ErrorBoundary>
-      </div>
-    </IntroReplayContext.Provider>
+        <div className="app-content">
+          <ErrorBoundary>
+            <AppRoutes />
+          </ErrorBoundary>
+        </div>
+      </IntroReplayContext.Provider>
+    </LanguageProvider>
   );
 }
 

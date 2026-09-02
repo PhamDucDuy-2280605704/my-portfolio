@@ -19,6 +19,10 @@ import {
 // mã hiệu + label "SEC.0x") lẫn BottomDock (icon điều hướng nổi dưới cùng),
 // để không phải khai 2 lần ở 2 nơi.
 //
+// name/description song ngữ hoá dạng { vi, en } — đọc qua tr() ở nơi dùng.
+// id/code không đổi theo ngôn ngữ (id dùng làm anchor #hash, code là mã kỹ
+// thuật kiểu HUD, giữ nguyên cho cả 2 ngôn ngữ).
+//
 // icon: dùng khi KHÔNG active (viền rỗng, nhẹ)
 // iconActive: dùng khi ĐANG active (tô đặc, nổi bật hơn) — giống cách
 // Instagram đổi icon rỗng -> icon đặc khi chọn tab.
@@ -28,57 +32,57 @@ import {
 const navSections = [
   {
     id: "home",
-    name: "Trang Chủ",
+    name: { vi: "Trang Chủ", en: "Home" },
     code: "SEC.01",
-    description: "Về đầu trang, xem giới thiệu ngắn",
+    description: { vi: "Về đầu trang, xem giới thiệu ngắn", en: "Back to top, quick intro" },
     icon: IoHomeOutline,
     iconActive: IoHome,
   },
   {
     id: "about",
-    name: "Giới Thiệu",
+    name: { vi: "Giới Thiệu", en: "About" },
     code: "SEC.02",
-    description: "Tìm hiểu kỹ hơn về mình",
+    description: { vi: "Tìm hiểu kỹ hơn về mình", en: "Get to know me better" },
     icon: IoPersonOutline,
     iconActive: IoPerson,
   },
   {
     id: "skills",
-    name: "Kỹ Năng",
+    name: { vi: "Kỹ Năng", en: "Skills" },
     code: "SEC.03",
-    description: "Công nghệ & kỹ năng mình biết",
+    description: { vi: "Công nghệ & kỹ năng mình biết", en: "Tech & skills I know" },
     icon: IoCodeSlashOutline,
     iconActive: IoCodeSlash,
   },
   {
     id: "projects",
-    name: "Dự Án",
+    name: { vi: "Dự Án", en: "Projects" },
     code: "SEC.04",
-    description: "Các dự án mình đã thực hiện",
+    description: { vi: "Các dự án mình đã thực hiện", en: "Projects I've built" },
     icon: IoFolderOutline,
     iconActive: IoFolder,
   },
   {
     id: "experience",
-    name: "Kinh Nghiệm",
+    name: { vi: "Kinh Nghiệm", en: "Experience" },
     code: "SEC.05",
-    description: "Học vấn & kinh nghiệm làm việc",
+    description: { vi: "Học vấn & kinh nghiệm làm việc", en: "Education & work experience" },
     icon: IoBriefcaseOutline,
     iconActive: IoBriefcase,
   },
   {
     id: "journal",
-    name: "Nhật Ký",
+    name: { vi: "Nhật Ký", en: "Journal" },
     code: "SEC.06",
-    description: "Ghi chép, suy nghĩ cá nhân",
+    description: { vi: "Ghi chép, suy nghĩ cá nhân", en: "Personal notes & thoughts" },
     icon: IoBookOutline,
     iconActive: IoBook,
   },
   {
     id: "contact",
-    name: "Liên Hệ",
+    name: { vi: "Liên Hệ", en: "Contact" },
     code: "SEC.07",
-    description: "Kết nối, gửi tin nhắn cho mình",
+    description: { vi: "Kết nối, gửi tin nhắn cho mình", en: "Connect, send me a message" },
     icon: IoMailOutline,
     iconActive: IoMail,
   },

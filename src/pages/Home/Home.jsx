@@ -8,6 +8,7 @@ import Experience from "../Experience/Experience";
 import Journal from "../Journal/Journal";
 import Contact from "../Contact/Contact";
 import usePageTitle from "../../hooks/usePageTitle";
+import useLanguage from "../../hooks/useLanguage";
 import { getLenisInstance } from "../../lib/lenis";
 
 // Trang chủ duy nhất của site — thay vì mỗi mục (About, Skills, Projects...)
@@ -20,7 +21,8 @@ import { getLenisInstance } from "../../lib/lenis";
 // (home/about/skills/projects/experience/journal/contact) để neo (anchor)
 // tới được từ menu.
 function Home() {
-  usePageTitle("Phạm Đức Duy | Full Stack Developer");
+  const { t } = useLanguage();
+  usePageTitle(t("homePageTitle"));
 
   // Nếu URL có sẵn hash lúc vào trang (VD ai đó bấm link cũ "/about" ->
   // AppRoutes.jsx redirect thành "/#about") thì cuộn thẳng tới đúng section

@@ -16,6 +16,7 @@ import {
 import "./Skills.css";
 
 import skills from "../../data/skills";
+import useLanguage from "../../hooks/useLanguage";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 
@@ -38,13 +39,14 @@ const iconMap = {
   GitHub: { icon: SiGithub, color: "#f8fafc" },
 };
 
-// Thứ tự hiển thị các nhóm kỹ năng + tiêu đề tiếng Việt cho từng nhóm.
-// key phải khớp với tên field trong data/skills.js (frontend/backend/mobile/tools).
+// Thứ tự hiển thị các nhóm kỹ năng + key chuỗi giao diện (uiText) cho tiêu
+// đề từng nhóm. key phải khớp với tên field trong data/skills.js
+// (frontend/backend/mobile/tools).
 const groups = [
-  { key: "frontend", title: "Giao Diện" },
-  { key: "backend", title: "Hệ Thống" },
-  { key: "mobile", title: "Di Động" },
-  { key: "tools", title: "Công Cụ" },
+  { key: "frontend", titleKey: "skillsGroupFrontend" },
+  { key: "backend", titleKey: "skillsGroupBackend" },
+  { key: "mobile", titleKey: "skillsGroupMobile" },
+  { key: "tools", titleKey: "skillsGroupTools" },
 ];
 
 // Render 1 hàng các "viên" (pill) kỹ năng cho 1 nhóm.
@@ -82,6 +84,8 @@ function SkillGrid({ items }) {
 
 // Trang "/skills" — liệt kê kỹ năng theo 4 nhóm: Frontend, Backend, Mobile, Tools.
 function Skills() {
+  const { t } = useLanguage();
+
   return (
     <section
       className="skills-page"
@@ -89,13 +93,11 @@ function Skills() {
     >
 
       <SectionTitle
-        subtitle="Những Gì Mình Biết"
-        title="Kỹ Năng"
+        subtitle={t("skillsSubtitle")}
+        title={t("skillsTitle")}
       />
 
-      <p className="skills-intro">
-        Mình theo hướng Full Stack — làm việc được cả ở Frontend, Backend lẫn Mobile, tuỳ theo yêu cầu của dự án.
-      </p>
+      <p className="skills-intro">{t("skillsIntro")}</p>
 
       {/* Chỉ render nhóm nào có ít nhất 1 kỹ năng (tránh hiện tiêu đề nhóm trống) */}
       {groups.map(
@@ -109,7 +111,7 @@ function Skills() {
                 <span className="skills-group-code hud-readout">
                   SKL.{String(index + 1).padStart(2, "0")}
                 </span>
-                {group.title}
+                {t(group.titleKey)}
               </h3>
 
               <SkillGrid items={skills[group.key]} />

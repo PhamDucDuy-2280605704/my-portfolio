@@ -5,6 +5,7 @@ import "./Experience.css";
 import education from "../../data/education";
 import workExperience from "../../data/workExperience";
 import certificates from "../../data/certificates";
+import useLanguage from "../../hooks/useLanguage";
 
 import SectionTitle from "../../components/common/SectionTitle/SectionTitle";
 import HudFrame from "../../components/common/HudFrame/HudFrame";
@@ -12,11 +13,12 @@ import { playUiSound } from "../../utils/uiSound";
 
 // Nhãn trạng thái nhỏ cho mỗi chứng chỉ: "Đã hoàn thành" (xanh lá) hoặc "Đang học" (xanh dương).
 function StatusBadge({ status }) {
+  const { t } = useLanguage();
   const isDone = status === "completed";
 
   return (
     <span className={`status-badge ${isDone ? "done" : "progress"}`}>
-      {isDone ? "Đã hoàn thành" : "Đang học"}
+      {isDone ? t("statusDone") : t("statusInProgress")}
     </span>
   );
 }
@@ -36,31 +38,33 @@ function BlockTitle({ code, children }) {
 // Trang "/experience" — gồm 2 khối: timeline Học vấn (data/education.js)
 // và lưới Chứng chỉ & Kỹ năng (data/certificates.js).
 function Experience() {
+  const { t, tr } = useLanguage();
+
   return (
     <section className="experience-page" id="experience">
 
       <SectionTitle
-        subtitle="Hành Trình Của Mình"
-        title="Học Vấn & Kinh Nghiệm"
+        subtitle={t("experienceSubtitle")}
+        title={t("experienceTitle")}
       />
 
       <div className="experience-block">
 
-        <BlockTitle code="EDU">Học vấn</BlockTitle>
+        <BlockTitle code="EDU">{t("educationBlockTitle")}</BlockTitle>
 
         <div className="timeline">
 
           {education.map((item) => (
             <div
-              key={item.school}
+              key={tr(item.school)}
               className="timeline-item"
             >
               <div className="timeline-dot" />
 
               <div className="timeline-content">
-                <span className="timeline-period">{item.period}</span>
-                <h4>{item.school}</h4>
-                <p>{item.major}</p>
+                <span className="timeline-period">{tr(item.period)}</span>
+                <h4>{tr(item.school)}</h4>
+                <p>{tr(item.major)}</p>
               </div>
             </div>
           ))}
@@ -71,13 +75,13 @@ function Experience() {
 
       <div className="experience-block">
 
-        <BlockTitle code="EXP">Kinh nghiệm làm việc</BlockTitle>
+        <BlockTitle code="EXP">{t("workBlockTitle")}</BlockTitle>
 
         <div className="work-list">
 
           {workExperience.map((job, index) => (
             <HudFrame
-              key={job.company}
+              key={tr(job.company)}
               label={`EXP.${String(index + 1).padStart(2, "0")}`}
               className="work-card"
             >
@@ -88,8 +92,8 @@ function Experience() {
                 </span>
 
                 <div>
-                  <h4>{job.role}</h4>
-                  <p className="work-card-company">{job.company}</p>
+                  <h4>{tr(job.role)}</h4>
+                  <p className="work-card-company">{tr(job.company)}</p>
                 </div>
 
                 <span className="work-card-period">{job.period}</span>
@@ -97,7 +101,7 @@ function Experience() {
 
               <ul className="work-card-highlights">
                 {job.highlights.map((point, i) => (
-                  <li key={i}>{point}</li>
+                  <li key={i}>{tr(point)}</li>
                 ))}
               </ul>
 
@@ -116,16 +120,16 @@ function Experience() {
                       className="work-card-report"
                       onClick={() => playUiSound("card")}
                     >
-                      <FaFileAlt /> Tải Báo Cáo Thực Tập
+                      <FaFileAlt /> {t("downloadReport")}
                     </a>
                   ) : (
                     <span className="work-card-report work-card-report-disabled">
-                      <FaFileAlt /> Báo cáo sẽ cập nhật sau
+                      <FaFileAlt /> {t("reportComingSoon")}
                     </span>
                   )}
 
                   {job.score && (
-                    <span className="work-card-score">Đánh giá: {job.score}</span>
+                    <span className="work-card-score">{t("scoreLabel")}: {job.score}</span>
                   )}
                 </div>
               </div>
@@ -139,13 +143,13 @@ function Experience() {
 
       <div className="experience-block">
 
-        <BlockTitle code="CERT">Chứng chỉ &amp; Kỹ năng</BlockTitle>
+        <BlockTitle code="CERT">{t("certBlockTitle")}</BlockTitle>
 
         <div className="certificate-grid">
 
           {certificates.map((cert, index) => (
             <HudFrame
-              key={cert.name}
+              key={tr(cert.name)}
               label={`CERT.${String(index + 1).padStart(2, "0")}`}
               className="certificate-card"
             >
@@ -156,18 +160,18 @@ function Experience() {
                 {cert.image ? (
                   <img
                     src={cert.image}
-                    alt={cert.name}
+                    alt={tr(cert.name)}
                   />
                 ) : (
                   <div className="certificate-placeholder">
                     <FaImage />
-                    <span>Sẽ cập nhật ảnh sau</span>
+                    <span>{t("certImageComingSoon")}</span>
                   </div>
                 )}
               </div>
 
               <div className="certificate-info">
-                <h4>{cert.name}</h4>
+                <h4>{tr(cert.name)}</h4>
                 <StatusBadge status={cert.status} />
               </div>
 

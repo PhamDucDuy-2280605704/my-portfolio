@@ -4,14 +4,17 @@ import HudFrame from "../../common/HudFrame/HudFrame";
 import "./Hero.css";
 
 import profile from "../../../data/profile";
-
-// Nhãn nhấn mạnh 3 mảng kỹ năng chính, hiện dạng "FRONTEND • BACKEND • MOBILE"
-// ngay dưới vai trò, giúp người xem nắm phạm vi kỹ năng chỉ trong 1 giây.
-const highlights = ["Frontend", "Backend", "Mobile"];
+import useLanguage from "../../../hooks/useLanguage";
 
 // Section giới thiệu ở trang Home — toàn bộ nội dung lấy từ data/profile.js,
 // nên muốn đổi tên/vai trò/câu quote... chỉ cần sửa file đó, không cần sửa ở đây.
 function Hero() {
+  const { t, tr } = useLanguage();
+
+  // Nhãn nhấn mạnh 3 mảng kỹ năng chính, hiện dạng "FRONTEND • BACKEND • MOBILE"
+  // ngay dưới vai trò, giúp người xem nắm phạm vi kỹ năng chỉ trong 1 giây.
+  const highlights = [t("highlightFrontend"), t("highlightBackend"), t("highlightMobile")];
+
   return (
     <section
       className="hero"
@@ -29,12 +32,12 @@ function Hero() {
       <div className="hero-left">
         <p className="hello">
           <span className="hello-dot" />
-          Xin chào, mình là
+          {t("helloGreeting")}
         </p>
 
         <h1>{profile.fullName}</h1>
 
-        <h2>{profile.role}</h2>
+        <h2>{tr(profile.role)}</h2>
 
         <div className="hero-highlights">
           {highlights.map((item, index) => (
@@ -46,13 +49,13 @@ function Hero() {
           ))}
         </div>
 
-        <p className="tagline">{profile.description}</p>
+        <p className="tagline">{tr(profile.description)}</p>
 
-        <p className="quote">“{profile.quote}”</p>
+        <p className="quote">“{tr(profile.quote)}”</p>
 
         <div className="buttons">
           <a href="#contact">
-            <Button variant="primary">Liên Hệ Với Mình</Button>
+            <Button variant="primary">{t("heroCta")}</Button>
           </a>
         </div>
       </div>

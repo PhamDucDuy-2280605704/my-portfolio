@@ -1,13 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
 import BottomDock from "./BottomDock";
+import renderWithLanguage from "../../../test/renderWithLanguage";
 
 // BottomDock không dùng react-router (link neo "#id" thuần, không phải
-// route) -> không cần MemoryRouter khi test.
+// route) -> không cần MemoryRouter khi test. Cần LanguageProvider vì
+// BottomDock gọi useLanguage() để dịch tên/mô tả từng mục.
 describe("BottomDock", () => {
   it("hiển thị đủ 7 mục điều hướng", () => {
-    render(<BottomDock />);
+    renderWithLanguage(<BottomDock />);
 
     const expectedLabels = [
       "Trang Chủ",
@@ -25,7 +27,7 @@ describe("BottomDock", () => {
   });
 
   it("mỗi mục là 1 link neo (#id) trỏ đúng section tương ứng", () => {
-    render(<BottomDock />);
+    renderWithLanguage(<BottomDock />);
 
     expect(screen.getByLabelText("Giới Thiệu")).toHaveAttribute("href", "#about");
     expect(screen.getByLabelText("Dự Án")).toHaveAttribute("href", "#projects");

@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import ContactForm from "./ContactForm";
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 // Điền nhanh 3 trường bắt buộc rồi bấm nút Gửi.
 async function fillAndSubmit(user) {
@@ -19,7 +20,7 @@ describe("ContactForm", () => {
   });
 
   it("hiện tiêu đề và mô tả tiếng Việt phía trên form", () => {
-    render(<ContactForm />);
+    renderWithLanguage(<ContactForm />);
 
     expect(screen.getByText("Gửi Tin Nhắn Trực Tiếp")).toBeInTheDocument();
     expect(
@@ -31,7 +32,7 @@ describe("ContactForm", () => {
     globalThis.fetch.mockResolvedValueOnce({ ok: true });
     const user = userEvent.setup();
 
-    render(<ContactForm />);
+    renderWithLanguage(<ContactForm />);
     await fillAndSubmit(user);
 
     await waitFor(() => {
@@ -43,7 +44,7 @@ describe("ContactForm", () => {
     globalThis.fetch.mockResolvedValueOnce({ ok: false });
     const user = userEvent.setup();
 
-    render(<ContactForm />);
+    renderWithLanguage(<ContactForm />);
     await fillAndSubmit(user);
 
     await waitFor(() => {
@@ -55,7 +56,7 @@ describe("ContactForm", () => {
     globalThis.fetch.mockRejectedValueOnce(new Error("Network error"));
     const user = userEvent.setup();
 
-    render(<ContactForm />);
+    renderWithLanguage(<ContactForm />);
     await fillAndSubmit(user);
 
     await waitFor(() => {
@@ -67,7 +68,7 @@ describe("ContactForm", () => {
     globalThis.fetch.mockResolvedValueOnce({ ok: true });
     const user = userEvent.setup();
 
-    render(<ContactForm />);
+    renderWithLanguage(<ContactForm />);
     await fillAndSubmit(user);
 
     await waitFor(() => {
@@ -80,7 +81,7 @@ describe("ContactForm", () => {
   });
 
   it("nếu trường honeypot (_gotcha) có giá trị -> coi là bot, KHÔNG gọi fetch tới Formspree", async () => {
-    const { container } = render(<ContactForm />);
+    const { container } = renderWithLanguage(<ContactForm />);
     const user = userEvent.setup();
 
     // Honeypot ẩn với người dùng thật (CSS), nhưng vẫn tồn tại trong DOM để

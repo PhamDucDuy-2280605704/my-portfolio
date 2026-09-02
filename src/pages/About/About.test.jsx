@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import About from "./About";
 import profile from "../../data/profile";
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 function renderAbout() {
-  return render(
+  return renderWithLanguage(
     <MemoryRouter>
       <About />
     </MemoryRouter>,
@@ -18,7 +19,7 @@ describe("About page", () => {
     renderAbout();
 
     profile.bio.forEach((paragraph) => {
-      expect(screen.getByText(paragraph)).toBeInTheDocument();
+      expect(screen.getByText(paragraph.vi)).toBeInTheDocument();
     });
   });
 
@@ -27,7 +28,7 @@ describe("About page", () => {
 
     expect(screen.getByText(profile.birthday)).toBeInTheDocument();
     expect(screen.getByText(profile.email)).toBeInTheDocument();
-    expect(screen.getByText(profile.location)).toBeInTheDocument();
+    expect(screen.getByText(profile.location.vi)).toBeInTheDocument();
   });
 
   it("nút 'Tải CV' trỏ đúng tới file resume và có thuộc tính download", () => {

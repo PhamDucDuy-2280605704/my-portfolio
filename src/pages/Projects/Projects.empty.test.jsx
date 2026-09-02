@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+
+import renderWithLanguage from "../../test/renderWithLanguage";
 
 // Mock toàn bộ data/projects.js để giả lập trường hợp 1 nhóm chưa có dự án nào —
 // tách file riêng (không chung với Projects.test.jsx) vì vi.mock áp dụng cho
@@ -17,7 +19,7 @@ const { default: Projects } = await import("./Projects");
 
 describe("Projects page (dữ liệu rỗng)", () => {
   it("hiện trạng thái rỗng thay vì để trống trơn khi nhóm chưa có dự án nào", () => {
-    render(
+    renderWithLanguage(
       <MemoryRouter>
         <Projects />
       </MemoryRouter>,

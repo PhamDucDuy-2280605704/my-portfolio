@@ -4,6 +4,7 @@ import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import "./ParticleIntro.css";
 
 import profile from "../../../data/profile";
+import useLanguage from "../../../hooks/useLanguage";
 
 // Intro kiểu "báo động sinh học" — lấy cảm hứng từ tinh thần thẩm mỹ dòng
 // game kinh dị sinh tồn Resident Evil / các tập đoàn dược-sinh học hư cấu
@@ -221,6 +222,7 @@ function playStaticBurst(audioCtx, duration = 0.22, gain = 0.038) {
 }
 
 function ParticleIntro({ onFinish }) {
+  const { tr } = useLanguage();
   const canvasRef = useRef(null);
   const rafRef = useRef(null);
   const particlesRef = useRef([]);
@@ -427,7 +429,7 @@ function ParticleIntro({ onFinish }) {
     initParticles();
     targetsRef.current = sampleDossierPoints(
       profile.fullName.toUpperCase(),
-      profile.role.toUpperCase(),
+      tr(profile.role).toUpperCase(),
       cw,
       ch,
       PARTICLE_COUNT
@@ -585,7 +587,7 @@ function ParticleIntro({ onFinish }) {
       ctx.scale(devicePixelRatio, devicePixelRatio);
       targetsRef.current = sampleDossierPoints(
         profile.fullName.toUpperCase(),
-        profile.role.toUpperCase(),
+        tr(profile.role).toUpperCase(),
         w,
         h,
         PARTICLE_COUNT
@@ -716,7 +718,7 @@ function ParticleIntro({ onFinish }) {
               <i />
               <span />
             </div>
-            <p className="intro-role">{profile.role}</p>
+            <p className="intro-role">{tr(profile.role)}</p>
           </div>
         )}
 
@@ -725,7 +727,7 @@ function ParticleIntro({ onFinish }) {
           <div className="re-intro-terminal">
             <p className="term-line term-access">&gt; ACCESS GRANTED</p>
             <p className="term-line term-info delay-1">&gt; USER: {profile.fullName}</p>
-            <p className="term-line term-info delay-2">&gt; ROLE: {profile.role}</p>
+            <p className="term-line term-info delay-2">&gt; ROLE: {tr(profile.role)}</p>
             <p className="term-line term-prompt delay-3">
               &gt; STATUS: CLEARED_<span className="cursor-blink" />
             </p>
@@ -750,12 +752,12 @@ function ParticleIntro({ onFinish }) {
             <div className="dossier-rows">
               <div className="dossier-row delay-1">
                 <span>VAI TRÒ</span>
-                <strong>{profile.role}</strong>
+                <strong>{tr(profile.role)}</strong>
               </div>
 
               <div className="dossier-row delay-2">
                 <span>ĐỊA ĐIỂM</span>
-                <strong>{profile.location}</strong>
+                <strong>{tr(profile.location)}</strong>
               </div>
 
               <div className="dossier-row delay-3">
@@ -767,7 +769,7 @@ function ParticleIntro({ onFinish }) {
               </div>
             </div>
 
-            <p className="dossier-quote delay-4">&ldquo;{profile.quote}&rdquo;</p>
+            <p className="dossier-quote delay-4">&ldquo;{tr(profile.quote)}&rdquo;</p>
 
             {/* Con dấu cyan "ĐÃ DUYỆT" đóng xuống chéo góc, kèm tiếng thịch */}
             <div className={`dossier-stamp ${stamped ? "is-stamped" : ""}`}>ĐÃ DUYỆT</div>
