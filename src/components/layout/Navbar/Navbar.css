@@ -107,12 +107,6 @@
   }
 }
 
-.navbar-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .navbar {
   position: sticky;
   top: 30px;

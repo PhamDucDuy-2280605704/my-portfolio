@@ -5,7 +5,6 @@ import "./Navbar.css";
 import logo from "../../../assets/images/logo.jpg";
 import profile from "../../../data/profile";
 import navSections from "../../../data/navSections";
-import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
 import LanguageToggle from "../../common/LanguageToggle/LanguageToggle";
 import useActiveSection from "../../../hooks/useActiveSection";
 import useLanguage from "../../../hooks/useLanguage";
@@ -21,12 +20,13 @@ function formatClock(date) {
 const SECTION_IDS = navSections.map((s) => s.id);
 
 // Navbar giờ CHỈ còn: dải mã hiệu (tên + mục đang xem + đồng hồ), logo, và
-// nút chuyển theme/ngôn ngữ — menu điều hướng đã chuyển hẳn xuống
-// <BottomDock /> (dock nổi kính, căn giữa dưới màn hình) nên không còn menu
-// chữ ở góc phải, cũng không cần hamburger/menu full-screen cho mobile nữa
-// (dock dưới đã tự hoạt động tốt ở mọi kích thước màn hình).
+// nút chuyển ngôn ngữ — menu điều hướng đã chuyển hẳn xuống <BottomDock />
+// (dock nổi kính, căn giữa dưới màn hình) nên không còn menu chữ ở góc
+// phải, cũng không cần hamburger/menu full-screen cho mobile nữa (dock dưới
+// đã tự hoạt động tốt ở mọi kích thước màn hình). KHÔNG còn chế độ sáng/tối
+// (đã bỏ hẳn ThemeToggle/useTheme theo yêu cầu) — chỉ còn 1 giao diện.
 function Navbar() {
-  const { t, tr } = useLanguage();
+  const { tr } = useLanguage();
   // isZoomed: đang mở overlay phóng to logo hay không.
   const [isZoomed, setIsZoomed] = useState(false);
   // Đồng hồ hệ thống — đặt cố định ở góc phải Navbar (sticky) để luôn thấy ngay.
@@ -149,7 +149,6 @@ function Navbar() {
 
         <div className="navbar-controls">
           <LanguageToggle />
-          <ThemeToggle />
         </div>
       </nav>
 
@@ -166,7 +165,7 @@ function Navbar() {
               playUiSound("card");
               setIsZoomed(false);
             }}
-            aria-label={t("closeLabel")}
+            aria-label="Đóng"
           >
             <IoClose />
           </button>

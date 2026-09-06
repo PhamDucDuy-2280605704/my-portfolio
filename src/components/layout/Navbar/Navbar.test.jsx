@@ -44,4 +44,11 @@ describe("Navbar", () => {
     await user.keyboard("{Escape}");
     expect(container.querySelector(".logo-overlay")).not.toBeInTheDocument();
   });
+
+  it("có nút chuyển ngôn ngữ (không còn nút chuyển theme)", () => {
+    renderWithLanguage(<Navbar />);
+
+    expect(screen.getByLabelText("Đổi sang tiếng Anh")).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Chuyển sang giao diện/)).not.toBeInTheDocument();
+  });
 });

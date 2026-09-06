@@ -25,6 +25,6 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
 
-  /* Quầng sáng nhẹ đồng bộ với ThemeToggle khi hover */
+  /* Quầng sáng nhẹ khi hover, cùng kiểu hiệu ứng dùng chung cho các nút icon khác */
   box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.12);
 }

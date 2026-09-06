@@ -8,6 +8,9 @@ const uiText = {
   // Hero
   helloGreeting: { vi: "Xin chào, mình là", en: "Hi, I'm" },
   heroCta: { vi: "Liên Hệ Với Mình", en: "Get In Touch" },
+  heroEyebrow: { vi: "GIỚI THIỆU", en: "ABOUT ME" },
+  heroAvailability: { vi: "Sẵn Sàng Nhận Việc", en: "Available For Work" },
+  heroServicesTitle: { vi: "Kỹ Năng Nổi Bật", en: "My Services" },
   highlightFrontend: { vi: "Frontend", en: "Frontend" },
   highlightBackend: { vi: "Backend", en: "Backend" },
   highlightMobile: { vi: "Mobile", en: "Mobile" },

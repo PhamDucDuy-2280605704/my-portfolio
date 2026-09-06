@@ -3,7 +3,7 @@ import "./LanguageToggle.css";
 import useLanguage from "../../../hooks/useLanguage";
 import { playUiSound } from "../../../utils/uiSound";
 
-// Nút bấm chuyển đổi ngôn ngữ VI/EN, đặt cạnh ThemeToggle trong Navbar.
+// Nút bấm chuyển đổi ngôn ngữ VI/EN, đặt trong Navbar (cạnh logo).
 // Hiện chữ "VI"/"EN" (ngôn ngữ SẼ chuyển sang, không phải ngôn ngữ hiện tại)
 // — giống cách nhiều site lớn làm, để người dùng hiểu ngay bấm vào sẽ đổi sang gì.
 function LanguageToggle() {
