@@ -376,15 +376,17 @@ function Zone() {
   }, [unlocked]);
 
   // Phím tắt "khoá khẩn cấp": đang mở khoá mà bấm Esc -> khoá lại ngay lập
-  // tức, kiểu phản xạ rời khỏi máy nhanh khi có người đi ngang qua.
+  // tức, kiểu phản xạ rời khỏi máy nhanh khi có người đi ngang qua. Gọi qua
+  // ref (thay vì đưa handleLockAgain vào deps) để effect không phải đăng ký
+  // lại listener mỗi lần render — ref luôn trỏ tới bản mới nhất của hàm.
+  const handleLockAgainRef = useRef(() => {});
   useEffect(() => {
     if (!unlocked) return undefined;
     function handleKeyDown(e) {
-      if (e.key === "Escape") handleLockAgain();
+      if (e.key === "Escape") handleLockAgainRef.current();
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-     
   }, [unlocked]);
 
   // Dọn dẹp: đóng AudioContext khi component unmount hẳn (rời khỏi /zone).
@@ -448,6 +450,7 @@ function Zone() {
     setGranting(false);
     setInput("");
   }
+  handleLockAgainRef.current = handleLockAgain;
 
   function handleCopy(entry) {
     playCopyTick(ctx());

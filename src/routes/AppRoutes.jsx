@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ScrollToTop from "../components/common/ScrollToTop/ScrollToTop";
 import PageLoader from "../components/common/PageLoader/PageLoader";
-import ReplayIntroButton from "../components/common/ReplayIntroButton/ReplayIntroButton";
 
 // Home giờ là TRANG DUY NHẤT của site — chứa toàn bộ nội dung (Hero, Giới
 // thiệu, Kỹ năng, Dự án, Kinh nghiệm, Nhật ký, Liên hệ) ghép thành 1 trang
@@ -38,12 +37,10 @@ const LEGACY_REDIRECTS = [
 // - <ScrollToTop /> chỉ còn tác dụng khi thật sự đổi route (VD từ 1 link
 //   redirect cũ) — bấm menu trong 1 trang giờ là cuộn neo (#id), không đổi
 //   route nên không kích hoạt lại ScrollToTop.
-// - <ReplayIntroButton /> tự dùng useLocation để CHỈ hiện ở "/".
 function AppRoutes() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <ReplayIntroButton />
 
       <Suspense fallback={<PageLoader />}>
         <Routes>
