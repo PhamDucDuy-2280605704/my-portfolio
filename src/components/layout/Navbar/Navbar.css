@@ -131,6 +131,84 @@
     0 16px 30px -24px rgba(0, 0, 0, 0.55);
 }
 
+/* ===== Khung "thu gọn / bung ra khi di chuột" — dùng chung cho cả logo lẫn
+   nút đổi ngôn ngữ. Mặc định chỉ hở 1 khe rất nhỏ (đủ để thấy mũi tên báo
+   hiệu), che phần còn lại bằng overflow:hidden; hover/focus vào khe đó thì
+   max-width bung hết cỡ, lộ ra nội dung thật bên trong. Dùng max-width
+   (không phải display:none) để có thể transition mượt, và dùng :focus-within
+   (không chỉ :hover) để người dùng bàn phím Tab tới vẫn thấy được, không bị
+   kẹt trong 1 khối bị che khuất. */
+.navbar-collapsible {
+  position: relative;
+  overflow: hidden;
+  max-width: 18px;
+  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar-collapsible::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid var(--color-primary);
+  border-right: 2px solid var(--color-primary);
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.navbar-collapsible:hover,
+.navbar-collapsible:focus-within {
+  max-width: 320px;
+}
+
+.navbar-collapsible:hover::after,
+.navbar-collapsible:focus-within::after {
+  opacity: 0;
+}
+
+/* Thiết bị cảm ứng (điện thoại/tablet) không có con trỏ chuột để "hover"
+   -> nếu giữ nguyên trạng thái thu gọn mặc định, logo và nút đổi ngôn ngữ
+   sẽ gần như không thể bấm được. Tắt hẳn hiệu ứng thu gọn ở đây, luôn hiện
+   đầy đủ như trước. */
+@media (hover: none), (pointer: coarse) {
+  .navbar-collapsible {
+    max-width: none;
+    overflow: visible;
+  }
+  .navbar-collapsible::after {
+    display: none;
+  }
+  .logo-collapsible {
+    margin-right: 0;
+  }
+}
+
+/* Logo nằm bên TRÁI navbar -> mũi tên báo hiệu chỉ SANG PHẢI (nơi nội dung
+   sẽ bung ra), đặt sát mép trái của khe hở. */
+.logo-collapsible {
+  margin-right: -18px;
+}
+.logo-collapsible::after {
+  left: 6px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Nút ngôn ngữ nằm bên PHẢI navbar -> mũi tên báo hiệu chỉ SANG TRÁI, đặt
+   sát mép phải của khe hở, và bản thân khối phải căn nội dung về bên phải
+   (justify-content: flex-end) để khi bung ra, nút không bị "giật" sang trái
+   rồi mới về đúng vị trí. */
+.navbar-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.navbar-controls::after {
+  right: 6px;
+  transform: translateY(-50%) rotate(-135deg);
+}
+
 .logo {
   display: flex;
   align-items: center;

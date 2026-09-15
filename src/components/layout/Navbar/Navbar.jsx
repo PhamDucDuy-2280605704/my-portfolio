@@ -130,24 +130,28 @@ function Navbar() {
       </div>
 
       <nav className="navbar">
-        {/* Logo — bấm vào mở overlay phóng to */}
-        <button
-          type="button"
-          className="logo"
-          onClick={() => {
-            playUiSound("card");
-            setIsZoomed(true);
-          }}
-        >
-          <span className="logo-frame">
-            <img
-              src={logo}
-              alt={profile.fullName}
-            />
-          </span>
-        </button>
+        {/* Logo — thu gọn lại mặc định (chỉ còn 1 mũi tên nhỏ báo hiệu),
+            di chuột/focus vào mới hiện đầy đủ. Bấm vào logo (lúc đã hiện
+            ra) mở overlay phóng to như cũ. */}
+        <div className="navbar-collapsible logo-collapsible">
+          <button
+            type="button"
+            className="logo"
+            onClick={() => {
+              playUiSound("card");
+              setIsZoomed(true);
+            }}
+          >
+            <span className="logo-frame">
+              <img
+                src={logo}
+                alt={profile.fullName}
+              />
+            </span>
+          </button>
+        </div>
 
-        <div className="navbar-controls">
+        <div className="navbar-collapsible navbar-controls">
           <LanguageToggle />
         </div>
       </nav>
