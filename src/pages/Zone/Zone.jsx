@@ -25,6 +25,22 @@ import HudFrame from "../../components/common/HudFrame/HudFrame";
 // khẩu ngân hàng, OTP...).
 const ZONE_PASSWORD = "9029";
 
+// Mật khẩu THAY THẾ do người dùng tự đổi ngay trong lúc mở khoá (xem
+// handleChangePassword) — lưu localStorage, nếu có thì ưu tiên dùng cái này
+// thay vì ZONE_PASSWORD cứng ở trên, khỏi phải nhờ sửa code + build lại mỗi
+// lần muốn đổi mật khẩu.
+const PASSWORD_OVERRIDE_KEY = "zone-password-override";
+
+function getEffectivePassword() {
+  try {
+    const override = window.localStorage.getItem(PASSWORD_OVERRIDE_KEY);
+    if (override) return override;
+  } catch {
+    // bỏ qua nếu không đọc được -> dùng mật khẩu mặc định
+  }
+  return ZONE_PASSWORD;
+}
+
 // Ghi nhớ trạng thái đã mở khoá bằng sessionStorage (KHÔNG dùng localStorage)
 // -> refresh lại trang trong CÙNG 1 tab thì khỏi nhập lại, nhưng đóng hẳn
 // tab/trình duyệt thì lại phải nhập lại từ đầu, giữ đúng cảm giác "phải có
@@ -287,6 +303,12 @@ function Zone() {
   const [editBody, setEditBody] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingDelete, setPendingDelete] = useState(null);
+  const [sortOrder, setSortOrder] = useState("newest"); // "newest" | "oldest" | "az"
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [currentPasswordInput, setCurrentPasswordInput] = useState("");
+  const [newPasswordInput, setNewPasswordInput] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState(null);
+  const importFileRef = useRef(null);
 
   const audioCtxRef = useRef(null);
   const inputRef = useRef(null);
@@ -403,7 +425,7 @@ function Zone() {
     e.preventDefault();
     if (cooldown > 0 || granting) return;
 
-    const isCorrect = input.trim().toLowerCase() === ZONE_PASSWORD.toLowerCase();
+    const isCorrect = input.trim().toLowerCase() === getEffectivePassword().toLowerCase();
 
     if (isCorrect) {
       playGranted(ctx());
@@ -582,15 +604,116 @@ function Zone() {
     playCopyTick(ctx());
   }
 
-  // Danh sách hiện thực tế trên màn hình: ghim lên đầu trước, rồi lọc theo
-  // ô tìm kiếm (khớp tiêu đề HOẶC nội dung, không phân biệt hoa/thường).
+  // Xuất bản sao lưu dạng JSON — không "đẹp mắt" như .txt ở trên nhưng có
+  // đủ dữ liệu để NHẬP LẠI chính xác 100% (title/body/ngày tạo/ghim...),
+  // dùng cho "Nhập từ file" bên dưới. .txt chỉ để đọc, JSON mới để backup/restore.
+  function handleExportJSON() {
+    const blob = new Blob([JSON.stringify(entries, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "zone-notes-backup.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    playCopyTick(ctx());
+  }
+
+  // Nhập lại từ file JSON đã xuất trước đó (handleExportJSON) — ghi chú
+  // trong file được THÊM VÀO (không xoá ghi chú hiện có), mỗi ghi chú nhập
+  // vào được cấp id mới để tránh trùng với id đang có sẵn.
+  function handleImportFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // cho phép chọn lại đúng file đó lần sau nếu cần
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (!Array.isArray(parsed)) throw new Error("not an array");
+
+        const imported = parsed
+          .filter((item) => item && typeof item.body === "string" && item.body.trim())
+          .map((item, i) => ({
+            id: `note-import-${Date.now()}-${i}`,
+            title: typeof item.title === "string" && item.title.trim() ? item.title : `GHI CHÚ NHẬP // ${i + 1}`,
+            body: item.body,
+            decrypt: false,
+            createdAt: item.createdAt || new Date().toISOString(),
+            pinned: false,
+          }));
+
+        if (imported.length === 0) throw new Error("empty");
+
+        const next = [...entries, ...imported];
+        setEntries(next);
+        saveEntries(next);
+        playGranted(ctx());
+      } catch {
+        playDenied(ctx());
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Đổi mật khẩu ngay trong lúc đang mở khoá — phải gõ đúng mật khẩu HIỆN
+  // TẠI trước (đề phòng ai đó đang đứng cạnh màn hình lúc bạn quên khoá lại)
+  // rồi mới cho đặt mật khẩu mới. Lưu vào localStorage (xem
+  // PASSWORD_OVERRIDE_KEY/getEffectivePassword ở đầu file) — không cần sửa
+  // code/build lại như trước.
+  function handleChangePassword(e) {
+    e.preventDefault();
+
+    if (currentPasswordInput.trim().toLowerCase() !== getEffectivePassword().toLowerCase()) {
+      setPasswordMessage({ type: "error", text: "Mật khẩu hiện tại không đúng." });
+      playDenied(ctx());
+      return;
+    }
+    if (!newPasswordInput.trim()) {
+      setPasswordMessage({ type: "error", text: "Mật khẩu mới không được để trống." });
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(PASSWORD_OVERRIDE_KEY, newPasswordInput.trim());
+    } catch {
+      setPasswordMessage({ type: "error", text: "Không lưu được — trình duyệt đang chặn localStorage." });
+      return;
+    }
+
+    playGranted(ctx());
+    setPasswordMessage({ type: "success", text: "Đã đổi mật khẩu thành công." });
+    setCurrentPasswordInput("");
+    setNewPasswordInput("");
+    setTimeout(() => {
+      setShowPasswordForm(false);
+      setPasswordMessage(null);
+    }, 1800);
+  }
+
+  // Danh sách hiện thực tế trên màn hình: lọc theo ô tìm kiếm trước (khớp
+  // tiêu đề HOẶC nội dung, không phân biệt hoa/thường), rồi sắp xếp theo
+  // sortOrder đang chọn — nhưng ghi chú đã ghim LUÔN lên đầu bất kể sortOrder
+  // là gì (ghim nghĩa là "quan trọng, muốn thấy trước" nên không nên bị thứ
+  // tự thời gian/chữ cái làm lu mờ đi).
+  function compareBySortOrder(a, b) {
+    if (sortOrder === "az") return a.title.localeCompare(b.title, "vi");
+    const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return sortOrder === "oldest" ? timeA - timeB : timeB - timeA;
+  }
+
   const visibleEntries = entries
     .filter((entry) => {
       const q = searchQuery.trim().toLowerCase();
       if (!q) return true;
       return entry.title.toLowerCase().includes(q) || entry.body.toLowerCase().includes(q);
     })
-    .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+    .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || compareBySortOrder(a, b));
 
   return (
     <div className="zone-page">
@@ -719,13 +842,25 @@ function Zone() {
             {/* Chỉ hiện thanh tìm kiếm khi có từ 3 ghi chú trở lên — ít hơn
                 thì tìm kiếm không thực sự cần thiết, chỉ chiếm chỗ. */}
             {entries.length >= 3 && (
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="zone-search"
-                placeholder="Tìm trong ghi chú..."
-              />
+              <div className="zone-search-row">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="zone-search"
+                  placeholder="Tìm trong ghi chú..."
+                />
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="zone-sort-select"
+                  aria-label="Sắp xếp ghi chú"
+                >
+                  <option value="newest">Mới nhất</option>
+                  <option value="oldest">Cũ nhất</option>
+                  <option value="az">A - Z</option>
+                </select>
+              </div>
             )}
 
             {pendingDelete && (
@@ -915,6 +1050,28 @@ function Zone() {
               <button
                 type="button"
                 className="zone-lock-again"
+                onClick={handleExportJSON}
+                disabled={entries.length === 0}
+              >
+                Xuất JSON
+              </button>
+              <button
+                type="button"
+                className="zone-lock-again"
+                onClick={() => importFileRef.current?.click()}
+              >
+                Nhập từ file
+              </button>
+              <input
+                ref={importFileRef}
+                type="file"
+                accept="application/json"
+                onChange={handleImportFile}
+                className="zone-file-input-hidden"
+              />
+              <button
+                type="button"
+                className="zone-lock-again"
                 onClick={handleLockAgain}
               >
                 Khoá lại
@@ -926,6 +1083,55 @@ function Zone() {
                 ← Rời khỏi Zone
               </Link>
             </div>
+
+            <button
+              type="button"
+              className="zone-add-toggle"
+              onClick={() => {
+                setShowPasswordForm((v) => !v);
+                setPasswordMessage(null);
+              }}
+            >
+              {showPasswordForm ? "Đóng" : "🔒 Đổi mật khẩu"}
+            </button>
+
+            {showPasswordForm && (
+              <form
+                onSubmit={handleChangePassword}
+                className="zone-add-form"
+              >
+                <input
+                  type="password"
+                  value={currentPasswordInput}
+                  onChange={(e) => setCurrentPasswordInput(e.target.value)}
+                  className="zone-add-title"
+                  placeholder="Mật khẩu hiện tại"
+                  autoComplete="off"
+                />
+                <input
+                  type="password"
+                  value={newPasswordInput}
+                  onChange={(e) => setNewPasswordInput(e.target.value)}
+                  className="zone-add-title"
+                  placeholder="Mật khẩu mới"
+                  autoComplete="off"
+                />
+                {passwordMessage && (
+                  <p className={passwordMessage.type === "error" ? "zone-denied" : "zone-granted-msg"}>
+                    {passwordMessage.text}
+                  </p>
+                )}
+                <div className="zone-add-actions">
+                  <button
+                    type="submit"
+                    className="zone-submit"
+                    disabled={!currentPasswordInput.trim() || !newPasswordInput.trim()}
+                  >
+                    Xác nhận đổi
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
         </HudFrame>

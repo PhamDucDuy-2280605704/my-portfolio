@@ -107,10 +107,31 @@
   }
 }
 
-.navbar {
+/* ===== Thanh navbar tự thu gọn trượt LÊN TRÊN =====
+   Mặc định cả thanh trượt lên hết, chỉ chừa lại 1 "tay nắm" nhỏ dạng tab bo
+   tròn nằm chính giữa — rê chuột (hoặc Tab tới bằng bàn phím) vào đó thì cả
+   thanh trượt xuống hiện đầy đủ, rời chuột ra thì tự thu lên lại.
+
+   Dùng translateY (không phải height/display) để trình duyệt chạy animation
+   trên GPU -> mượt, không gây giật layout của nội dung bên dưới.
+
+   .navbar-dock là lớp bọc cố định chiều cao 92px giữ đúng chỗ trong luồng
+   layout, còn .navbar bên trong mới là phần thật sự trượt lên/xuống — nếu
+   cho .navbar tự trượt trực tiếp, nội dung trang sẽ bị nhảy lên theo. */
+.navbar-dock {
   position: sticky;
   top: 30px;
   z-index: 1000;
+  height: 92px;
+  /* Cho phép .navbar bên trong trượt lên khỏi khung mà không bị cắt mất */
+  overflow: visible;
+}
+
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 
   height: 92px;
 
@@ -129,84 +150,109 @@
   box-shadow:
     0 1px 0 rgba(var(--color-accent-rgb), 0.35),
     0 16px 30px -24px rgba(0, 0, 0, 0.55);
+
+  /* Thu gọn: trượt lên hết, chỉ còn tay nắm (.navbar-handle) ló ra */
+  transform: translateY(-100%);
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ===== Khung "thu gọn / bung ra khi di chuột" — dùng chung cho cả logo lẫn
-   nút đổi ngôn ngữ. Mặc định chỉ hở 1 khe rất nhỏ (đủ để thấy mũi tên báo
-   hiệu), che phần còn lại bằng overflow:hidden; hover/focus vào khe đó thì
-   max-width bung hết cỡ, lộ ra nội dung thật bên trong. Dùng max-width
-   (không phải display:none) để có thể transition mượt, và dùng :focus-within
-   (không chỉ :hover) để người dùng bàn phím Tab tới vẫn thấy được, không bị
-   kẹt trong 1 khối bị che khuất. */
-.navbar-collapsible {
-  position: relative;
-  overflow: hidden;
-  max-width: 18px;
-  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+/* Mở ra khi rê chuột vào vùng dock, hoặc khi focus bàn phím rơi vào bất kỳ
+   nút nào bên trong (logo, nút đổi ngôn ngữ) */
+.navbar-dock:hover .navbar,
+.navbar-dock:focus-within .navbar {
+  transform: translateY(0);
 }
 
-.navbar-collapsible::after {
-  content: "";
+/* ===== Tay nắm: tab bo tròn nằm chính giữa, chứa mũi tên chỉ xuống =====
+   Tách thành phần tử riêng (thay vì ::before dính sát mép như trước) để canh
+   giữa chuẩn theo cả chiều ngang lẫn dọc, có nền + viền riêng nên nhìn cân
+   đối và rõ ràng hơn hẳn 1 mũi tên trần nằm trên vạch mỏng. */
+.navbar-handle {
   position: absolute;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-top: 2px solid var(--color-primary);
-  border-right: 2px solid var(--color-primary);
-  opacity: 0.55;
-  transition: opacity 0.25s ease;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 64px;
+  height: 22px;
+
+  background: var(--color-navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+
+  box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.6);
+
+  opacity: 1;
+  transition: opacity 0.25s ease, transform 0.25s ease;
   pointer-events: none;
 }
 
-.navbar-collapsible:hover,
-.navbar-collapsible:focus-within {
-  max-width: 320px;
+/* Mũi tên chỉ xuống, canh giữa trong tay nắm */
+.navbar-handle::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-top: -3px;
+  border-right: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+  transform: rotate(45deg);
 }
 
-.navbar-collapsible:hover::after,
-.navbar-collapsible:focus-within::after {
+/* Khi thanh đã mở: tay nắm mờ đi + thụt lên, tránh chồng lên nội dung navbar */
+.navbar-dock:hover .navbar-handle,
+.navbar-dock:focus-within .navbar-handle {
   opacity: 0;
+  transform: translateX(-50%) translateY(-8px);
 }
 
-/* Thiết bị cảm ứng (điện thoại/tablet) không có con trỏ chuột để "hover"
-   -> nếu giữ nguyên trạng thái thu gọn mặc định, logo và nút đổi ngôn ngữ
-   sẽ gần như không thể bấm được. Tắt hẳn hiệu ứng thu gọn ở đây, luôn hiện
-   đầy đủ như trước. */
+/* Vùng bắt hover rộng hơn tay nắm để không phải rê chuột quá chính xác mới
+   mở được thanh — trong suốt, chỉ để bắt chuột. */
+.navbar-dock::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  /* Nằm dưới .navbar để không chắn mất các nút bên trong khi thanh đã mở */
+  z-index: -1;
+}
+
+/* Thiết bị cảm ứng (điện thoại/tablet) không có chuột để rê -> nếu để thanh
+   tự thu lên, người dùng gần như không mở lại được. Tắt hẳn hiệu ứng ở đây,
+   thanh luôn hiện đầy đủ như bình thường. */
 @media (hover: none), (pointer: coarse) {
-  .navbar-collapsible {
-    max-width: none;
-    overflow: visible;
+  .navbar {
+    transform: translateY(0);
   }
-  .navbar-collapsible::after {
+  .navbar-handle,
+  .navbar-dock::after {
     display: none;
   }
-  .logo-collapsible {
-    margin-right: 0;
-  }
 }
 
-/* Logo nằm bên TRÁI navbar -> mũi tên báo hiệu chỉ SANG PHẢI (nơi nội dung
-   sẽ bung ra), đặt sát mép trái của khe hở. */
-.logo-collapsible {
-  margin-right: -18px;
-}
-.logo-collapsible::after {
-  left: 6px;
-  transform: translateY(-50%) rotate(45deg);
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-/* Nút ngôn ngữ nằm bên PHẢI navbar -> mũi tên báo hiệu chỉ SANG TRÁI, đặt
-   sát mép phải của khe hở, và bản thân khối phải căn nội dung về bên phải
-   (justify-content: flex-end) để khi bung ra, nút không bị "giật" sang trái
-   rồi mới về đúng vị trí. */
 .navbar-controls {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-}
-.navbar-controls::after {
-  right: 6px;
-  transform: translateY(-50%) rotate(-135deg);
 }
 
 .logo {

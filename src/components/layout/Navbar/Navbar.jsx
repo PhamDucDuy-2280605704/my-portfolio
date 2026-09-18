@@ -129,11 +129,18 @@ function Navbar() {
         </span>
       </div>
 
-      <nav className="navbar">
-        {/* Logo — thu gọn lại mặc định (chỉ còn 1 mũi tên nhỏ báo hiệu),
-            di chuột/focus vào mới hiện đầy đủ. Bấm vào logo (lúc đã hiện
-            ra) mở overlay phóng to như cũ. */}
-        <div className="navbar-collapsible logo-collapsible">
+      <div className="navbar-dock">
+        {/* Tay nắm: tab nhỏ luôn ló ra khi thanh đã thu gọn, báo hiệu rê
+            chuột vào để mở. Thuần trang trí (aria-hidden) — logo và nút đổi
+            ngôn ngữ bên trong vẫn Tab tới được bình thường bằng bàn phím,
+            và lúc đó thanh cũng tự mở nhờ :focus-within. */}
+        <span
+          className="navbar-handle"
+          aria-hidden="true"
+        />
+
+        <nav className="navbar">
+          {/* Logo — bấm vào mở overlay phóng to */}
           <button
             type="button"
             className="logo"
@@ -149,12 +156,12 @@ function Navbar() {
               />
             </span>
           </button>
-        </div>
 
-        <div className="navbar-collapsible navbar-controls">
-          <LanguageToggle />
-        </div>
-      </nav>
+          <div className="navbar-controls">
+            <LanguageToggle />
+          </div>
+        </nav>
+      </div>
 
       {/* Overlay phóng to logo */}
       {isZoomed && (
