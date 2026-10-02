@@ -1,42 +1,51 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../components/layout/Navbar/Navbar";
-import Footer from "../components/layout/Footer/Footer";
-import BottomDock from "../components/layout/BottomDock/BottomDock";
+
+import Background from "../components/common/Background/Background";
+import ContactModal from "../components/shell/ContactModal";
+import Footer from "../components/shell/Footer";
+import Loader from "../components/shell/Loader";
+import MenuOverlay from "../components/shell/MenuOverlay";
+import UiProvider from "../context/UiProvider";
 import useLanguage from "../hooks/useLanguage";
 
-// Layout dùng chung cho mọi trang (trừ NotFound và /zone).
-// <Outlet /> là nơi React Router "chèn" component của route hiện tại vào giữa
-// Navbar và Footer, nên mỗi page (Home, About, Skills...) không cần tự import
-// Navbar/Footer nữa.
+// Layout chung của trang chủ (design system Baseline). Mọi thứ nằm trong
+// <div class="bl"> — token màu/typography của Baseline chỉ áp dụng trong đó,
+// nên các route khác (/zone, 404) giữ nguyên giao diện riêng.
 //
-// <BottomDock /> là menu điều hướng chính (dock kính nổi, căn giữa dưới màn
-// hình) — Navbar phía trên chỉ còn logo + mã hiệu + đồng hồ + nút đổi ngôn
-// ngữ, không còn menu chữ, cũng không còn nút đổi sáng/tối (đã bỏ hẳn).
+//  - Loader        : màn intro navy, mở khoá cuộn + cờ `ready` khi xong.
+//  - <main>        : padding quanh để các section hiện như thẻ bo góc; chứa
+//                    trang hiện tại (<Outlet />) và Footer.
+//  - MenuOverlay / ContactModal : lớp phủ, render qua portal ở cấp body.
 function MainLayout() {
   const { t } = useLanguage();
 
   return (
-    <>
-      {/* Skip-to-content: ẩn khi bình thường, chỉ hiện khi người dùng bàn phím
-          nhấn Tab (focus vào link) — giúp họ nhảy thẳng tới nội dung chính
-          mà không phải Tab qua hết Navbar mỗi lần chuyển trang. */}
-      <a
-        href="#main-content"
-        className="skip-to-content"
-      >
-        {t("skipToContent")}
-      </a>
+    <UiProvider>
+      <div className="bl">
+        {/* Nền HUD cố định toàn trang (lưới, quầng sáng, hạt sáng, scanline, góc khung) */}
+        <Background />
 
-      <Navbar />
+        <Loader />
 
-      <main id="main-content">
-        <Outlet />
-      </main>
+        <a
+          href="#main-content"
+          className="skip-to-content"
+        >
+          {t("skipToContent")}
+        </a>
 
-      <Footer />
+        <main
+          id="main-content"
+          className="bl-main"
+        >
+          <Outlet />
+          <Footer />
+        </main>
 
-      <BottomDock />
-    </>
+        <MenuOverlay />
+        <ContactModal />
+      </div>
+    </UiProvider>
   );
 }
 

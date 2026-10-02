@@ -1,24 +1,19 @@
 import "./App.css";
 
 import AppRoutes from "./routes/AppRoutes";
-import Background from "./components/common/Background/Background";
 import SmoothScroll from "./components/common/SmoothScroll/SmoothScroll";
 import ErrorBoundary from "./components/common/ErrorBoundary/ErrorBoundary";
 import LanguageProvider from "./context/LanguageProvider";
 
 // Component gốc của toàn bộ ứng dụng.
-// Cấu trúc (từ dưới lên trên):
-//   1. Background     — nền động (gradient/blob/hạt sáng) cố định phía sau mọi trang.
-//   2. .app-content    — toàn bộ nội dung thật (Navbar, các trang, Footer) qua
-//      AppRoutes, bọc trong <ErrorBoundary>.
-//
-// Không còn màn hình intro (đã bỏ hẳn ParticleIntro/ReplayIntroButton/
-// IntroReplayContext theo yêu cầu) — vào thẳng trang chủ ngay lập tức.
+//   - LanguageProvider : ngôn ngữ vi/en cho mọi component.
+//   - SmoothScroll     : khởi tạo Lenis (cuộn mượt) 1 lần cho cả app.
+//   - ErrorBoundary    : bắt lỗi render để không trắng trang.
+//   - AppRoutes        : định tuyến; trang chủ dùng MainLayout (bố cục Baseline).
 function App() {
   return (
     <LanguageProvider>
       <SmoothScroll />
-      <Background />
 
       <div className="app-content">
         <ErrorBoundary>

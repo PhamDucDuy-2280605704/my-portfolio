@@ -18,6 +18,8 @@ const uiText = {
   // Navbar / BottomDock
   navAriaLabel: { vi: "Điều hướng nhanh", en: "Quick navigation" },
   closeLabel: { vi: "Đóng", en: "Close" },
+  avatarZoom: { vi: "Phóng to ảnh đại diện", en: "Enlarge profile photo" },
+  heroFocusLabel: { vi: "Mảng chuyên môn", en: "Focus areas" },
   languageToggleLabel: { vi: "Đổi sang tiếng Anh", en: "Switch to Vietnamese" },
   skipToContent: { vi: "Bỏ qua đến nội dung chính", en: "Skip to main content" },
 

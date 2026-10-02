@@ -1,0 +1,43 @@
+.bl.bl-portal { min-height: 0; background: transparent; }
+
+.bl.menu-root { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; }
+.bl .menu-backdrop { position: absolute; inset: 0; background: rgba(5, 9, 12, 0.97); opacity: 0; }
+
+.bl .menu-panel {
+  position: relative; display: flex; flex-direction: column; height: 100%;
+  padding: 1.5rem 1.5rem; color: var(--ink); opacity: 0;
+  overflow-y: auto;
+}
+@media (min-width: 640px) { .bl .menu-panel { padding: 2.75rem 3.25rem; } }
+
+.bl .menu-top { display: flex; align-items: center; justify-content: space-between; }
+.bl .menu-brand {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: var(--fs-body); font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em;
+}
+.bl .menu-brand-mark { width: 1.25rem; height: 1.25rem; }
+
+.bl .menu-close {
+  display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.15); transition: background-color 0.2s ease;
+}
+.bl .menu-close:hover { background: rgba(255, 255, 255, 0.25); }
+.bl .menu-close svg { width: 1.25rem; height: 1.25rem; }
+
+.bl .menu-nav { display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; flex: 1; padding-block: 2rem; }
+.bl .menu-link {
+  display: block; width: fit-content;
+  font-size: 3rem; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;
+  transition: color 0.2s ease;
+}
+@media (min-width: 640px) { .bl .menu-link { font-size: 4.5rem; } }
+.bl .menu-link:hover { color: var(--brand-light); }
+
+.bl .menu-bottom {
+  display: flex; flex-direction: column; gap: 1.5rem;
+  padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+@media (min-width: 640px) { .bl .menu-bottom { flex-direction: row; align-items: center; justify-content: space-between; } }
+.bl .menu-extras { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+.bl .menu-social { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: var(--fs-small); color: var(--ink-soft); }
+.bl .menu-social a:hover { color: var(--ink); }

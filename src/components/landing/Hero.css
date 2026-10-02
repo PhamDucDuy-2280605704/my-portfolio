@@ -1,0 +1,83 @@
+.bl .bl-hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column;
+  min-height: max(36rem, calc(100svh - 1rem));
+  color: var(--ink);
+}
+@media (min-width: 640px) { .bl .bl-hero { min-height: max(36rem, calc(100svh - 1.5rem)); } }
+
+.bl .hero-title-wrap { position: relative; z-index: 1; padding: 2rem 1.5rem 0; }
+@media (min-width: 640px) { .bl .hero-title-wrap { padding: 2.5rem 2.5rem 0; } }
+
+/* Hàng nhận diện: mã mục + vai trò (avatar và logo nằm ở header) */
+.bl .hero-id { display: flex; align-items: center; margin-bottom: 1.25rem; }
+.bl .hero-id-text { display: flex; flex-direction: column; gap: 0.15rem; font-size: var(--fs-small); color: var(--ink-soft); }
+
+.bl .hero-title {
+  display: block; font-size: 12.5vw; font-weight: 600; text-transform: uppercase;
+  line-height: 0.88; letter-spacing: -0.02em; white-space: nowrap;
+}
+/* Tên "PHẠM ĐỨC DUY" dài hơn tiêu đề mẫu -> hạ cỡ chữ trên mobile để không tràn khung */
+@media (max-width: 639px) { .bl .hero-title { font-size: 10.4vw; } }
+
+/* Khối giới thiệu ngay dưới tên */
+.bl .hero-intro { position: relative; z-index: 2; max-width: 38rem; padding: 2rem 1.5rem 0; }
+@media (min-width: 640px) { .bl .hero-intro { padding: 2.25rem 2.5rem 0; } }
+.bl .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.bl .hero-tags li {
+  padding: 0.35rem 0.85rem; border-radius: var(--radius-pill);
+  border: 1px solid rgba(var(--brand-rgb), 0.35); background: rgba(var(--brand-rgb), 0.08);
+  font-family: var(--font-mono); font-size: var(--fs-small); letter-spacing: 0.14em; text-transform: uppercase; color: var(--brand-light);
+}
+.bl .hero-desc { margin-top: 1.25rem; font-size: var(--fs-body); line-height: 1.7; color: var(--ink-soft); }
+.bl .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+
+.bl .hero-bottom {
+  position: relative; z-index: 4;
+  display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto;
+  padding: 2.5rem 1.5rem 2rem;
+}
+@media (min-width: 640px) {
+  .bl .hero-bottom { flex-direction: row; align-items: flex-end; justify-content: space-between; padding: 2.5rem 2.5rem 2.5rem; }
+}
+
+.bl .hero-tagline {
+  display: block; font-size: var(--fs-title-sm); font-weight: 500; text-transform: uppercase;
+  line-height: 0.95; letter-spacing: -0.02em; color: var(--ink);
+}
+
+.bl .hero-cluster { display: flex; align-items: flex-end; gap: 1rem; }
+
+/* Slider 3 mảng chuyên môn */
+.bl .focus-slider { display: none; flex-direction: column; gap: 0.75rem; width: 16rem; }
+@media (min-width: 768px) { .bl .focus-slider { display: flex; } }
+.bl .focus-stage { position: relative; }
+.bl .focus-card {
+  display: flex; gap: 0.75rem; width: 100%; padding: 0.75rem;
+  border-radius: var(--radius-card); border: 1px solid rgba(var(--brand-rgb), 0.22);
+  background: rgba(13, 28, 39, 0.7); box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.bl .focus-thumb {
+  display: grid; place-items: center; flex: none; width: 3.5rem; height: 3.5rem;
+  border-radius: 0.75rem; background: rgba(var(--brand-rgb), 0.12); color: var(--brand); font-size: 1.5rem;
+}
+.bl .focus-text { display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; min-width: 0; }
+.bl .focus-brand { font-size: var(--fs-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+.bl .focus-title {
+  font-size: var(--fs-label); text-transform: uppercase; color: var(--ink-soft); line-height: 1.35;
+}
+.bl .focus-cta { font-size: var(--fs-label); color: var(--brand); text-decoration: underline; text-underline-offset: 2px; width: fit-content; }
+
+/* Thẻ điểm thực tập: số + thanh tiến độ cyan */
+.bl .score-card {
+  display: flex; flex-direction: column; gap: 0.75rem; width: 100%; max-width: 20rem; padding: 0.875rem 1rem;
+  border-radius: var(--radius-card); border: 1px solid rgba(var(--accent-rgb), 0.3);
+  background: rgba(13, 28, 39, 0.7); box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+@media (min-width: 640px) { .bl .score-card { width: 13rem; } }
+.bl .score-value { font-family: var(--font-mono); font-size: 1.875rem; line-height: 1; color: var(--accent); }
+.bl .score-bar { height: 0.3125rem; border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+.bl .score-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #ffd29a); }
+.bl .score-caption { font-size: var(--fs-label); color: var(--ink-soft); }

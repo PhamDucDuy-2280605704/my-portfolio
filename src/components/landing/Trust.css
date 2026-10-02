@@ -1,0 +1,83 @@
+.bl .bl-trust {
+  position: relative; isolation: isolate; overflow: hidden;
+  padding: 4rem 1.5rem;
+}
+@media (min-width: 640px) { .bl .bl-trust { padding: 5rem 2.5rem; } }
+
+.bl .trust-badges {
+  position: relative; z-index: 20;
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+@media (min-width: 640px) { .bl .trust-badges { flex-direction: row; align-items: flex-start; justify-content: space-between; } }
+
+.bl .trust-percent {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  width: 7rem; height: 7rem; flex: none; border-radius: var(--radius-pill); background: var(--surface);
+}
+@media (min-width: 640px) { .bl .trust-percent { width: 8rem; height: 8rem; } }
+.bl .trust-percent-value { font-size: 1.5rem; font-weight: 500; line-height: 1; }
+.bl .trust-percent-caption { max-width: 7em; margin-top: 0.25rem; font-size: var(--fs-label); color: var(--ink-soft); }
+
+.bl .trust-card {
+  display: flex; align-items: flex-start; gap: 1rem; max-width: 28rem; padding: 1.25rem;
+  border-radius: var(--radius-card); background: var(--surface);
+}
+@media (min-width: 640px) { .bl .trust-card { gap: 1.25rem; padding: 1.5rem; } }
+.bl .trust-chip {
+  flex: none; padding: 0.5rem 1rem; border-radius: 0.75rem;
+  background: var(--background); font-size: var(--fs-lead); font-weight: 500;
+}
+.bl .trust-card-title { font-size: var(--fs-lead); font-weight: 500; }
+.bl .trust-card-body { margin-top: 0.5rem; font-size: var(--fs-label); line-height: 1.65; color: var(--ink-soft); }
+
+/* Tiêu đề ghost khổng lồ */
+.bl .trust-ghost {
+  position: relative; z-index: 0; max-width: 88rem; margin: 3rem auto 0;
+  font-size: 8.2vw; font-weight: 500; text-transform: uppercase;
+  line-height: 1.02; letter-spacing: -0.02em;
+  pointer-events: none; user-select: none;
+}
+.bl .ghost-row { display: flex; justify-content: space-between; }
+.bl .ghost-word { display: block; color: var(--ghost); will-change: transform; }
+.bl .ghost-word--ink { color: var(--ink); }
+
+/* Thẻ "stack" nghiêng 6deg ở giữa */
+.bl .trust-center { position: relative; z-index: 10; display: flex; justify-content: center; margin-top: 2rem; }
+@media (min-width: 640px) {
+  .bl .trust-center {
+    position: absolute; inset: 0; margin: 0; display: grid; place-items: center; pointer-events: none;
+  }
+}
+.bl .coach-card {
+  position: relative; width: 14rem; aspect-ratio: 3 / 4; overflow: hidden;
+  border-radius: var(--radius-card); border: 1px solid rgba(var(--brand-rgb), 0.35);
+  background: #08141c; transform: rotate(6deg);
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.5), 0 0 3rem -0.75rem rgba(var(--brand-rgb), 0.45);
+}
+@media (min-width: 640px) { .bl .coach-card { width: 16rem; } }
+.bl .coach-layer { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 1.25rem; overflow: hidden; }
+.bl .coach-layer::before { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.bl .coach-layer--navy::before { background: radial-gradient(90% 60% at 20% 0%, rgba(34, 211, 238, 0.28), transparent 70%); }
+.bl .coach-layer--teal::before { background: radial-gradient(90% 60% at 80% 0%, rgba(255, 169, 77, 0.24), transparent 70%); }
+.bl .coach-layer--blue::before { background: radial-gradient(90% 60% at 50% 0%, rgba(103, 232, 249, 0.24), transparent 70%); }
+.bl .coach-layer > * { position: relative; }
+.bl .stack-code { font-family: var(--font-mono); font-size: var(--fs-small); letter-spacing: 0.18em; color: var(--accent); }
+.bl .stack-name { margin-top: 0.75rem; font-family: var(--font-display); font-size: var(--fs-title-sm); font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+.bl .stack-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.25rem; }
+.bl .stack-chips li {
+  padding: 0.3rem 0.65rem; border-radius: var(--radius-pill);
+  border: 1px solid rgba(var(--brand-rgb), 0.3); background: rgba(var(--brand-rgb), 0.08);
+  font-size: var(--fs-label); color: var(--brand-light);
+}
+.bl .coach-caption {
+  position: absolute; left: 1.25rem; right: 1.25rem; bottom: 1.25rem;
+  display: flex; flex-direction: column; padding-top: 0.75rem; border-top: 1px solid rgba(var(--brand-rgb), 0.25);
+}
+.bl .coach-name { font-size: var(--fs-small); font-weight: 500; }
+.bl .coach-role { font-size: var(--fs-label); color: var(--ink-soft); }
+
+.bl .trust-controls {
+  position: relative; z-index: 20; margin-top: 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+@media (min-width: 640px) { .bl .trust-controls { margin-top: 6rem; } }
