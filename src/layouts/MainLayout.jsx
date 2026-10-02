@@ -3,8 +3,7 @@ import { Outlet } from "react-router-dom";
 import Background from "../components/common/Background/Background";
 import ContactModal from "../components/shell/ContactModal";
 import Footer from "../components/shell/Footer";
-// import Loader from "../components/shell/Loader";              // ❌ Xoá dòng này
-import UiverseLoader from "../components/shell/UiverseLoader";  // ✅ Thêm dòng này
+import UiverseLoader from "../components/shell/UiverseLoader"; 
 import MenuOverlay from "../components/shell/MenuOverlay";
 import UiProvider from "../context/UiProvider";
 import useLanguage from "../hooks/useLanguage";
@@ -26,7 +25,7 @@ function MainLayout() {
         {/* Nền HUD cố định toàn trang (lưới, quầng sáng, hạt sáng, scanline, góc khung) */}
         <Background />
 
-        <UiverseLoader />   {/* ✅ Đổi từ <Loader /> */}
+        <UiverseLoader />  
 
         <a
           href="#main-content"

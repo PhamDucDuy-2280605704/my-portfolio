@@ -10,8 +10,8 @@ const landing = {
   hero: {
     // 2 dòng tagline dưới tên
     tagline: {
-      vi: ["Nghĩ cho rõ,", "Làm tới nơi"],
-      en: ["Think it through,", "Ship it"],
+      vi: ["Cần một mục đích / để bắt đầu"],
+      en: ["You need a purpose / to begin"],
     },
     // Slider 3 mảng chuyên môn (góc phải hero). Tên công nghệ lấy từ data/skills.js.
     focus: [
