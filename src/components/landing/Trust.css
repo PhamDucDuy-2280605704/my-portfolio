@@ -1,83 +1,87 @@
 .bl .bl-trust {
-  position: relative; isolation: isolate; overflow: hidden;
-  padding: 4rem 1.5rem;
+  --coach-w: 15rem;
+  position: relative; isolation: isolate; overflow: hidden; padding: 4rem 1.5rem;
 }
-@media (min-width: 640px) { .bl .bl-trust { padding: 5rem 2.5rem; } }
+@media (min-width: 640px) { .bl .bl-trust { --coach-w: 17rem; padding: 5rem 2.5rem; } }
+@media (min-width: 1024px) { .bl .bl-trust { --coach-w: 20rem; } }
 
-.bl .trust-badges {
+/* Hàng trên: nhãn section bên trái, thẻ giới thiệu bên phải */
+.bl .trust-top {
   position: relative; z-index: 20;
   display: flex; flex-direction: column; gap: 1.5rem;
 }
-@media (min-width: 640px) { .bl .trust-badges { flex-direction: row; align-items: flex-start; justify-content: space-between; } }
-
-.bl .trust-percent {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-  width: 7rem; height: 7rem; flex: none; border-radius: var(--radius-pill); background: var(--surface);
-}
-@media (min-width: 640px) { .bl .trust-percent { width: 8rem; height: 8rem; } }
-.bl .trust-percent-value { font-size: 1.5rem; font-weight: 500; line-height: 1; }
-.bl .trust-percent-caption { max-width: 7em; margin-top: 0.25rem; font-size: var(--fs-label); color: var(--ink-soft); }
+@media (min-width: 640px) { .bl .trust-top { flex-direction: row; align-items: flex-start; justify-content: space-between; } }
 
 .bl .trust-card {
-  display: flex; align-items: flex-start; gap: 1rem; max-width: 28rem; padding: 1.25rem;
-  border-radius: var(--radius-card); background: var(--surface);
+  display: flex; align-items: flex-start; gap: 1rem; max-width: 30rem; padding: 1.25rem;
+  border-radius: var(--radius-card); background: var(--surface); border: 1px solid rgba(var(--brand-rgb), 0.16);
 }
 @media (min-width: 640px) { .bl .trust-card { gap: 1.25rem; padding: 1.5rem; } }
 .bl .trust-chip {
   flex: none; padding: 0.5rem 1rem; border-radius: 0.75rem;
-  background: var(--background); font-size: var(--fs-lead); font-weight: 500;
+  background: var(--background); font-size: var(--fs-lg); font-weight: 600;
 }
-.bl .trust-card-title { font-size: var(--fs-lead); font-weight: 500; }
-.bl .trust-card-body { margin-top: 0.5rem; font-size: var(--fs-label); line-height: 1.65; color: var(--ink-soft); }
+.bl .trust-card-title { font-size: var(--fs-lg); font-weight: 600; }
+.bl .trust-card-body { margin-top: 0.5rem; font-size: var(--fs-sm); line-height: 1.65; color: var(--ink-soft); }
 
-/* Tiêu đề ghost khổng lồ */
-.bl .trust-ghost {
-  position: relative; z-index: 0; max-width: 88rem; margin: 3rem auto 0;
-  font-size: 8.2vw; font-weight: 500; text-transform: uppercase;
-  line-height: 1.02; letter-spacing: -0.02em;
+/* "Sân khấu" chứa 4 từ khổng lồ và thẻ ở giữa. Chiều cao tối thiểu = chiều cao thẻ nên thẻ
+   không bao giờ đè lên hàng trên hay hàng nút điều khiển, ở mọi kích thước màn hình. */
+.bl .trust-stage { position: relative; margin-top: 2.5rem; container-type: inline-size; }
+@media (min-width: 640px) {
+  .bl .trust-stage { display: grid; align-items: center; min-height: calc(var(--coach-w) * 4 / 3 + 1rem); }
+}
+
+/* 4 từ khổng lồ: lưới 3 cột đối xứng [từ trái | khoảng trống cho thẻ | từ phải] để không từ nào bị thẻ che.
+   Cả 4 từ cùng cỡ chữ và cùng màu chữ chính của site. */
+.bl .trust-words {
+  position: relative; z-index: 0; width: 100%; margin: 0 auto;
+  font-size: 8.2vw; font-weight: 600; text-transform: uppercase;
+  line-height: 1.02; letter-spacing: -0.02em; color: var(--ink);
   pointer-events: none; user-select: none;
 }
-.bl .ghost-row { display: flex; justify-content: space-between; }
-.bl .ghost-word { display: block; color: var(--ghost); will-change: transform; }
-.bl .ghost-word--ink { color: var(--ink); }
+.bl .words-row { display: flex; justify-content: space-between; gap: 1rem; }
+.bl .big-word { display: block; will-change: transform; }
 
-/* Thẻ "stack" nghiêng 6deg ở giữa */
+@media (min-width: 640px) {
+  /* Cỡ chữ TỰ KHỚP: không bao giờ vượt quá bề rộng 1 cột bên cạnh thẻ.
+     5.7 = bề rộng (tính theo em) của từ dài nhất đo thực tế (FRONTEND ≈ 5.21em) + dư cho parallax.
+     min() với vw giữ chữ không phình quá to trên màn rộng. */
+  .bl .trust-words { --fit: calc((100cqw - var(--coach-w) - 5rem) / 2 / 5.7); font-size: min(4.6vw, var(--fit)); }
+  .bl .words-row { display: grid; grid-template-columns: minmax(0, 1fr) var(--coach-w) minmax(0, 1fr); column-gap: 2rem; }
+  .bl .words-row .big-word--right { grid-column: 3; text-align: right; }
+  .bl .words-row .big-word--left { grid-column: 1; }
+}
+@media (min-width: 1440px) { .bl .trust-words { font-size: min(5.6vw, var(--fit)); } }
+@media (min-width: 1800px) { .bl .trust-words { font-size: min(6.2vw, var(--fit)); } }
+
+/* Thẻ ở giữa — đặt thẳng, căn giữa chính xác theo sân khấu */
 .bl .trust-center { position: relative; z-index: 10; display: flex; justify-content: center; margin-top: 2rem; }
 @media (min-width: 640px) {
-  .bl .trust-center {
-    position: absolute; inset: 0; margin: 0; display: grid; place-items: center; pointer-events: none;
-  }
+  .bl .trust-center { position: absolute; inset: 0; margin: 0; display: grid; place-items: center; pointer-events: none; }
 }
 .bl .coach-card {
-  position: relative; width: 14rem; aspect-ratio: 3 / 4; overflow: hidden;
-  border-radius: var(--radius-card); border: 1px solid rgba(var(--brand-rgb), 0.35);
-  background: #08141c; transform: rotate(6deg);
+  position: relative; width: var(--coach-w); aspect-ratio: 3 / 4; overflow: hidden;
+  border-radius: var(--radius-card); border: 1px solid rgba(var(--brand-rgb), 0.4);
+  background: #08141c;
   box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.5), 0 0 3rem -0.75rem rgba(var(--brand-rgb), 0.45);
 }
-@media (min-width: 640px) { .bl .coach-card { width: 16rem; } }
-.bl .coach-layer { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 1.25rem; overflow: hidden; }
+/* Lề trong thống nhất 2rem: mã số, tên mảng và dòng công nghệ thẳng hàng theo cạnh trái */
+.bl .coach-layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; padding: 2rem; overflow: hidden; }
 .bl .coach-layer::before { content: ""; position: absolute; inset: 0; pointer-events: none; }
 .bl .coach-layer--navy::before { background: radial-gradient(90% 60% at 20% 0%, rgba(34, 211, 238, 0.28), transparent 70%); }
 .bl .coach-layer--teal::before { background: radial-gradient(90% 60% at 80% 0%, rgba(255, 169, 77, 0.24), transparent 70%); }
 .bl .coach-layer--blue::before { background: radial-gradient(90% 60% at 50% 0%, rgba(103, 232, 249, 0.24), transparent 70%); }
 .bl .coach-layer > * { position: relative; }
-.bl .stack-code { font-family: var(--font-mono); font-size: var(--fs-small); letter-spacing: 0.18em; color: var(--accent); }
-.bl .stack-name { margin-top: 0.75rem; font-family: var(--font-display); font-size: var(--fs-title-sm); font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
-.bl .stack-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.25rem; }
-.bl .stack-chips li {
-  padding: 0.3rem 0.65rem; border-radius: var(--radius-pill);
-  border: 1px solid rgba(var(--brand-rgb), 0.3); background: rgba(var(--brand-rgb), 0.08);
-  font-size: var(--fs-label); color: var(--brand-light);
+.bl .stack-code { font-family: var(--font-mono); font-size: var(--fs-md); line-height: 1; letter-spacing: 0.18em; color: var(--accent); }
+.bl .stack-name {
+  margin-top: auto; font-family: var(--font-display); font-size: var(--fs-xl);
+  font-weight: 600; line-height: 1; letter-spacing: -0.02em; color: var(--ink);
 }
-.bl .coach-caption {
-  position: absolute; left: 1.25rem; right: 1.25rem; bottom: 1.25rem;
-  display: flex; flex-direction: column; padding-top: 0.75rem; border-top: 1px solid rgba(var(--brand-rgb), 0.25);
-}
-.bl .coach-name { font-size: var(--fs-small); font-weight: 500; }
-.bl .coach-role { font-size: var(--fs-label); color: var(--ink-soft); }
+@media (min-width: 640px) { .bl .stack-name { font-size: 2.75rem; } }
+.bl .stack-role { margin-top: 0.75rem; font-size: var(--fs-md); line-height: 1.3; color: var(--ink-soft); }
 
 .bl .trust-controls {
   position: relative; z-index: 20; margin-top: 3rem;
   display: flex; align-items: center; justify-content: space-between;
 }
-@media (min-width: 640px) { .bl .trust-controls { margin-top: 6rem; } }
+@media (min-width: 640px) { .bl .trust-controls { margin-top: 2.5rem; } }

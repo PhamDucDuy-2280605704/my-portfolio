@@ -3,34 +3,53 @@ import { createPortal } from "react-dom";
 
 import useLanguage from "../../hooks/useLanguage";
 import useToggleSpring from "../../hooks/useToggleSpring";
-import profile from "../../data/profile";
 import { lockScroll, unlockScroll } from "../../lib/lenis";
 import { CloseButton } from "./MenuOverlay";
-import "./AvatarLightbox.css";
+import "./ImageLightbox.css";
 
-// Avatar tròn nhỏ ở header: bấm để phóng to ra giữa màn hình (lightbox).
+// Ảnh nhỏ bấm để phóng to ra giữa màn hình (lightbox) — dùng cho avatar và logo ở header.
+//   src / alt   : ảnh hiển thị (cả bản thu nhỏ lẫn bản phóng to)
+//   caption     : chú thích dưới ảnh phóng to
+//   label       : nhãn đọc màn hình cho nút mở (VD "Phóng to ảnh đại diện")
+//   className   : class của nút mở (quyết định hình dạng bản thu nhỏ: tròn, chữ nhật...)
+//   wide        : ảnh ngang (logo) -> cho khung phóng to rộng hơn
 // - Render qua portal ở cấp body, khoá cuộn khi mở (dùng chung bộ đếm khoá với menu/modal)
-// - Đóng bằng: Esc, bấm nền tối, hoặc nút X; focus được trả lại nút avatar sau khi đóng
-function AvatarLightbox() {
+// - Đóng bằng: Esc, bấm nền tối, hoặc nút X; focus được trả lại nút mở sau khi đóng
+function ImageLightbox({
+  src,
+  alt = "",
+  caption,
+  label,
+  className = "",
+  wide = false,
+}) {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
   const closeRef = useRef(null);
   const wasOpen = useRef(false);
 
-  const backdropRef = useToggleSpring(open, { opacity: 0 }, { opacity: 1 }, { tension: 240, friction: 30 });
+  const backdropRef = useToggleSpring(
+    open,
+    { opacity: 0 },
+    { opacity: 1 },
+    { tension: 240, friction: 30 },
+  );
   const panelRef = useToggleSpring(
     open,
     { opacity: 0, y: 24, scale: 0.9 },
     { opacity: 1, y: 0, scale: 1 },
-    { tension: 230, friction: 24 }
+    { tension: 230, friction: 24 },
   );
 
   useEffect(() => {
     if (!open) return undefined;
     lockScroll();
     wasOpen.current = true;
-    const focusTimer = setTimeout(() => closeRef.current?.querySelector("button, [type=button]")?.focus?.(), 80);
+    const focusTimer = setTimeout(
+      () => closeRef.current?.querySelector("button, [type=button]")?.focus?.(),
+      80,
+    );
     const onKey = (e) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => {
@@ -53,63 +72,50 @@ function AvatarLightbox() {
       <button
         ref={triggerRef}
         type="button"
-        className="avatar-btn"
-        aria-label={t("avatarZoom")}
+        className={`zoom-trigger ${className}`.trim()}
+        aria-label={label}
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >
-        <img
-          src={profile.avatar}
-          alt=""
-          width="44"
-          height="44"
-          decoding="async"
-        />
+        <img src={src} alt="" decoding="async" />
       </button>
 
       {createPortal(
         <div
-          className="bl bl-portal avatar-root"
+          className="bl bl-portal lightbox-root"
           style={{ pointerEvents: open ? "auto" : "none" }}
           inert={!open}
           aria-hidden={!open}
         >
           <div
             ref={backdropRef}
-            className="avatar-backdrop"
+            className="lightbox-backdrop"
             onClick={() => setOpen(false)}
           />
 
           <figure
             ref={panelRef}
-            className="avatar-panel"
+            className={`lightbox-panel${wide ? " lightbox-panel--wide" : ""}`}
             role="dialog"
             aria-modal="true"
-            aria-label={profile.fullName}
+            aria-label={caption || alt}
           >
-            <img
-              src={profile.avatar}
-              alt={profile.fullName}
-              decoding="async"
-            />
-            <figcaption>{profile.fullName}</figcaption>
+            <img src={src} alt={alt} decoding="async" />
+            {caption && <figcaption>{caption}</figcaption>}
 
-            <span
-              ref={closeRef}
-              className="avatar-close"
-            >
+            <span ref={closeRef} className="lightbox-close">
               <CloseButton
-                className="avatar-close-btn"
+                className="lightbox-close-btn"
                 label={t("closeLabel")}
                 onClick={() => setOpen(false)}
               />
             </span>
           </figure>
         </div>,
-        document.body
+        document.body,
       )}
     </>
   );
 }
 
-export default AvatarLightbox;
+export default ImageLightbox;

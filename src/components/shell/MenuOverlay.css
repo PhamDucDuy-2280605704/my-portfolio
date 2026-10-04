@@ -1,7 +1,7 @@
 .bl.bl-portal { min-height: 0; background: transparent; }
 
 .bl.menu-root { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; }
-.bl .menu-backdrop { position: absolute; inset: 0; background: rgba(5, 9, 12, 0.97); opacity: 0; }
+.bl .menu-backdrop { position: absolute; inset: 0; background: radial-gradient(70% 60% at 85% 0%, rgba(var(--brand-rgb), 0.16), transparent 70%), var(--background); opacity: 0; }
 
 .bl .menu-panel {
   position: relative; display: flex; flex-direction: column; height: 100%;
@@ -13,7 +13,7 @@
 .bl .menu-top { display: flex; align-items: center; justify-content: space-between; }
 .bl .menu-brand {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-size: var(--fs-body); font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em;
+  font-size: var(--fs-md); font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em;
 }
 .bl .menu-brand-mark { width: 1.25rem; height: 1.25rem; }
 
@@ -33,11 +33,4 @@
 @media (min-width: 640px) { .bl .menu-link { font-size: 4.5rem; } }
 .bl .menu-link:hover { color: var(--brand-light); }
 
-.bl .menu-bottom {
-  display: flex; flex-direction: column; gap: 1.5rem;
-  padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-@media (min-width: 640px) { .bl .menu-bottom { flex-direction: row; align-items: center; justify-content: space-between; } }
-.bl .menu-extras { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
-.bl .menu-social { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: var(--fs-small); color: var(--ink-soft); }
-.bl .menu-social a:hover { color: var(--ink); }
+.bl .menu-bottom { padding-top: 2rem; border-top: 1px solid rgba(var(--brand-rgb), 0.18); }

@@ -15,7 +15,12 @@ import { CloseButton } from "./MenuOverlay";
 import "./ContactModal.css";
 
 // Trạng thái gửi form: idle -> sending -> success | error
-const STATUS = { IDLE: "idle", SENDING: "sending", SUCCESS: "success", ERROR: "error" };
+const STATUS = {
+  IDLE: "idle",
+  SENDING: "sending",
+  SUCCESS: "success",
+  ERROR: "error",
+};
 
 // Modal liên hệ (portal ở cấp body, khoá cuộn khi mở). Form gửi THẬT qua
 // Formspree (endpoint ở data/social.js) bằng fetch + Accept: application/json
@@ -27,12 +32,17 @@ function ContactModal() {
   const nameRef = useRef(null);
   const formRef = useRef(null);
 
-  const backdropRef = useToggleSpring(contactOpen, { opacity: 0 }, { opacity: 1 }, { tension: 240, friction: 30 });
+  const backdropRef = useToggleSpring(
+    contactOpen,
+    { opacity: 0 },
+    { opacity: 1 },
+    { tension: 240, friction: 30 },
+  );
   const panelRef = useToggleSpring(
     contactOpen,
     { opacity: 0, y: 28, scale: 0.96 },
     { opacity: 1, y: 0, scale: 1 },
-    { tension: 240, friction: 26 }
+    { tension: 240, friction: 26 },
   );
 
   // Mở: khoá cuộn, đếm lượt mở (để phát lại reveal tiêu đề), focus ô tên sau ~120ms,
@@ -130,11 +140,7 @@ function ContactModal() {
         </div>
 
         {status === STATUS.SUCCESS ? (
-          <div
-            className="modal-success"
-            role="status"
-            aria-live="polite"
-          >
+          <div className="modal-success" role="status" aria-live="polite">
             <span className="modal-success-icon">
               <CheckIcon />
             </span>
@@ -201,10 +207,7 @@ function ContactModal() {
             </label>
 
             {status === STATUS.ERROR && (
-              <p
-                className="modal-error"
-                role="alert"
-              >
+              <p className="modal-error" role="alert">
                 {t("contactFormError")}
               </p>
             )}
@@ -214,13 +217,15 @@ function ContactModal() {
               className="pill pill--solid modal-submit"
               disabled={status === STATUS.SENDING}
             >
-              {status === STATUS.SENDING ? t("contactFormSending") : t("contactFormSubmit")}
+              {status === STATUS.SENDING
+                ? t("contactFormSending")
+                : t("contactFormSubmit")}
             </button>
           </form>
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 

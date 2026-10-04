@@ -26,18 +26,25 @@ function Stats() {
   const months = monthsBetween(work?.period);
 
   const stats = [
-    { value: String(Object.values(skills).flat().length), label: landing.stats.labels.tech },
+    {
+      value: String(Object.values(skills).flat().length),
+      label: landing.stats.labels.tech,
+    },
     work?.score && { value: work.score, label: landing.stats.labels.score },
     months && { value: String(months), label: landing.stats.labels.months },
-    { value: String(projects.completed.length), label: landing.stats.labels.projects },
+    {
+      value: String(projects.completed.length),
+      label: landing.stats.labels.projects,
+    },
   ].filter(Boolean);
 
   return (
-    <section
-      id="experience"
-      className="bl-stats panel panel--cyan bracket"
-    >
-      <Eyebrow tone="light" code="SEC.05">{tr(landing.stats.eyebrow)}</Eyebrow>
+    <section id="experience" className="bl-stats hud-panel hud-panel--cyan hud-bracket">
+      <Inview>
+        <Eyebrow tone="light" code="SEC.05">
+          {tr(landing.stats.eyebrow)}
+        </Eyebrow>
+      </Inview>
       <StackedLines
         as="h2"
         id="stats-title"
@@ -47,20 +54,10 @@ function Stats() {
 
       <dl className="stats-grid">
         {stats.map((stat, i) => (
-          <Inview
-            key={stat.label.vi}
-            className="stat-cell"
-            from={{ opacity: 0, y: 30 }}
-            to={{ opacity: 1, y: 0 }}
-            delay={i * 110}
-            config={{ tension: 180, friction: 24 }}
-          >
+          <Inview key={stat.label.vi} className="stat-cell" delay={i * 110}>
             <dt className="sr-only">{tr(stat.label)}</dt>
             <dd className="stat-value">{stat.value}</dd>
-            <dd
-              className="stat-label"
-              aria-hidden="true"
-            >
+            <dd className="stat-label" aria-hidden="true">
               {tr(stat.label)}
             </dd>
           </Inview>
@@ -68,17 +65,13 @@ function Stats() {
       </dl>
 
       <div className="journey">
-        <h3 className="journey-title">{tr(landing.stats.journey)}</h3>
+        <Inview>
+          <h3 className="journey-title">{tr(landing.stats.journey)}</h3>
+        </Inview>
 
         <div className="journey-grid">
           {work && (
-            <Inview
-              as="article"
-              className="journey-block"
-              from={{ opacity: 0, y: 30 }}
-              to={{ opacity: 1, y: 0 }}
-              config={{ tension: 180, friction: 24 }}
-            >
+            <Inview as="article" className="journey-block">
               <p className="journey-period">{work.period}</p>
               <h4>{tr(work.role)}</h4>
               <p className="journey-org">{tr(work.company)}</p>
@@ -104,19 +97,9 @@ function Stats() {
             </Inview>
           )}
 
-          <Inview
-            as="article"
-            className="journey-block"
-            from={{ opacity: 0, y: 30 }}
-            to={{ opacity: 1, y: 0 }}
-            delay={110}
-            config={{ tension: 180, friction: 24 }}
-          >
+          <Inview as="article" className="journey-block" delay={110}>
             {education.map((e, i) => (
-              <div
-                key={i}
-                className="journey-edu"
-              >
+              <div key={i} className="journey-edu">
                 <p className="journey-period">{tr(e.period)}</p>
                 <h4>{tr(e.school)}</h4>
                 <p className="journey-org">{tr(e.major)}</p>
@@ -127,7 +110,11 @@ function Stats() {
               {certificates.map((c, i) => (
                 <li key={i}>
                   <span>{tr(c.name)}</span>
-                  <em>{c.status === "completed" ? t("statusDone") : t("statusInProgress")}</em>
+                  <em>
+                    {c.status === "completed"
+                      ? t("statusDone")
+                      : t("statusInProgress")}
+                  </em>
                 </li>
               ))}
             </ul>

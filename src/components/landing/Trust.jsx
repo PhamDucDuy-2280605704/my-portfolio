@@ -5,15 +5,15 @@ import useScrollProgress from "../../hooks/useScrollProgress";
 import useToggleSpring from "../../hooks/useToggleSpring";
 import landing from "../../data/landing";
 import profile from "../../data/profile";
-import skills from "../../data/skills";
 import Inview from "../motion/Inview";
 import { FadeWords, StackedLines } from "../motion/Reveal";
 import ArrowButton from "../ui/ArrowButton";
 import CarouselDots from "../ui/CarouselDots";
+import Eyebrow from "../ui/Eyebrow";
 import "./Trust.css";
 
-// Parallax ngang ngược chiều của 4 từ ghost: [từ %, tới %]
-const GHOST_PARALLAX = [
+// Parallax ngang ngược chiều của 4 từ khổng lồ: [từ %, tới %]
+const WORD_PARALLAX = [
   [-3, 3],
   [3, -3],
   [-2, 4],
@@ -23,32 +23,31 @@ const GHOST_PARALLAX = [
 const lerp = (a, b, p) => a + (b - a) * p;
 
 // 1 từ khổng lồ: reveal clip-mask (700ms easeOutExpo) + parallax ngang theo cuộn.
-function GhostWord({ word, ink, range, sectionRef }) {
+function BigWord({ word, range, sectionRef, align }) {
   const wrapRef = useRef(null);
 
   useScrollProgress(sectionRef, (p) => {
-    if (wrapRef.current) wrapRef.current.style.transform = `translateX(${lerp(range[0], range[1], p).toFixed(3)}%)`;
+    if (wrapRef.current)
+      wrapRef.current.style.transform = `translateX(${lerp(range[0], range[1], p).toFixed(3)}%)`;
   });
 
   return (
-    <span
-      ref={wrapRef}
-      className={`ghost-word${ink ? " ghost-word--ink" : ""}`}
-    >
-      <StackedLines
-        lines={[word]}
-        duration={700}
-      />
+    <span ref={wrapRef} className={`big-word big-word--${align}`}>
+      <StackedLines lines={[word]} duration={700} />
     </span>
   );
 }
 
-// Thẻ "stack" của 1 slide (thay cho ảnh): mã mục, tên mảng, danh sách công nghệ và vai trò.
-// 3 lớp xếp chồng và cross-fade khi đổi slide.
-function StackLayer({ slide, index, visible }) {
+// Thẻ ở giữa của 1 slide (đặt thẳng, không nghiêng): số thứ tự, tên mảng, vai trò. 3 lớp xếp chồng, cross-fade khi đổi slide.
+// (Không liệt kê công nghệ ở đây — danh sách kỹ năng chỉ nằm ở section Kỹ năng.)
+function StackLayer({ slide, index, total, visible }) {
   const { tr } = useLanguage();
-  const ref = useToggleSpring(visible, { opacity: 0 }, { opacity: 1 }, { tension: 260, friction: 26 });
-  const group = tr(landing.programs.groups[slide.group]);
+  const ref = useToggleSpring(
+    visible,
+    { opacity: 0 },
+    { opacity: 1 },
+    { tension: 260, friction: 26 },
+  );
 
   return (
     <div
@@ -56,25 +55,15 @@ function StackLayer({ slide, index, visible }) {
       className={`coach-layer coach-layer--${slide.tone}`}
       aria-hidden={!visible}
     >
-      <span className="stack-code">{`STACK.0${index + 1}`}</span>
-      <p className="stack-name">{group}</p>
-
-      <ul className="stack-chips">
-        {skills[slide.group].map((name) => (
-          <li key={name}>{name}</li>
-        ))}
-      </ul>
-
-      <figcaption className="coach-caption">
-        <span className="coach-name">{profile.fullName}</span>
-        <span className="coach-role">{tr(slide.role)}</span>
-      </figcaption>
+      <span className="stack-code">{`0${index + 1} / 0${total}`}</span>
+      <p className="stack-name">{tr(landing.programs.groups[slide.group])}</p>
+      <p className="stack-role">{tr(slide.role)}</p>
     </div>
   );
 }
 
-// Section giới thiệu dạng carousel 3 slide (Frontend / Backend / Mobile): đổi
-// slide sẽ phát lại reveal các từ ghost, đổi đoạn bio và cross-fade ảnh.
+// Section giới thiệu dạng carousel 3 slide: đổi slide sẽ phát lại reveal 4 từ khổng lồ,
+// đổi đoạn bio và cross-fade thẻ giữa. Bố cục 3 cột đối xứng: từ trái — thẻ — từ phải.
 function Trust() {
   const { tr } = useLanguage();
   const [index, setIndex] = useState(0);
@@ -86,30 +75,13 @@ function Trust() {
   const go = (i) => setIndex((i + slides.length) % slides.length);
 
   return (
-    <section
-      ref={sectionRef}
-      id="about"
-      className="bl-trust"
-    >
-      <div className="trust-badges">
-        <Inview
-          className="trust-percent"
-          from={{ opacity: 0, scale: 0.9 }}
-          to={{ opacity: 1, scale: 1 }}
-          config={{ tension: 220, friction: 22 }}
-        >
-          <p className="trust-percent-value">{landing.about.badgeValue}</p>
-          <p className="trust-percent-caption">{tr(landing.about.badgeCaption)}</p>
+    <section ref={sectionRef} id="about" className="bl-trust">
+      <div className="trust-top">
+        <Inview>
+          <Eyebrow code="SEC.02">{tr(landing.about.eyebrow)}</Eyebrow>
         </Inview>
 
-        <Inview
-          as="article"
-          className="trust-card"
-          from={{ opacity: 0, y: 24 }}
-          to={{ opacity: 1, y: 0 }}
-          delay={120}
-          config={{ tension: 200, friction: 26 }}
-        >
+        <Inview as="article" className="trust-card" delay={120}>
           <span className="trust-chip">{`#0${index + 1}`}</span>
           <div>
             <h3 className="trust-card-title">{tr(slide.title)}</h3>
@@ -125,65 +97,65 @@ function Trust() {
         </Inview>
       </div>
 
-      <h2
-        id="trust-title"
-        className="trust-ghost"
-        aria-label={words.join(" ")}
-      >
-        {/* key theo index -> mount lại các từ, phát lại reveal khi đổi slide */}
-        <span
-          className="ghost-row"
-          key={`r1-${index}`}
+      <div className="trust-stage">
+        <h2
+          id="trust-title"
+          className="trust-words"
+          aria-label={words.join(" ")}
         >
-          <GhostWord
-            word={words[0]}
-            range={GHOST_PARALLAX[0]}
-            sectionRef={sectionRef}
-          />
-          <GhostWord
-            word={words[1]}
-            range={GHOST_PARALLAX[1]}
-            sectionRef={sectionRef}
-          />
-        </span>
-        <span
-          className="ghost-row"
-          key={`r2-${index}`}
-        >
-          <GhostWord
-            word={words[2]}
-            ink
-            range={GHOST_PARALLAX[2]}
-            sectionRef={sectionRef}
-          />
-          <GhostWord
-            word={words[3]}
-            range={GHOST_PARALLAX[3]}
-            sectionRef={sectionRef}
-          />
-        </span>
-      </h2>
+          {/* key theo index -> mount lại các từ, phát lại reveal khi đổi slide */}
+          <span className="words-row" key={`r1-${index}`}>
+            <BigWord
+              word={words[0]}
+              align="left"
+              range={WORD_PARALLAX[0]}
+              sectionRef={sectionRef}
+            />
+            <BigWord
+              word={words[1]}
+              align="right"
+              range={WORD_PARALLAX[1]}
+              sectionRef={sectionRef}
+            />
+          </span>
+          <span className="words-row" key={`r2-${index}`}>
+            <BigWord
+              word={words[2]}
+              align="left"
+              range={WORD_PARALLAX[2]}
+              sectionRef={sectionRef}
+            />
+            <BigWord
+              word={words[3]}
+              align="right"
+              range={WORD_PARALLAX[3]}
+              sectionRef={sectionRef}
+            />
+          </span>
+        </h2>
 
-      <div className="trust-center">
-        <Inview
-          from={{ opacity: 0, y: 60, scale: 0.92 }}
-          to={{ opacity: 1, y: 0, scale: 1 }}
-          config={{ tension: 170, friction: 26 }}
-        >
-          <figure className="coach-card">
-            {slides.map((s, i) => (
-              <StackLayer
-                key={i}
-                slide={s}
-                index={i}
-                visible={i === index}
-              />
-            ))}
-          </figure>
-        </Inview>
+        <div className="trust-center">
+          <Inview
+            from={{ opacity: 0, y: 60, scale: 0.94 }}
+            to={{ opacity: 1, y: 0, scale: 1 }}
+            config={{ tension: 170, friction: 26 }}
+          >
+            <figure className="coach-card hud-bracket">
+              {slides.map((s, i) => (
+                <StackLayer
+                  key={i}
+                  slide={s}
+                  index={i}
+                  total={slides.length}
+                  visible={i === index}
+                />
+              ))}
+            </figure>
+          </Inview>
+        </div>
       </div>
 
-      <div className="trust-controls">
+      <Inview className="trust-controls">
         <ArrowButton
           direction="prev"
           variant="outline"
@@ -202,7 +174,7 @@ function Trust() {
           label="Next"
           onClick={() => go(index + 1)}
         />
-      </div>
+      </Inview>
     </section>
   );
 }

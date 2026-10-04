@@ -4,12 +4,12 @@ import { playUiSound } from "../../utils/uiSound";
 import "./LangSwitch.css";
 
 // Chuyển ngôn ngữ vi/en — 2 nút dạng segmented, nút đang chọn có aria-pressed.
-function LangSwitch({ tone = "light" }) {
+function LangSwitch() {
   const { lang, setLang, tr } = useLanguage();
 
   return (
     <div
-      className={`lang-switch lang-switch--${tone}`}
+      className="lang-switch"
       role="group"
       aria-label={tr(landing.shell.langLabel)}
     >

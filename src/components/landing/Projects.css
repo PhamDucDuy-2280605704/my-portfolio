@@ -11,7 +11,7 @@
 }
 .bl .projects-icon svg { width: 1.75rem; height: 1.75rem; }
 .bl .projects-title { display: block; margin-top: 1.5rem; }
-.bl .projects-body { max-width: 20rem; margin-top: 1.5rem; font-size: var(--fs-small); color: var(--ink-soft); }
+.bl .projects-body { max-width: 20rem; margin-top: 1.5rem; font-size: var(--fs-sm); color: var(--ink-soft); }
 
 .bl .projects-cards { display: flex; align-items: flex-end; gap: 1.25rem; }
 .bl .court-card { flex: 1; min-width: 0; }
@@ -29,7 +29,7 @@
 .bl .court-status {
   position: absolute; top: 0.75rem; left: 0.75rem; padding: 0.35rem 0.75rem;
   border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.18);
-  font-size: var(--fs-label); font-weight: 500; color: var(--ink);
+  font-size: var(--fs-xs); font-weight: 500; color: var(--ink);
   -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
 }
 /* Ảnh minh hoạ SVG nằm nửa trên thẻ, ánh sáng mờ phía sau cho có chiều sâu */
@@ -46,9 +46,9 @@
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
 .bl .court-caption--navy, .bl .court-caption--teal { background: rgba(5, 9, 12, 0.6); }
-.bl .court-name { font-size: var(--fs-small); font-weight: 500; }
+.bl .court-name { font-size: var(--fs-sm); font-weight: 500; }
 .bl .court-desc {
-  font-size: var(--fs-label);
+  font-size: var(--fs-xs);
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
-.bl .court-link { margin-top: 0.2rem; font-size: var(--fs-label); text-decoration: underline; text-underline-offset: 2px; }
+.bl .court-link { margin-top: 0.2rem; font-size: var(--fs-xs); text-decoration: underline; text-underline-offset: 2px; }

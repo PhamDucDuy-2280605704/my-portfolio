@@ -38,18 +38,18 @@
 
 .bl .modal-field { display: flex; flex-direction: column; gap: 0.5rem; }
 .bl .modal-field > span {
-  font-size: var(--fs-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-soft);
+  font-size: var(--fs-xs); font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-soft);
 }
 .bl .modal-field input, .bl .modal-field textarea {
   width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem;
   border: 1px solid var(--hairline); background: var(--background);
-  font: inherit; font-size: var(--fs-small); color: var(--ink); resize: vertical;
+  font: inherit; font-size: var(--fs-sm); color: var(--ink); resize: vertical;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .bl .modal-field input:focus, .bl .modal-field textarea:focus {
   outline: none; border-color: var(--brand-light); box-shadow: 0 0 0 3px rgba(var(--brand-rgb), 0.2);
 }
-.bl .modal-error { font-size: var(--fs-small); color: #c0392b; }
+.bl .modal-error { font-size: var(--fs-sm); color: #c0392b; }
 .bl .modal-submit { align-self: flex-start; }
 
 .bl .modal-success {
@@ -61,7 +61,7 @@
   background: var(--brand); color: #05090c;
 }
 .bl .modal-success-icon svg { width: 1.5rem; height: 1.5rem; }
-.bl .modal-success h3 { font-size: var(--fs-lead); font-weight: 500; }
-.bl .modal-success p { font-size: var(--fs-small); color: var(--ink-soft); max-width: 22rem; }
+.bl .modal-success h3 { font-size: var(--fs-lg); font-weight: 500; }
+.bl .modal-success p { font-size: var(--fs-sm); color: var(--ink-soft); max-width: 22rem; }
 
 .bl .modal-field input::placeholder, .bl .modal-field textarea::placeholder { color: rgba(147, 184, 196, 0.55); }

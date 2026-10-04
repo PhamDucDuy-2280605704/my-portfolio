@@ -1,9 +1,6 @@
-/* Đồng bộ hoàn toàn với hệ thống thiết kế chính của site — không còn bảng
-   màu/font riêng của Zone nữa. Toàn bộ màu lấy từ src/styles/variables.css
-   (cyan --color-primary, cam --color-accent...) và font dùng lại Chakra
-   Petch / Share Tech Mono đã tải sẵn ở reset.css, khung ngoài PDA dùng lại
-   chính component <HudFrame> mà About/Skills/Projects... đang dùng, thay vì
-   tự vẽ border/rivet riêng như bản trước. */
+/* Trang /zone dùng CHUNG hệ thống thiết kế với cả site: màu từ variables.css, font tự host
+   (Be Vietnam Pro / Bricolage Grotesque / Share Tech Mono), thang cỡ chữ --fs-*, và khung
+   .hud-panel + .hud-bracket (globals.css). Không còn bảng màu / font / khung riêng. */
 
 .zone-page {
   position: relative;
@@ -59,7 +56,6 @@
     transparent 3px
   );
   mix-blend-mode: multiply;
-  opacity: 0.5;
   pointer-events: none;
 }
 
@@ -84,7 +80,6 @@
     var(--color-bg) 12px,
     var(--color-bg) 24px
   );
-  opacity: 0.7;
   z-index: 2;
 }
 .zone-hazardbar.top {
@@ -94,18 +89,20 @@
   bottom: 0;
 }
 
-/* ===== Khung thiết bị PDA — wrapper định vị/kích thước, phần viền/góc/nền
-   do <HudFrame> bên trong đảm nhiệm (dùng chung với cả site). ===== */
+/* ===== Khung thiết bị PDA — dùng khung chung .hud-panel + .hud-bracket (globals.css);
+   ở đây chỉ định vị, kích thước và nền tối hơn một chút cho chữ dễ đọc. ===== */
 
 .zone-pda {
   position: relative;
   z-index: 3;
-  width: min(94vw, 480px);
+  width: min(94vw, 600px);
+  padding: 2.25rem 2rem;
+  background: rgba(8, 18, 26, 0.88);
 }
 
 /* Nhấp nháy độ sáng cực nhẹ, không đều nhịp trên chính khung HudFrame —
    cảm giác màn hình PDA cũ, nguồn điện hơi chập chờn. */
-.zone-pda .hud-frame {
+.zone-pda {
   animation: zone-crt-flicker 6s ease-in-out infinite;
 }
 @keyframes zone-crt-flicker {
@@ -137,7 +134,7 @@
 }
 .zone-pda-brand {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.12em;
   color: var(--color-text-secondary);
 }
@@ -155,7 +152,7 @@
   background: none;
   border: none;
   color: var(--color-text-secondary);
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
   cursor: pointer;
   transition: color 0.2s ease;
 }
@@ -253,7 +250,7 @@
 
 .zone-title-en {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.28em;
   color: var(--color-danger-text);
   margin: 0 0 12px;
@@ -261,14 +258,14 @@
 .zone-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.9rem;
+  font-size: var(--fs-xl);
   letter-spacing: 0.03em;
   color: var(--color-primary);
   text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.4);
   margin: 0 0 4px;
 }
 .zone-title-sub {
-  font-size: 1rem;
+  font-size: var(--fs-md);
   color: var(--color-text-secondary);
   margin: 0 0 20px;
   font-family: var(--font-display);
@@ -280,7 +277,7 @@
   align-items: center;
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.1em;
   color: var(--color-text-secondary);
   margin-bottom: 22px;
@@ -291,56 +288,31 @@
 
 .zone-signal-log {
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.03em;
   color: var(--color-text-secondary);
-  opacity: 0.75;
   margin: -8px 0 20px;
   min-height: 1.4em;
-  max-width: 300px;
+  max-width: 440px;
+  text-wrap: balance;
 }
 
 .zone-form {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
   width: 100%;
-  max-width: 320px;
 }
-.zone-input {
-  flex: 1;
-  min-width: 0;
-  padding: 11px 14px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-primary);
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
-  letter-spacing: 0.3em;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.zone-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
-}
-.zone-input::placeholder {
-  color: var(--color-text-secondary);
-  opacity: 0.4;
-  letter-spacing: 0.3em;
-}
-.zone-input:disabled {
-  opacity: 0.5;
-}
-
 .zone-submit {
-  padding: 0 16px;
+  width: min(100%, 18rem);
+  padding: 0.8rem 1rem;
   background: rgba(var(--color-primary-rgb), 0.12);
   border: 1px solid rgba(var(--color-primary-rgb), 0.5);
   border-radius: var(--radius-md);
   color: var(--color-primary);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.08em;
   cursor: pointer;
   white-space: nowrap;
@@ -358,14 +330,14 @@
 .zone-denied {
   margin-top: 16px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.06em;
   color: var(--color-danger-text);
 }
 .zone-granted-msg {
   margin-top: 16px;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.1em;
   color: var(--color-primary);
   text-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.5);
@@ -375,7 +347,7 @@
   display: inline-block;
   margin-top: 26px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.06em;
   color: var(--color-text-secondary);
   text-decoration: none;
@@ -389,7 +361,7 @@
 
 .zone-content-tag {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.08em;
   color: var(--color-accent);
   margin: 0 0 6px;
@@ -398,20 +370,18 @@
 
 .zone-last-access {
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.04em;
   color: var(--color-text-secondary);
-  opacity: 0.7;
   text-align: center;
   margin: 0 0 4px;
 }
 
 .zone-hotkey-hint {
   font-family: var(--font-mono);
-  font-size: 0.64rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.03em;
   color: var(--color-text-secondary);
-  opacity: 0.5;
   text-align: center;
   margin: 0 0 20px;
 }
@@ -439,7 +409,7 @@
 }
 .zone-entry h2 {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.08em;
   color: var(--color-primary);
   margin: 0;
@@ -452,7 +422,7 @@
   padding: 3px 9px;
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.05em;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
@@ -467,7 +437,7 @@
 }
 .zone-entry p {
   font-family: var(--font-family);
-  font-size: 0.92rem;
+  font-size: var(--fs-md);
   line-height: 1.6;
   color: var(--color-text);
   margin: 0;
@@ -475,10 +445,9 @@
 
 .zone-empty {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.03em;
   color: var(--color-text-secondary);
-  opacity: 0.6;
   text-align: center;
   padding: 18px 0;
 }
@@ -493,7 +462,7 @@
   border-radius: var(--radius-md);
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
@@ -522,7 +491,7 @@
   border-radius: var(--radius-sm);
   color: var(--color-text);
   font-family: var(--font-family);
-  font-size: 0.85rem;
+  font-size: var(--fs-md);
   outline: none;
   resize: vertical;
   transition: border-color 0.2s ease;
@@ -551,43 +520,61 @@
   border: 0;
 }
 
-.zone-content-actions {
+/* Hàng công cụ: xuất .txt / xuất JSON / nhập file — 3 nút bằng nhau */
+.zone-tools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--color-border);
+}
+
+/* Chân trang: nhóm hành động bên trái, lối thoát bên phải */
+.zone-footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-top: 22px;
-  padding-top: 16px;
-  border-top: 1px dashed var(--color-border);
+  gap: 12px;
+  margin-top: 14px;
 }
-.zone-lock-again {
+.zone-footer-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.zone-footer-left .zone-btn {
+  width: auto;
+}
+
+.zone-btn {
+  width: 100%;
   background: none;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 8px 14px;
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
-.zone-lock-again:hover {
+.zone-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
-.zone-lock-again:disabled {
+.zone-btn:disabled {
   opacity: 0.45;
   cursor: default;
 }
 .zone-entry-timestamp {
   margin-top: 8px;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.03em;
   color: var(--color-text-secondary);
-  opacity: 0.55;
 }
 
 .zone-search-row {
@@ -605,7 +592,7 @@
   border-radius: var(--radius-md);
   color: var(--color-text);
   font-family: var(--font-family);
-  font-size: 0.82rem;
+  font-size: var(--fs-md);
   outline: none;
   transition: border-color 0.2s ease;
 }
@@ -614,7 +601,6 @@
 }
 .zone-search::placeholder {
   color: var(--color-text-secondary);
-  opacity: 0.5;
 }
 
 .zone-sort-select {
@@ -625,7 +611,7 @@
   border-radius: var(--radius-md);
   color: var(--color-text);
   font-family: var(--font-family);
-  font-size: 0.78rem;
+  font-size: var(--fs-md);
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s ease;
@@ -662,7 +648,7 @@
   border: 1px solid rgba(var(--color-primary-rgb), 0.35);
   border-radius: var(--radius-md);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   color: var(--color-text-secondary);
 }
 .zone-undo-toast button {
@@ -673,7 +659,7 @@
   padding: 4px 10px;
   color: var(--color-primary);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--fs-sm);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
@@ -687,11 +673,10 @@
   text-align: right;
   margin-top: -4px;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--fs-sm);
   color: var(--color-text-secondary);
-  opacity: 0.5;
 }
-.zone-content-actions .zone-leave-link {
+.zone-footer .zone-leave-link {
   margin-top: 0;
 }
 
@@ -702,10 +687,13 @@
     padding: 24px 14px;
   }
   .zone-title {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+  }
+  .zone-pda {
+    padding: 1.75rem 1.25rem;
   }
   .zone-title-sub {
-    font-size: 0.88rem;
+    font-size: var(--fs-md);
   }
   .zone-form {
     flex-direction: column;
@@ -717,11 +705,19 @@
   .zone-entry-head {
     flex-wrap: wrap;
   }
-  .zone-content-actions {
+  .zone-tools {
+    grid-template-columns: 1fr;
+  }
+  .zone-footer {
     flex-direction: column;
-    gap: 12px;
     align-items: stretch;
     text-align: center;
+  }
+  .zone-footer-left {
+    flex-direction: column;
+  }
+  .zone-footer-left .zone-btn {
+    width: 100%;
   }
 }
 
@@ -729,7 +725,7 @@
   .zone-pda-signal i,
   .zone-lock.is-shaking,
   .zone-lock.is-granting,
-  .zone-pda .hud-frame,
+  .zone-pda,
   .zone-fog {
     animation: none !important;
   }

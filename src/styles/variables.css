@@ -14,10 +14,9 @@
   --color-surface: #0d1c27;
 
   --color-text: #f2f9fc;
-  /* Sáng hơn bản trước (#6f95a3 -> #93b8c4) để đoạn văn dài (bio, mô tả dự
-     án, nhật ký...) dễ đọc hơn trên nền tối, vẫn đủ mờ để phân biệt với
-     --color-text chính và --color-primary/--color-accent của các nhãn HUD. */
-  --color-text-secondary: #93b8c4;
+  /* Chữ phụ: sáng hơn bản cũ (#93b8c4 -> #b4cfd9) để đọc rõ trên nền tối
+     (độ tương phản > 11:1), vẫn đủ dịu để phân biệt với --color-text chính. */
+  --color-text-secondary: #b4cfd9;
 
   --color-border: #1c4254;
 
@@ -41,19 +40,20 @@
 
   /* ===== Typography ===== */
 
-  /* Chakra Petch: font kỹ thuật, góc vuông, có bộ dấu tiếng Việt đầy đủ
-     -> dùng cho heading/nav/nhãn HUD. Inter giữ vai trò font đọc chính cho
-     đoạn văn dài (dễ đọc + dấu tiếng Việt chuẩn). Share Tech Mono chỉ dùng
-     cho số liệu/mã hiệu KHÔNG chứa tiếng Việt (readout, timestamp, id...). */
-  --font-family: "Inter", "Chakra Petch", sans-serif;
-  --font-display: "Chakra Petch", "Inter", sans-serif;
+  /* Font tự host qua @fontsource (xem main.jsx), đủ dấu tiếng Việt:
+       - Be Vietnam Pro      : nội dung + giao diện
+       - Bricolage Grotesque : tiêu đề / chữ lớn
+       - Share Tech Mono     : CHỈ cho số liệu / mã hiệu không dấu (readout, SEC.01, mật khẩu...) */
+  --font-family: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque", "Be Vietnam Pro", system-ui, sans-serif;
   --font-mono: "Share Tech Mono", "Courier New", monospace;
 
-  --fs-xs: 0.75rem;
-  --fs-sm: 0.875rem;
-  --fs-md: 1rem;
-  --fs-lg: 1.25rem;
-  --fs-xl: 2rem;
+  /* Thang cỡ chữ DUY NHẤT của cả site — không có cỡ nào dưới 13px */
+  --fs-xs: 0.8125rem;   /* nhãn, chip, chú thích */
+  --fs-sm: 0.9375rem;   /* chữ phụ, menu, liên kết */
+  --fs-md: 1.0625rem;   /* đoạn văn */
+  --fs-lg: 1.1875rem;   /* tiêu đề thẻ */
+  --fs-xl: 2.25rem;     /* tiêu đề lớn trong thẻ, tagline */
   --fs-2xl: 3rem;
   --fs-3xl: 4rem;
 

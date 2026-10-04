@@ -9,39 +9,28 @@ html { font-size: 16px; }
 @media (max-width: 1920px) { html { font-size: 0.833333vw; } } /* base 1920 */
 @media (max-width: 1440px) { html { font-size: 1.111111vw; } } /* base 1440 */
 @media (max-width: 1024px) { html { font-size: 1.5625vw; } }   /* base 1024 */
-@media (max-width: 640px)  { html { font-size: 4.444444vw; } } /* base 360  */
+@media (max-width: 639.98px) { html { font-size: 4.444444vw; } } /* base 360 — 639.98 để không trùng với breakpoint min-width: 640px của layout */
 
 /* Khoá cuộn native khi loader / menu / modal đang mở (Lenis dừng song song) */
 html.is-scroll-locked { position: relative; overflow: hidden; height: 100%; }
 
-/* ----- Token màu & bo góc, chỉ áp dụng trong .bl để không ảnh hưởng /zone ----- */
+/* ----- Token riêng của landing (màu lấy từ variables.css) ----- */
 .bl {
-  /* Bảng màu HUD tối (lấy lại từ giao diện cũ): nền gần đen ngả xanh, cyan chủ đạo, cam hổ phách làm điểm nhấn */
-  --background: #05090c;
-  --foreground: #f2f9fc;
-  --brand: #22d3ee;
-  --brand-rgb: 34, 211, 238;
-  --brand-deep: #0d1c27;
-  --brand-light: #67e8f9;
-  --accent: #ffa94d;
-  --accent-rgb: 255, 169, 77;
+  /* Bảng màu lấy từ variables.css (nguồn duy nhất) — ở đây chỉ đặt tên ngắn cho CSS của landing */
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+  --brand: var(--color-primary);
+  --brand-rgb: var(--color-primary-rgb);
+  --brand-deep: var(--color-surface);
+  --brand-light: var(--color-primary-hover);
+  --accent: var(--color-accent);
+  --accent-rgb: var(--color-accent-rgb);
+  --ink: var(--color-text);
+  --ink-soft: var(--color-text-secondary);
+  --hairline: var(--color-border);
+  --border: var(--color-border);
   --surface: rgba(13, 28, 39, 0.72);
   --surface-card: #0b1620;
-  --ink: #f2f9fc;
-  --ink-soft: #b4cfd9; /* chữ phụ: sáng hơn bản cũ để đọc rõ trên nền tối (độ tương phản > 11:1) */
-  --ghost: rgba(147, 184, 196, 0.12);
-  --hairline: #1c4254;
-  --border: #1c4254;
-  --on-brand: #05090c;
-  /* Thang cỡ chữ DUY NHẤT của giao diện — mọi font-size nhỏ đều lấy từ đây, không có cỡ nào dưới 13px */
-  --fs-label: 0.8125rem;   /* nhãn, chip, chú thích */
-  --fs-small: 0.9375rem;   /* chữ phụ, menu, liên kết */
-  --fs-body: 1.0625rem;    /* đoạn văn */
-  --fs-lead: 1.1875rem;    /* tiêu đề thẻ */
-  --fs-title-sm: 2.25rem;  /* tiêu đề lớn trong thẻ, tagline */
-  --font-mono: "Share Tech Mono", "Courier New", monospace;
-  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Bricolage Grotesque", "Be Vietnam Pro", system-ui, sans-serif;
 
   --radius-card: 1.5rem;
   --radius-card-lg: 2rem;
@@ -50,7 +39,7 @@ html.is-scroll-locked { position: relative; overflow: hidden; height: 100%; }
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body);
+  font-family: var(--font-family);
   font-weight: 400;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -84,13 +73,6 @@ html.is-scroll-locked { position: relative; overflow: hidden; height: 100%; }
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
-.bl .skip-to-content {
-  position: fixed; left: 1rem; top: -4rem; z-index: 300;
-  padding: 0.75rem 1.25rem; border-radius: var(--radius-pill);
-  background: var(--brand); color: #05090c; font-size: var(--fs-small);
-}
-.bl .skip-to-content:focus { top: 1rem; }
-
 /* ----- Cắt chữ để reveal (clip-mask) ----- */
 .bl .clip { display: block; overflow: hidden; }
 .bl .clip-inline { display: inline-block; overflow: hidden; vertical-align: top; }
@@ -117,7 +99,7 @@ html.is-scroll-locked { position: relative; overflow: hidden; height: 100%; }
 /* ----- Eyebrow ----- */
 .bl .eyebrow {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-size: var(--fs-label); font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+  font-size: var(--fs-xs); font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--ink-soft);
 }
 .bl .eyebrow::before {
@@ -128,14 +110,14 @@ html.is-scroll-locked { position: relative; overflow: hidden; height: 100%; }
 .bl .eyebrow--light::before { background: var(--brand-light); }
 
 .bl .eyebrow-code {
-  font-family: var(--font-mono); font-size: var(--fs-small); font-weight: 400; letter-spacing: 0.16em; color: var(--accent);
+  font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 400; letter-spacing: 0.16em; color: var(--accent);
 }
 
 /* ----- Pill button ----- */
 .bl .pill {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.875rem 1.75rem; border-radius: var(--radius-pill);
-  font-size: var(--fs-small); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+  font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 .bl .pill:disabled { opacity: 0.6; cursor: default; }
@@ -181,31 +163,6 @@ html.is-scroll-locked { position: relative; overflow: hidden; height: 100%; }
   .bl .clip > .clip-in, .bl .clip-inline > .clip-in, .bl .fade-word { transition-duration: 0.01ms !important; transition-delay: 0ms !important; }
 }
 
-/* Hộp clip có đệm trên/dưới để dấu tiếng Việt (Ứ, Ạ, ọ, ự...) không bị cắt;
+/* Hộp clip có đệm trên/dưới để dấu tiếng Việt xếp chồng (Ầ, Ể, Ứ, Ạ, ự...) không bị cắt;
    margin âm bù lại nên bố cục dòng vẫn đúng như thiết kế. */
-.bl .clip, .bl .clip-inline { padding-block: 0.14em; margin-block: -0.14em; }
-
-/* ----- Khung "panel" kính tối + góc HUD (bracket) dùng chung cho các section ----- */
-.bl .panel {
-  position: relative;
-  border: 1px solid rgba(var(--brand-rgb), 0.16);
-  border-radius: var(--radius-card-lg);
-  background: rgba(8, 18, 26, 0.55);
-}
-.bl .panel--clear { background: rgba(5, 9, 12, 0.18); }
-.bl .panel--cyan { background: linear-gradient(135deg, rgba(var(--brand-rgb), 0.11), rgba(8, 18, 26, 0.62) 55%); border-color: rgba(var(--brand-rgb), 0.28); }
-
-/* 4 góc cyan mảnh vẽ bằng gradient trên ::after — không cần thêm phần tử */
-.bl .bracket::after {
-  --c: rgba(var(--brand-rgb), 0.6);
-  content: ""; position: absolute; inset: 0.9rem; pointer-events: none; z-index: 1;
-  background:
-    linear-gradient(var(--c), var(--c)) left top / 1.1rem 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) left top / 1px 1.1rem no-repeat,
-    linear-gradient(var(--c), var(--c)) right top / 1.1rem 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) right top / 1px 1.1rem no-repeat,
-    linear-gradient(var(--c), var(--c)) left bottom / 1.1rem 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) left bottom / 1px 1.1rem no-repeat,
-    linear-gradient(var(--c), var(--c)) right bottom / 1.1rem 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) right bottom / 1px 1.1rem no-repeat;
-}
+.bl .clip, .bl .clip-inline { padding-block: 0.3em; margin-block: -0.3em; }

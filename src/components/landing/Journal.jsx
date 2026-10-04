@@ -15,21 +15,17 @@ const MAX_CARDS = 3;
 function JournalCard({ entry, index }) {
   const { lang, tr, t } = useLanguage();
   const [open, setOpen] = useState(false);
-  const date = new Date(entry.date).toLocaleDateString(lang === "vi" ? "vi-VN" : "en-US", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const date = new Date(entry.date).toLocaleDateString(
+    lang === "vi" ? "vi-VN" : "en-US",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    },
+  );
 
   return (
-    <Inview
-      as="li"
-      className="journal-item"
-      from={{ opacity: 0, y: 40 }}
-      to={{ opacity: 1, y: 0 }}
-      delay={index * 120}
-      config={{ tension: 180, friction: 26 }}
-    >
+    <Inview as="li" className="journal-item" delay={index * 120}>
       <Hover
         as="article"
         className="journal-card"
@@ -38,10 +34,7 @@ function JournalCard({ entry, index }) {
         config={{ tension: 300, friction: 22 }}
       >
         <div>
-          <span
-            className="journal-quote"
-            aria-hidden="true"
-          >
+          <span className="journal-quote" aria-hidden="true">
             “
           </span>
           <blockquote className="journal-text">{tr(entry.excerpt)}</blockquote>
@@ -76,14 +69,15 @@ function JournalCard({ entry, index }) {
 // Section Nhật ký: 3 bài mới nhất dưới dạng lưới thẻ.
 function Journal() {
   const { tr } = useLanguage();
-  const entries = [...journal].sort((a, b) => b.date.localeCompare(a.date)).slice(0, MAX_CARDS);
+  const entries = [...journal]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, MAX_CARDS);
 
   return (
-    <section
-      id="journal"
-      className="bl-journal"
-    >
-      <Eyebrow code="SEC.06">{tr(landing.journal.eyebrow)}</Eyebrow>
+    <section id="journal" className="bl-journal">
+      <Inview>
+        <Eyebrow code="SEC.06">{tr(landing.journal.eyebrow)}</Eyebrow>
+      </Inview>
       <StackedLines
         as="h2"
         id="testimonials-title"
@@ -93,11 +87,7 @@ function Journal() {
 
       <ul className="journal-grid">
         {entries.map((entry, i) => (
-          <JournalCard
-            key={entry.id}
-            entry={entry}
-            index={i}
-          />
+          <JournalCard key={entry.id} entry={entry} index={i} />
         ))}
       </ul>
     </section>

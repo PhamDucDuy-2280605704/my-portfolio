@@ -2,15 +2,20 @@ import { useEffect } from "react";
 
 import useSpring from "../../hooks/useSpring";
 
-// Reveal khi vào viewport ("Inview"): phần tử bắt đầu ở trạng thái `from`
-// (VD { opacity: 0, y: 28 }) rồi spring tới `to` đúng 1 LẦN, lần đầu nó vào
-// viewport, sau khoảng trễ `delay` (ms). enabled=false -> chờ (dùng cho các
-// khối bị loader giữ lại).
+// Reveal khi cuộn tới ("Inview"): phần tử ẩn sẵn ở trạng thái `from` và chỉ hiện
+// (spring tới `to`) đúng 1 LẦN, khi mép trên của nó đi vào ~10% đáy viewport,
+// sau khoảng trễ `delay` (ms). Mặc định là "trồi lên + hiện dần" cho MỌI khối để
+// cả trang đồng bộ; chỉ truyền from/to/config khi cần kiểu riêng (VD scale).
+// enabled=false -> chờ (dùng cho các khối bị loader giữ lại).
+const RISE_FROM = { opacity: 0, y: 32 };
+const RISE_TO = { opacity: 1, y: 0 };
+const RISE_CONFIG = { tension: 190, friction: 26 };
+
 function Inview({
-  from,
-  to,
+  from = RISE_FROM,
+  to = RISE_TO,
   delay = 0,
-  config = { tension: 200, friction: 26 },
+  config = RISE_CONFIG,
   enabled = true,
   as: Tag = "div",
   className,
@@ -36,7 +41,7 @@ function Inview({
           io.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -4% 0px" }
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();

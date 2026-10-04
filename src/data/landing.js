@@ -8,49 +8,22 @@
 
 const landing = {
   hero: {
-    // 2 dòng tagline dưới tên
+    // Câu tagline dưới tên (đọc qua tr() -> mảng dòng)
     tagline: {
       vi: ["Cần một mục đích / để bắt đầu"],
       en: ["You need a purpose / to begin"],
     },
-    // Slider 3 mảng chuyên môn (góc phải hero). Tên công nghệ lấy từ data/skills.js.
-    focus: [
-      {
-        id: "frontend",
-        brand: { vi: "Frontend", en: "Frontend" },
-        group: "frontend",
-        cta: { vi: "Xem kỹ năng", en: "See skills" },
-        href: "skills",
-      },
-      {
-        id: "backend",
-        brand: { vi: "Backend", en: "Backend" },
-        group: "backend",
-        cta: { vi: "Xem kỹ năng", en: "See skills" },
-        href: "skills",
-      },
-      {
-        id: "mobile",
-        brand: { vi: "Mobile", en: "Mobile" },
-        group: "mobile",
-        cta: { vi: "Xem dự án", en: "See projects" },
-        href: "projects",
-      },
-    ],
-    // Thẻ nhỏ góc phải: điểm thực tập (lấy từ data/workExperience.js)
-    scoreCaption: { vi: "Điểm thực tập", en: "Internship score" },
   },
 
-  // Section "Giới thiệu" (carousel 3 slide). body = đoạn bio thứ index trong profile.bio
+  // Section "Giới thiệu" (carousel 3 slide). bioIndex = đoạn bio thứ index trong profile.bio
   about: {
-    badgeValue: "3",
-    badgeCaption: { vi: "mảng: web, hệ thống, di động", en: "areas: web, systems, mobile" },
+    eyebrow: { vi: "Giới thiệu", en: "About" },
     slides: [
       {
         title: { vi: "Mình là Duy", en: "Hi, I'm Duy" },
         bioIndex: 0,
         headline: { vi: ["Giao", "Diện", "Chỉn", "Chu"], en: ["Smooth", "Polished", "Frontend", "Craft"] },
-        role: { vi: "Frontend · React, Vue", en: "Frontend · React, Vue" },
+        role: { vi: "React, Vue", en: "React, Vue" },
         group: "frontend",
         tone: "navy",
       },
@@ -58,7 +31,7 @@ const landing = {
         title: { vi: "Hai mảng, một sản phẩm", en: "Two sides, one product" },
         bioIndex: 1,
         headline: { vi: ["Hệ", "Thống", "Vững", "Chắc"], en: ["Solid", "Backend", "API", "Logic"] },
-        role: { vi: "Backend · NestJS, Node.js", en: "Backend · NestJS, Node.js" },
+        role: { vi: "NestJS, Node.js", en: "NestJS, Node.js" },
         group: "backend",
         tone: "teal",
       },
@@ -66,18 +39,18 @@ const landing = {
         title: { vi: "Làm từ đầu đến cuối", en: "Start to finish" },
         bioIndex: 2,
         headline: { vi: ["Ứng", "Dụng", "Đa", "Nền"], en: ["Cross", "Platform", "Mobile", "Apps"] },
-        role: { vi: "Mobile · Flutter", en: "Mobile · Flutter" },
+        role: { vi: "Flutter", en: "Flutter" },
         group: "mobile",
         tone: "blue",
       },
     ],
   },
-  loader: { label: { vi: "Đang tải trang", en: "Loading page" } },
+  loader: { label: { vi: "Đang tải", en: "Loading" } },
 
   shell: {
     menu: { vi: "Mở menu", en: "Open menu" },
     contactCta: { vi: "Liên hệ", en: "Get in touch" },
-    backToTop: { vi: "Lên đầu trang", en: "Back to top" },
+    viewCv: { vi: "Xem CV", en: "View CV" },
     langLabel: { vi: "Ngôn ngữ", en: "Language" },
   },
 
@@ -112,7 +85,6 @@ const landing = {
     },
     journey: { vi: "Hành trình", en: "Journey" },
     report: { vi: "Xem báo cáo thực tập", en: "Read internship report" },
-    scoreLabel: { vi: "Đánh giá", en: "Score" },
   },
 
   journal: {
@@ -127,10 +99,7 @@ const landing = {
       vi: "Lập trình viên Full Stack — xây sản phẩm từ giao diện đến hệ thống, trên web lẫn di động.",
       en: "Full Stack developer — building products from interface to system, on web and mobile.",
     },
-    explore: { vi: "Khám phá", en: "Explore" },
     elsewhere: { vi: "Tìm mình ở", en: "Find me on" },
-    more: { vi: "Thêm", en: "More" },
-    viewCv: { vi: "Xem CV", en: "View CV" },
     rights: { vi: "Mọi quyền được bảo lưu.", en: "All rights reserved." },
   },
 

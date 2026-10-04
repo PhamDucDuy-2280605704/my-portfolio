@@ -20,7 +20,10 @@ function pickProjects(t) {
 }
 
 // Dự án có Flutter -> minh hoạ ứng dụng di động, còn lại -> trang web
-const artFor = (project) => (project.tech.some((t) => /flutter|dart|android|ios/i.test(t)) ? "mobile" : "web");
+const artFor = (project) =>
+  project.tech.some((t) => /flutter|dart|android|ios/i.test(t))
+    ? "mobile"
+    : "web";
 
 function ProjectCard({ project, index }) {
   const { tr, t } = useLanguage();
@@ -32,10 +35,7 @@ function ProjectCard({ project, index }) {
     <Inview
       as="figure"
       className={`court-card${index === 1 ? " court-card--offset" : ""}`}
-      from={{ opacity: 0, y: 48 }}
-      to={{ opacity: 1, y: 0 }}
       delay={index * 140}
-      config={{ tension: 180, friction: 26 }}
     >
       <Hover
         className="court-hover"
@@ -54,7 +54,9 @@ function ProjectCard({ project, index }) {
             <span className="court-name">{tr(project.name)}</span>
             <span className="court-desc">{tr(project.description)}</span>
             {href && (
-              <span className="court-link">{project.demo ? t("projectViewLive") : t("projectSource")} →</span>
+              <span className="court-link">
+                {project.demo ? t("projectViewLive") : t("projectSource")} →
+              </span>
             )}
           </span>
         </Wrapper>
@@ -70,10 +72,7 @@ function Projects() {
   const items = pickProjects(t);
 
   return (
-    <section
-      id="projects"
-      className="bl-projects panel bracket"
-    >
+    <section id="projects" className="bl-projects hud-panel hud-bracket">
       <div className="projects-grid">
         <div className="projects-intro">
           <Inview
@@ -104,11 +103,7 @@ function Projects() {
 
         <div className="projects-cards">
           {items.map((project, i) => (
-            <ProjectCard
-              key={project.tone}
-              project={project}
-              index={i}
-            />
+            <ProjectCard key={project.tone} project={project} index={i} />
           ))}
         </div>
       </div>

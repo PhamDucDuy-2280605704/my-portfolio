@@ -9,11 +9,11 @@
 .bl .program-link:focus-visible { background: var(--background); }
 
 .bl .program-row { display: flex; align-items: center; gap: 1.5rem; padding: 1.75rem 0; }
-.bl .program-index { width: 2.5rem; flex: none; font-size: var(--fs-small); font-weight: 500; color: var(--ink-soft); }
+.bl .program-index { width: 2.5rem; flex: none; font-size: var(--fs-sm); font-weight: 500; color: var(--ink-soft); }
 .bl .program-text { display: flex; flex: 1; flex-direction: column; gap: 0.35rem; min-width: 0; }
 .bl .program-name { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
 @media (min-width: 640px) { .bl .program-name { font-size: 1.875rem; } }
-.bl .program-desc { font-size: var(--fs-small); color: var(--ink-soft); }
+.bl .program-desc { font-size: var(--fs-sm); color: var(--ink-soft); }
 .bl .program-go {
   display: grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem;
   border-radius: var(--radius-pill); border: 1px solid var(--hairline); overflow: hidden;

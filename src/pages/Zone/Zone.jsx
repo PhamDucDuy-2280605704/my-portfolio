@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import ZoneLock from "./ZoneLock";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 
 import "./Zone.css";
 
 import usePageTitle from "../../hooks/usePageTitle";
-import HudFrame from "../../components/common/HudFrame/HudFrame";
 
 // ============================================================================
 // TRANG BÍ MẬT — /zone
@@ -25,6 +25,13 @@ import HudFrame from "../../components/common/HudFrame/HudFrame";
 // khẩu ngân hàng, OTP...).
 const ZONE_PASSWORD = "9029";
 
+// Dòng gợi ý hiển thị dưới khoá số.
+const ZONE_HINT = "5704";
+
+// Vị trí ban đầu của 4 bánh, và mật khẩu luôn là 4 chữ số (khớp 4 bánh của khoá số).
+const EMPTY_CODE = "0000";
+const PASSWORD_PATTERN = /^\d{4}$/;
+
 // Mật khẩu THAY THẾ do người dùng tự đổi ngay trong lúc mở khoá (xem
 // handleChangePassword) — lưu localStorage, nếu có thì ưu tiên dùng cái này
 // thay vì ZONE_PASSWORD cứng ở trên, khỏi phải nhờ sửa code + build lại mỗi
@@ -34,7 +41,8 @@ const PASSWORD_OVERRIDE_KEY = "zone-password-override";
 function getEffectivePassword() {
   try {
     const override = window.localStorage.getItem(PASSWORD_OVERRIDE_KEY);
-    if (override) return override;
+    // Mật khẩu cũ đã lưu ở máy mà không phải 4 chữ số thì bỏ qua (khoá số không nhập được) -> dùng mặc định
+    if (override && PASSWORD_PATTERN.test(override)) return override;
   } catch {
     // bỏ qua nếu không đọc được -> dùng mật khẩu mặc định
   }
@@ -284,7 +292,7 @@ function Zone() {
       return false;
     }
   });
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(EMPTY_CODE);
   const [isShaking, setIsShaking] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [radiation, setRadiation] = useState(0.18);
@@ -311,7 +319,6 @@ function Zone() {
   const importFileRef = useRef(null);
 
   const audioCtxRef = useRef(null);
-  const inputRef = useRef(null);
   const mutedRef = useRef(false);
   const autoLockTimerRef = useRef(null);
   const undoTimerRef = useRef(null);
@@ -352,7 +359,7 @@ function Zone() {
       () => {
         playTick(ctx(), 1200 + Math.random() * 800);
       },
-      900 + Math.random() * 1400
+      900 + Math.random() * 1400,
     );
 
     return () => {
@@ -361,14 +368,13 @@ function Zone() {
     };
   }, [unlocked]);
 
-  useEffect(() => {
-    if (!unlocked) inputRef.current?.focus();
-  }, [unlocked]);
-
   // Đếm ngược lúc bị "tạm khoá" sau nhiều lần nhập sai liên tiếp.
   useEffect(() => {
     if (cooldown <= 0) return undefined;
-    const timer = setTimeout(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    const timer = setTimeout(
+      () => setCooldown((c) => Math.max(0, c - 1)),
+      1000,
+    );
     return () => clearTimeout(timer);
   }, [cooldown]);
 
@@ -425,7 +431,8 @@ function Zone() {
     e.preventDefault();
     if (cooldown > 0 || granting) return;
 
-    const isCorrect = input.trim().toLowerCase() === getEffectivePassword().toLowerCase();
+    const isCorrect =
+      input.trim().toLowerCase() === getEffectivePassword().toLowerCase();
 
     if (isCorrect) {
       playGranted(ctx());
@@ -435,7 +442,10 @@ function Zone() {
         let previous = null;
         try {
           previous = window.localStorage.getItem(LAST_ACCESS_KEY);
-          window.localStorage.setItem(LAST_ACCESS_KEY, new Date().toISOString());
+          window.localStorage.setItem(
+            LAST_ACCESS_KEY,
+            new Date().toISOString(),
+          );
         } catch {
           // bỏ qua nếu không lưu được
         }
@@ -449,7 +459,7 @@ function Zone() {
       }, 900);
     } else {
       playDenied(ctx());
-      setInput("");
+      setInput(EMPTY_CODE);
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 420);
 
@@ -470,7 +480,7 @@ function Zone() {
     }
     setUnlocked(false);
     setGranting(false);
-    setInput("");
+    setInput(EMPTY_CODE);
   }
   handleLockAgainRef.current = handleLockAgain;
 
@@ -540,7 +550,9 @@ function Zone() {
   }
 
   function handleTogglePin(id) {
-    const next = entries.map((entry) => (entry.id === id ? { ...entry, pinned: !entry.pinned } : entry));
+    const next = entries.map((entry) =>
+      entry.id === id ? { ...entry, pinned: !entry.pinned } : entry,
+    );
     setEntries(next);
     saveEntries(next);
     playCopyTick(ctx());
@@ -573,7 +585,7 @@ function Zone() {
             decrypt: false,
             editedAt: new Date().toISOString(),
           }
-        : entry
+        : entry,
     );
 
     setEntries(next);
@@ -587,10 +599,14 @@ function Zone() {
   // localStorage. Không gửi lên server nào, tạo file thẳng trong trình duyệt.
   function handleExport() {
     const lines = entries.map((entry) => {
-      const date = entry.createdAt ? new Date(entry.createdAt).toLocaleString("vi-VN") : "";
+      const date = entry.createdAt
+        ? new Date(entry.createdAt).toLocaleString("vi-VN")
+        : "";
       return `${entry.title}${date ? ` (${date})` : ""}\n${"-".repeat(40)}\n${entry.body}\n`;
     });
-    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const blob = new Blob([lines.join("\n")], {
+      type: "text/plain;charset=utf-8",
+    });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
@@ -608,7 +624,9 @@ function Zone() {
   // đủ dữ liệu để NHẬP LẠI chính xác 100% (title/body/ngày tạo/ghim...),
   // dùng cho "Nhập từ file" bên dưới. .txt chỉ để đọc, JSON mới để backup/restore.
   function handleExportJSON() {
-    const blob = new Blob([JSON.stringify(entries, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(entries, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
@@ -637,10 +655,15 @@ function Zone() {
         if (!Array.isArray(parsed)) throw new Error("not an array");
 
         const imported = parsed
-          .filter((item) => item && typeof item.body === "string" && item.body.trim())
+          .filter(
+            (item) => item && typeof item.body === "string" && item.body.trim(),
+          )
           .map((item, i) => ({
             id: `note-import-${Date.now()}-${i}`,
-            title: typeof item.title === "string" && item.title.trim() ? item.title : `GHI CHÚ NHẬP // ${i + 1}`,
+            title:
+              typeof item.title === "string" && item.title.trim()
+                ? item.title
+                : `GHI CHÚ NHẬP // ${i + 1}`,
             body: item.body,
             decrypt: false,
             createdAt: item.createdAt || new Date().toISOString(),
@@ -668,25 +691,43 @@ function Zone() {
   function handleChangePassword(e) {
     e.preventDefault();
 
-    if (currentPasswordInput.trim().toLowerCase() !== getEffectivePassword().toLowerCase()) {
-      setPasswordMessage({ type: "error", text: "Mật khẩu hiện tại không đúng." });
+    if (
+      currentPasswordInput.trim().toLowerCase() !==
+      getEffectivePassword().toLowerCase()
+    ) {
+      setPasswordMessage({
+        type: "error",
+        text: "Mật khẩu hiện tại không đúng.",
+      });
       playDenied(ctx());
       return;
     }
-    if (!newPasswordInput.trim()) {
-      setPasswordMessage({ type: "error", text: "Mật khẩu mới không được để trống." });
+    if (!PASSWORD_PATTERN.test(newPasswordInput.trim())) {
+      setPasswordMessage({
+        type: "error",
+        text: "Mật khẩu mới phải gồm đúng 4 chữ số.",
+      });
       return;
     }
 
     try {
-      window.localStorage.setItem(PASSWORD_OVERRIDE_KEY, newPasswordInput.trim());
+      window.localStorage.setItem(
+        PASSWORD_OVERRIDE_KEY,
+        newPasswordInput.trim(),
+      );
     } catch {
-      setPasswordMessage({ type: "error", text: "Không lưu được — trình duyệt đang chặn localStorage." });
+      setPasswordMessage({
+        type: "error",
+        text: "Không lưu được — trình duyệt đang chặn localStorage.",
+      });
       return;
     }
 
     playGranted(ctx());
-    setPasswordMessage({ type: "success", text: "Đã đổi mật khẩu thành công." });
+    setPasswordMessage({
+      type: "success",
+      text: "Đã đổi mật khẩu thành công.",
+    });
     setCurrentPasswordInput("");
     setNewPasswordInput("");
     setTimeout(() => {
@@ -711,9 +752,15 @@ function Zone() {
     .filter((entry) => {
       const q = searchQuery.trim().toLowerCase();
       if (!q) return true;
-      return entry.title.toLowerCase().includes(q) || entry.body.toLowerCase().includes(q);
+      return (
+        entry.title.toLowerCase().includes(q) ||
+        entry.body.toLowerCase().includes(q)
+      );
     })
-    .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || compareBySortOrder(a, b));
+    .sort(
+      (a, b) =>
+        (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || compareBySortOrder(a, b),
+    );
 
   return (
     <div className="zone-page">
@@ -725,44 +772,37 @@ function Zone() {
       <div className="zone-hazardbar top" aria-hidden="true" />
       <div className="zone-hazardbar bottom" aria-hidden="true" />
 
-      <div className="zone-pda">
-        <HudFrame label="ZONE.TERMINAL">
-          <div className="zone-pda-topbar">
-            <span className="zone-pda-brand">P.D.A. // ZONE TERMINAL</span>
-            <div className="zone-pda-topbar-right">
-              <span
-                className="zone-pda-signal"
-                aria-hidden="true"
-              >
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>
-              <button
-                type="button"
-                className="zone-mute-btn"
-                onClick={() => setMuted((m) => !m)}
-                aria-label={muted ? "Bật âm thanh" : "Tắt âm thanh"}
-              >
-                {muted ? <HiSpeakerXMark /> : <HiSpeakerWave />}
-              </button>
-            </div>
+      <div className="zone-pda hud-panel hud-bracket">
+        <div className="zone-pda-topbar">
+          <span className="zone-pda-brand">P.D.A. // ZONE TERMINAL</span>
+          <div className="zone-pda-topbar-right">
+            <span className="zone-pda-signal" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <i />
+            </span>
+            <button
+              type="button"
+              className="zone-mute-btn"
+              onClick={() => setMuted((m) => !m)}
+              aria-label={muted ? "Bật âm thanh" : "Tắt âm thanh"}
+            >
+              {muted ? <HiSpeakerXMark /> : <HiSpeakerWave />}
+            </button>
           </div>
+        </div>
 
-          {!unlocked ? (
-          <div className={`zone-lock ${isShaking ? "is-shaking" : ""} ${granting ? "is-granting" : ""}`}>
+        {!unlocked ? (
+          <div
+            className={`zone-lock ${isShaking ? "is-shaking" : ""} ${granting ? "is-granting" : ""}`}
+          >
             <svg
               className="zone-radiation-icon"
               viewBox="0 0 32 32"
               aria-hidden="true"
             >
-              <circle
-                cx="16"
-                cy="16"
-                r="3"
-                fill="currentColor"
-              />
+              <circle cx="16" cy="16" r="3" fill="currentColor" />
               {[0, 120, 240].map((deg) => (
                 <path
                   key={deg}
@@ -776,7 +816,7 @@ function Zone() {
 
             <p className="zone-title-en">RESTRICTED ACCESS</p>
             <h1 className="zone-title">ВВЕДИТЕ ПАРОЛЬ</h1>
-            <p className="zone-title-sub">Nhập mật khẩu để vào Zone</p>
+            <p className="zone-title-sub">Xoay 4 bánh số để nhập mật khẩu</p>
 
             <div className="zone-readout">
               <span>BỨC XẠ</span>
@@ -785,59 +825,64 @@ function Zone() {
 
             <p className="zone-signal-log">// {ZONE_SIGNAL_LOGS[logIndex]}</p>
 
-            <form
-              onSubmit={handleSubmit}
-              className="zone-form"
-            >
-              <input
-                ref={inputRef}
-                type="password"
-                inputMode="numeric"
-                maxLength={4}
+            <form onSubmit={handleSubmit} className="zone-form">
+              <ZoneLock
                 value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
+                onChange={(next) => {
+                  setInput(next);
                   playKeypress(ctx());
                 }}
-                className="zone-input"
-                placeholder="••••"
-                autoComplete="off"
-                spellCheck="false"
+                onSubmit={() =>
+                  document.querySelector(".zone-form")?.requestSubmit()
+                }
                 disabled={granting || cooldown > 0}
+                hint={ZONE_HINT}
+                focusKey={attempts}
               />
               <button
                 type="submit"
                 className="zone-submit"
                 disabled={granting || cooldown > 0}
               >
-                {granting ? "ĐANG XÁC MINH..." : cooldown > 0 ? `KHOÁ (${cooldown}s)` : "TRUY CẬP"}
+                {granting
+                  ? "ĐANG XÁC MINH..."
+                  : cooldown > 0
+                    ? `KHOÁ (${cooldown}s)`
+                    : "TRUY CẬP"}
               </button>
             </form>
 
             {cooldown > 0 && (
-              <p className="zone-denied">HỆ THỐNG TẠM KHOÁ SAU NHIỀU LẦN SAI — CHỜ {cooldown}S</p>
+              <p className="zone-denied">
+                HỆ THỐNG TẠM KHOÁ SAU NHIỀU LẦN SAI — CHỜ {cooldown}S
+              </p>
             )}
             {attempts > 0 && !granting && cooldown === 0 && (
-              <p className="zone-denied">TỪ CHỐI TRUY CẬP — SAI MẬT KHẨU ({attempts})</p>
+              <p className="zone-denied">
+                TỪ CHỐI TRUY CẬP — SAI MẬT KHẨU ({attempts})
+              </p>
             )}
             {granting && <p className="zone-granted-msg">ACCESS GRANTED_</p>}
 
-            <Link
-              to="/"
-              className="zone-leave-link"
-            >
+            <Link to="/" className="zone-leave-link">
               ← Rời khỏi Zone
             </Link>
           </div>
         ) : (
           <div className="zone-content">
-            <p className="zone-content-tag">TRUY CẬP: ĐÃ CẤP QUYỀN — CHÀO MỪNG TRỞ LẠI</p>
+            <p className="zone-content-tag">
+              TRUY CẬP: ĐÃ CẤP QUYỀN — CHÀO MỪNG TRỞ LẠI
+            </p>
             {lastAccess && (
               <p className="zone-last-access">
-                LẦN TRUY CẬP TRƯỚC: {new Date(lastAccess).toLocaleString("vi-VN")}
+                LẦN TRUY CẬP TRƯỚC:{" "}
+                {new Date(lastAccess).toLocaleString("vi-VN")}
               </p>
             )}
-            <p className="zone-hotkey-hint">Mẹo: bấm Esc để khoá lại ngay lập tức. Tự khoá sau 3 phút không thao tác.</p>
+            <p className="zone-hotkey-hint">
+              Mẹo: bấm Esc để khoá lại ngay lập tức. Tự khoá sau 3 phút không
+              thao tác.
+            </p>
 
             {/* Chỉ hiện thanh tìm kiếm khi có từ 3 ghi chú trở lên — ít hơn
                 thì tìm kiếm không thực sự cần thiết, chỉ chiếm chỗ. */}
@@ -866,25 +911,16 @@ function Zone() {
             {pendingDelete && (
               <div className="zone-undo-toast">
                 <span>Đã xoá &ldquo;{pendingDelete.entry.title}&rdquo;</span>
-                <button
-                  type="button"
-                  onClick={handleUndoDelete}
-                >
+                <button type="button" onClick={handleUndoDelete}>
                   Hoàn tác
                 </button>
               </div>
             )}
 
             {visibleEntries.map((entry, i) => (
-              <article
-                key={entry.id}
-                className="zone-entry"
-              >
+              <article key={entry.id} className="zone-entry">
                 {editingId === entry.id ? (
-                  <form
-                    onSubmit={handleSaveEdit}
-                    className="zone-add-form"
-                  >
+                  <form onSubmit={handleSaveEdit} className="zone-add-form">
                     <input
                       type="text"
                       value={editTitle}
@@ -900,11 +936,13 @@ function Zone() {
                       maxLength={2000}
                       autoFocus
                     />
-                    <span className="zone-char-count">{editBody.length}/2000</span>
+                    <span className="zone-char-count">
+                      {editBody.length}/2000
+                    </span>
                     <div className="zone-add-actions">
                       <button
                         type="button"
-                        className="zone-lock-again"
+                        className="zone-btn"
                         onClick={handleCancelEdit}
                       >
                         Huỷ
@@ -922,7 +960,9 @@ function Zone() {
                   <>
                     <div className="zone-entry-head">
                       <h2>
-                        {entry.pinned && <span className="zone-pin-badge">📌</span>}
+                        {entry.pinned && (
+                          <span className="zone-pin-badge">📌</span>
+                        )}
                         {entry.title}
                       </h2>
                       <div className="zone-entry-actions">
@@ -971,7 +1011,9 @@ function Zone() {
                     {entry.createdAt && (
                       <p className="zone-entry-timestamp">
                         {entry.editedAt ? "Đã sửa" : "Tạo lúc"}:{" "}
-                        {new Date(entry.editedAt || entry.createdAt).toLocaleString("vi-VN")}
+                        {new Date(
+                          entry.editedAt || entry.createdAt,
+                        ).toLocaleString("vi-VN")}
                       </p>
                     )}
                   </>
@@ -979,16 +1021,19 @@ function Zone() {
               </article>
             ))}
 
-            {entries.length === 0 && <p className="zone-empty">Chưa có ghi chú nào. Thêm cái đầu tiên bên dưới.</p>}
+            {entries.length === 0 && (
+              <p className="zone-empty">
+                Chưa có ghi chú nào. Thêm cái đầu tiên bên dưới.
+              </p>
+            )}
             {entries.length > 0 && visibleEntries.length === 0 && (
-              <p className="zone-empty">Không tìm thấy ghi chú nào khớp với &ldquo;{searchQuery}&rdquo;.</p>
+              <p className="zone-empty">
+                Không tìm thấy ghi chú nào khớp với &ldquo;{searchQuery}&rdquo;.
+              </p>
             )}
 
             {showAddForm ? (
-              <form
-                onSubmit={handleAddEntry}
-                className="zone-add-form"
-              >
+              <form onSubmit={handleAddEntry} className="zone-add-form">
                 <input
                   type="text"
                   value={newTitle}
@@ -1010,7 +1055,7 @@ function Zone() {
                 <div className="zone-add-actions">
                   <button
                     type="button"
-                    className="zone-lock-again"
+                    className="zone-btn"
                     onClick={() => {
                       setShowAddForm(false);
                       setNewTitle("");
@@ -1038,10 +1083,10 @@ function Zone() {
               </button>
             )}
 
-            <div className="zone-content-actions">
+            <div className="zone-tools">
               <button
                 type="button"
-                className="zone-lock-again"
+                className="zone-btn"
                 onClick={handleExport}
                 disabled={entries.length === 0}
               >
@@ -1049,7 +1094,7 @@ function Zone() {
               </button>
               <button
                 type="button"
-                className="zone-lock-again"
+                className="zone-btn"
                 onClick={handleExportJSON}
                 disabled={entries.length === 0}
               >
@@ -1057,7 +1102,7 @@ function Zone() {
               </button>
               <button
                 type="button"
-                className="zone-lock-again"
+                className="zone-btn"
                 onClick={() => importFileRef.current?.click()}
               >
                 Nhập từ file
@@ -1069,55 +1114,68 @@ function Zone() {
                 onChange={handleImportFile}
                 className="zone-file-input-hidden"
               />
-              <button
-                type="button"
-                className="zone-lock-again"
-                onClick={handleLockAgain}
-              >
-                Khoá lại
-              </button>
-              <Link
-                to="/"
-                className="zone-leave-link"
-              >
+            </div>
+
+            <div className="zone-footer">
+              <div className="zone-footer-left">
+                <button
+                  type="button"
+                  className="zone-btn"
+                  onClick={handleLockAgain}
+                >
+                  Khoá lại
+                </button>
+                <button
+                  type="button"
+                  className="zone-btn"
+                  aria-expanded={showPasswordForm}
+                  onClick={() => {
+                    setShowPasswordForm((v) => !v);
+                    setPasswordMessage(null);
+                  }}
+                >
+                  {showPasswordForm ? "Đóng" : "Đổi mật khẩu"}
+                </button>
+              </div>
+              <Link to="/" className="zone-leave-link">
                 ← Rời khỏi Zone
               </Link>
             </div>
 
-            <button
-              type="button"
-              className="zone-add-toggle"
-              onClick={() => {
-                setShowPasswordForm((v) => !v);
-                setPasswordMessage(null);
-              }}
-            >
-              {showPasswordForm ? "Đóng" : "🔒 Đổi mật khẩu"}
-            </button>
-
             {showPasswordForm && (
-              <form
-                onSubmit={handleChangePassword}
-                className="zone-add-form"
-              >
+              <form onSubmit={handleChangePassword} className="zone-add-form">
                 <input
                   type="password"
                   value={currentPasswordInput}
-                  onChange={(e) => setCurrentPasswordInput(e.target.value)}
+                  onChange={(e) =>
+                    setCurrentPasswordInput(e.target.value.replace(/\D/g, ""))
+                  }
                   className="zone-add-title"
-                  placeholder="Mật khẩu hiện tại"
+                  placeholder="Mật khẩu hiện tại (4 chữ số)"
+                  inputMode="numeric"
+                  maxLength={4}
                   autoComplete="off"
                 />
                 <input
                   type="password"
                   value={newPasswordInput}
-                  onChange={(e) => setNewPasswordInput(e.target.value)}
+                  onChange={(e) =>
+                    setNewPasswordInput(e.target.value.replace(/\D/g, ""))
+                  }
                   className="zone-add-title"
-                  placeholder="Mật khẩu mới"
+                  placeholder="Mật khẩu mới (4 chữ số)"
+                  inputMode="numeric"
+                  maxLength={4}
                   autoComplete="off"
                 />
                 {passwordMessage && (
-                  <p className={passwordMessage.type === "error" ? "zone-denied" : "zone-granted-msg"}>
+                  <p
+                    className={
+                      passwordMessage.type === "error"
+                        ? "zone-denied"
+                        : "zone-granted-msg"
+                    }
+                  >
                     {passwordMessage.text}
                   </p>
                 )}
@@ -1125,7 +1183,10 @@ function Zone() {
                   <button
                     type="submit"
                     className="zone-submit"
-                    disabled={!currentPasswordInput.trim() || !newPasswordInput.trim()}
+                    disabled={
+                      currentPasswordInput.length !== 4 ||
+                      newPasswordInput.length !== 4
+                    }
                   >
                     Xác nhận đổi
                   </button>
@@ -1134,7 +1195,6 @@ function Zone() {
             )}
           </div>
         )}
-        </HudFrame>
       </div>
     </div>
   );

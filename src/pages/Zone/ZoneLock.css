@@ -1,0 +1,169 @@
+/* Khoá số 3D 4 bánh (dựa trên Uiverse "combination lock" của dexter-st), đổi sang bảng màu của Zone:
+   thân kim loại xanh đen, chữ số cyan phát sáng, vạch chọn màu cam hổ phách.
+   Mọi kích thước tính từ --fw / --fh nên phóng to thu nhỏ chỉ cần đổi 2 biến. */
+
+.zl {
+  --fw: 3.4rem;   /* bề rộng 1 bánh */
+  --fh: 4.4rem;   /* chiều cao 1 mặt */
+  --tz: calc(var(--fh) * 1.51); /* bán kính khối trụ 10 mặt (apothem ≈ 1.539 * chiều cao mặt) */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  width: 100%;
+}
+.zl[data-disabled] {
+  opacity: 0.5;
+}
+
+.zl-dials {
+  display: flex;
+  justify-content: center;
+  gap: 1.15rem;
+  padding: 0.5rem 1rem;
+  user-select: none;
+}
+
+/* Cửa sổ nhìn vào bánh: ẩn phần khối trụ ngoài khung, phối cảnh để thấy độ cong */
+.zl-dial {
+  position: relative;
+  width: var(--fw);
+  height: calc(var(--fh) * 2.553);
+  overflow: hidden;
+  perspective: calc(var(--fh) * 10.64);
+  border-radius: calc(var(--fw) * 0.294) / calc(var(--fh) * 5.32);
+  background: #02070a;
+  outline: solid 3px #02070a;
+  outline-offset: 1px;
+  filter: drop-shadow(0 0 0.9rem rgba(var(--color-primary-rgb), 0.28)) drop-shadow(0 0.9rem 1.2rem rgba(0, 0, 0, 0.7));
+  box-shadow:
+    0 -3px 0 2px rgba(var(--color-primary-rgb), 0.55),
+    0 2px 0 3px #0b1620,
+    0 4px 0 4px rgba(0, 0, 0, 0.75);
+  transition: outline-color 0.2s ease;
+}
+.zl-dial:has(.zl-radio:focus-visible) {
+  outline-color: var(--color-accent);
+}
+
+/* Bóng đổ hình trụ: sáng ở giữa, tối dần lên trên và xuống dưới */
+.zl-dial::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 38%, rgba(0, 0, 0, 0.65));
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Hai vạch cam đánh dấu mặt đang được chọn (nằm giữa cửa sổ) */
+.zl-dial::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--fh) * 0.766);
+  height: var(--fh);
+  border-block: 1px solid rgba(var(--color-accent-rgb), 0.7);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.zl-drum {
+  position: relative;
+  top: calc(var(--fh) * 0.766);
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform-origin: 0 calc(var(--fh) / 2);
+  transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.zl-face {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: var(--fw);
+  height: var(--fh);
+  transform: rotateX(calc(var(--n) * -36deg)) translateZ(var(--tz));
+  background: linear-gradient(180deg, #16394a, #0b202c 55%, #071620);
+  box-shadow:
+    0 -3px 1px 2px rgba(0, 0, 0, 0.65),
+    0 0 1px 3px rgba(var(--color-primary-rgb), 0.3);
+  font-family: var(--font-mono);
+  font-size: calc(var(--fh) * 0.62);
+  line-height: 1;
+  color: rgba(var(--color-primary-rgb), 0.5);
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+.zl-face.is-active {
+  color: var(--color-primary);
+  text-shadow: 0 0 0.75rem rgba(var(--color-primary-rgb), 0.8);
+}
+/* Hai gờ kim loại hai bên mặt */
+.zl-face::before,
+.zl-face::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+.zl-face::before {
+  left: 0;
+  background: rgba(var(--color-primary-rgb), 0.3);
+}
+.zl-face::after {
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.zl-face span {
+  position: relative;
+  pointer-events: none;
+}
+
+/* Radio phủ kín mặt để bấm chọn; ẩn đi nhưng vẫn focus / đọc được bằng bàn phím và trình đọc màn hình */
+.zl-radio {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.zl-hint {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.zl-hint strong {
+  margin-left: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  color: var(--color-accent);
+}
+
+@media (max-width: 639px) {
+  .zl {
+    --fw: 3rem;
+    --fh: 4rem;
+  }
+  .zl-dials {
+    gap: 0.8rem;
+    padding-inline: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zl-drum {
+    transition: none;
+  }
+}
