@@ -44,10 +44,10 @@ function Background() {
       <div className="app-vignette" />
 
       {/* Khung 4 góc cố định theo viewport, kiểu bezel màn hình điều khiển */}
-      <span className="app-viewport-corner tl" />
-      <span className="app-viewport-corner tr" />
-      <span className="app-viewport-corner bl" />
-      <span className="app-viewport-corner br" />
+      <span className="app-viewport-corner app-viewport-corner--tl" />
+      <span className="app-viewport-corner app-viewport-corner--tr" />
+      <span className="app-viewport-corner app-viewport-corner--bl" />
+      <span className="app-viewport-corner app-viewport-corner--br" />
     </div>
   );
 }

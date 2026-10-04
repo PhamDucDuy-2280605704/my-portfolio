@@ -162,28 +162,28 @@
   opacity: 0.7;
 }
 
-.app-viewport-corner.tl {
+.app-viewport-corner--tl {
   top: 10px;
   left: 10px;
   border-right: none;
   border-bottom: none;
 }
 
-.app-viewport-corner.tr {
+.app-viewport-corner--tr {
   top: 10px;
   right: 10px;
   border-left: none;
   border-bottom: none;
 }
 
-.app-viewport-corner.bl {
+.app-viewport-corner--bl {
   bottom: 10px;
   left: 10px;
   border-right: none;
   border-top: none;
 }
 
-.app-viewport-corner.br {
+.app-viewport-corner--br {
   bottom: 10px;
   right: 10px;
   border-left: none;
