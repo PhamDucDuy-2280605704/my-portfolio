@@ -1,5 +1,5 @@
-// Danh sách học vấn, hiển thị dạng timeline ở trang "/experience".
-// school/major song ngữ hoá dạng { vi, en } — đọc qua tr() ở Experience.jsx.
+// Danh sách học vấn, hiển thị dạng timeline ở section Kinh nghiệm (Stats).
+// school/major song ngữ hoá dạng { vi, en } — đọc qua tr() ở Stats.jsx.
 // period: "Đang cập nhật"/"Updating" nếu chưa chốt được thời gian chính xác.
 const education = [
   {

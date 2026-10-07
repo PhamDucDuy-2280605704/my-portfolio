@@ -48,12 +48,12 @@ html.is-scroll-locked { position: relative; overflow: hidden; height: 100%; }
 /* Chữ hiển thị (tiêu đề, số liệu, chữ khổng lồ) dùng font display */
 .bl h1, .bl h2, .bl h3, .bl h4,
 .bl .hero-tagline, .bl .footer-cta-title, .bl .stat-value, .bl .program-name,
-.bl .score-value, .bl .trust-percent-value, .bl .trust-chip, .bl .coach-name,
-.bl .menu-link, .bl .bl-brand, .bl .loader-brand, .bl .footer-logo, .bl .menu-brand {
+.bl .trust-chip,
+.bl .menu-link, .bl .footer-logo, .bl .menu-brand {
   font-family: var(--font-display);
 }
 .bl h1, .bl h2 { text-wrap: balance; }
-.bl .stat-value, .bl .score-value { font-variant-numeric: tabular-nums; }
+.bl .stat-value { font-variant-numeric: tabular-nums; }
 .bl ::selection { background: var(--brand); color: #05090c; }
 
 .bl *, .bl *::before, .bl *::after { box-sizing: border-box; }

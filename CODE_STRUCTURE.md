@@ -1,151 +1,59 @@
 # Sơ đồ cấu trúc code — my-portfolio
 
-Stack: **React 19 + Vite + React Router 7**. Không có state management ngoài, không gọi API — toàn bộ nội dung lấy từ các file tĩnh trong `src/data`.
+Stack: **React 19 + Vite + React Router 7**. Không có backend, không gọi API
+(trừ form liên hệ gửi tới Formspree) — nội dung lấy từ các file tĩnh trong `src/data`.
 
 ## 1. Cây thư mục
 
 ```
 my-portfolio/
-├─ public/
-│  └─ favicon.svg              # icon tab trình duyệt
-│
+├─ public/                     # favicon, manifest, robots, sitemap, og-image.png
+├─ vercel.json                 # rewrite SPA về index.html
 ├─ src/
-│  ├─ main.jsx                 # điểm vào, render <App /> vào #root
-│  ├─ App.jsx                  # chỉ render <AppRoutes />
+│  ├─ main.jsx                 # điểm vào: nạp font, CSS toàn cục, render <App />
+│  ├─ App.jsx                  # LanguageProvider + SmoothScroll + ErrorBoundary + AppRoutes
+│  ├─ routes/AppRoutes.jsx     # "/" (Home), "/zone", redirect route cũ -> "/#section", 404
+│  ├─ layouts/MainLayout.jsx   # khung chung: Background, Header, Loader, MenuOverlay, Footer, ContactModal
 │  │
-│  ├─ routes/
-│  │  └─ AppRoutes.jsx         # khai báo toàn bộ route (BrowserRouter)
-│  │
-│  ├─ layouts/
-│  │  └─ MainLayout.jsx        # khung chung: Navbar + <Outlet/> + Footer
-│  │
-│  ├─ pages/                   # 1 thư mục = 1 trang, khớp với 1 route
-│  │  ├─ Home/                 # "/"        → chỉ render <Hero/>
-│  │  ├─ About/                # "/about"   → bio đầy đủ + nút tải CV
-│  │  ├─ Skills/                # "/skills"  → kỹ năng theo nhóm Frontend/Backend/Mobile/Tools
-│  │  ├─ Projects/              # "/projects" → dự án, chia Đã hoàn thành / Đang phát triển
-│  │  ├─ Experience/            # "/experience" → học vấn (timeline) + chứng chỉ
-│  │  ├─ Journal/               # "/journal" → nhật ký/blog cá nhân, mở rộng đọc tiếp
-│  │  ├─ Contact/               # "/contact" → card Email/GitHub/Facebook/Zalo/Discord/TikTok + form Formspree
-│  │  └─ NotFound/              # "*" → trang 404
+│  ├─ pages/
+│  │  ├─ Home/                 # ghép các section landing theo thứ tự
+│  │  ├─ Zone/                 # trang bí mật /zone: Zone.jsx, ZoneLock.jsx (khoá số 3D), zoneAudio.js (âm thanh Web Audio)
+│  │  └─ NotFound/             # 404
 │  │
 │  ├─ components/
-│  │  ├─ layout/
-│  │  │  ├─ Navbar/            # menu + logo (bấm vào phóng to)
-│  │  │  └─ Footer/
-│  │  ├─ sections/
-│  │  │  └─ Hero/               # khối giới thiệu ở trang Home
-│  │  └─ common/
-│  │     ├─ Button/             # nút dùng chung (variant: primary | outline)
-│  │     └─ SectionTitle/       # tiêu đề + phụ đề cho mỗi section
+│  │  ├─ landing/              # Hero, Trust (giới thiệu), Programs (kỹ năng), Projects, Stats (kinh nghiệm), Journal
+│  │  ├─ shell/                # Header, MenuOverlay, Footer, ContactModal, Loader, LangSwitch, ImageLightbox
+│  │  ├─ motion/               # Inview (hiện khi cuộn), Reveal (hiệu ứng chữ), Hover
+│  │  ├─ ui/                   # Eyebrow, PillButton, ArrowButton, CarouselDots, Icons, ProjectArt
+│  │  └─ common/               # Background, Button, ErrorBoundary, PageLoader, ScrollToTop, SmoothScroll
 │  │
-│  ├─ data/                     # "nguồn dữ liệu" tĩnh, không có API
-│  │  ├─ profile.js             # tên, vai trò, avatar, bio, quote, resume...
-│  │  ├─ skills.js               # kỹ năng theo nhóm: frontend/backend/mobile/tools
-│  │  ├─ education.js            # học vấn (trường, chuyên ngành, thời gian)
-│  │  ├─ workExperience.js       # kinh nghiệm làm việc/thực tập thật (công ty, vai trò, việc đã làm)
-│  │  ├─ certificates.js         # chứng chỉ (tên, trạng thái, ảnh - có thể null)
-│  │  ├─ projects.js             # dự án, chia completed / inProgress
-│  │  └─ social.js               # link GitHub / Facebook / Zalo / email
+│  ├─ data/                    # nguồn nội dung (song ngữ { vi, en })
+│  │  ├─ profile.js            # tên, vai trò, email, avatar, mô tả, bio, CV
+│  │  ├─ landing.js            # chuỗi riêng của giao diện landing
+│  │  ├─ navSections.js        # id + tên các section cho menu
+│  │  ├─ skills.js, projects.js, education.js, workExperience.js, certificates.js, journal.js
+│  │  └─ social.js             # link liên hệ + endpoint Formspree
 │  │
-│  ├─ assets/
-│  │  ├─ images/                # avatar.jpg, logo.jpg
-│  │  └─ resume/cv.pdf
-│  │
-│  └─ styles/
-│     ├─ variables.css          # design tokens: màu, font-size, radius, shadow
-│     ├─ reset.css
-│     └─ globals.css            # import 2 file trên + style body/#root
-│
-├─ index.html
-├─ vite.config.js
-└─ package.json
+│  ├─ i18n/uiText.js           # từ điển chuỗi giao diện, đọc bằng t("key")
+│  ├─ context/                 # LanguageContext/Provider, UiContext/Provider
+│  ├─ hooks/                   # useLanguage, useUi, useSpring, useHoverSpring, useToggleSpring,
+│  │                           # useInViewOnce, useScrollProgress, useMedia, usePageTitle
+│  ├─ lib/                     # lenis.js (cuộn mượt, khoá cuộn), adaptiveRem.js
+│  ├─ utils/uiSound.js         # âm thanh UI
+│  ├─ styles/                  # variables, reset, globals, baseline
+│  ├─ assets/                  # images, resume/cv.pdf, documents/báo cáo thực tập
+│  └─ test/                    # setup + renderWithLanguage cho Vitest
 ```
 
-## 2. Luồng khởi động
+## 2. Luồng chính
 
-```
-main.jsx
-  └─ import "./styles/globals.css"   (load design tokens toàn cục)
-  └─ <App />
-       └─ <AppRoutes />
-            └─ <BrowserRouter>
-                 ├─ <Route element={<MainLayout />}>   ← layout dùng chung
-                 │     ├─ "/"           → <Home />
-                 │     ├─ "/about"      → <About />
-                 │     ├─ "/skills"     → <Skills />
-                 │     ├─ "/projects"   → <Projects />
-                 │     ├─ "/experience" → <Experience />
-                 │     └─ "/contact"    → <Contact />
-                 └─ "*"                 → <NotFound />   ← nằm ngoài MainLayout
-```
+1. `main.jsx` render `App` -> `LanguageProvider` bọc toàn app (mặc định `vi`, nhớ lựa chọn bằng localStorage).
+2. `AppRoutes` đưa `/` vào `MainLayout` -> `Home`; menu chỉ cuộn neo `#id`, không đổi route.
+3. Nội dung đọc từ `src/data/*` qua `tr()`; chuỗi giao diện đọc qua `t()` từ `uiText.js`.
+4. `/zone` đứng riêng (lazy-load, không bọc `MainLayout`).
 
-`MainLayout` bọc Navbar/Footer quanh `<Outlet/>`, nên mọi trang (trừ NotFound) đều tự động có Navbar + Footer mà không cần import lại.
+## 3. Thêm / sửa nội dung
 
-## 3. Trang lấy dữ liệu từ đâu
-
-```
-data/profile.js ──┬──> components/sections/Hero      (tên, quote, avatar, CV, role Full Stack)
-                   ├──> pages/About                    (bio, ngày sinh, email...)
-                   └──> components/layout/Navbar        (alt text cho logo)
-
-data/skills.js ────> pages/Skills                       (nhóm Frontend/Backend/Mobile/Tools → icon)
-
-data/education.js ─> pages/Experience                    (timeline học vấn)
-data/workExperience.js ─> pages/Experience               (card kinh nghiệm làm việc/thực tập)
-data/certificates.js ─> pages/Experience                 (grid chứng chỉ, có khung chờ ảnh)
-
-data/projects.js ──> pages/Projects                      (2 nhóm: completed / inProgress)
-
-data/social.js ────> pages/Contact                       (email/github/fb/zalo)
-data/journal.js ───> pages/Journal                        (danh sách bài nhật ký)
-```
-
-Nguyên tắc: **mọi thông tin cá nhân chỉ sửa 1 chỗ duy nhất trong `src/data/*`**, các trang/section chỉ import và hiển thị, không hard-code lại thông tin.
-
-## 4. Quy ước đặt tên & style
-
-- Mỗi component/page có **1 file `.jsx` + 1 file `.css` cùng tên**, import CSS ngay đầu file `.jsx`.
-- Không dùng màu/khoảng cách "chay" (hardcode) — luôn ưu tiên biến trong `styles/variables.css`:
-  `--color-primary`, `--color-surface`, `--color-text-secondary`, `--radius-md`, `--shadow`,...
-  **Đặc biệt quan trọng từ khi có theme sáng/tối**: hardcode màu trực tiếp (VD: `color: #4ade80`) sẽ KHÔNG tự đổi khi người dùng chuyển theme, dễ bị vỡ độ tương phản ở theme còn lại. Cần trạng thái màu mới (success/warning/danger...) thì thêm biến vào `variables.css` (cả `:root` và `[data-theme="light"]`), không viết thẳng mã màu trong file CSS của component.
-- `components/common` = tái sử dụng nhiều nơi (Button, SectionTitle, ScrollToTop, Background, SplashScreen, ThemeToggle, PageLoader, ErrorBoundary, CornerFlourish).
-- `hooks/usePageTitle.js` = đặt tiêu đề tab trình duyệt riêng cho từng trang.
-- `hooks/useTheme.js` = quản lý theme sáng/tối (gán `data-theme` lên `<html>`, lưu `localStorage`, mặc định theo `prefers-color-scheme`).
-- `components/sections` = khối nội dung thuộc về 1 trang cụ thể (hiện chỉ có Hero, dùng trong Home).
-- `components/layout` = khung sườn hiển thị ở mọi trang (Navbar, Footer). Navbar có menu hamburger riêng cho mobile (≤900px) và logo bấm vào phóng to được.
-- Mỗi trang đều có breakpoint responsive riêng trong file `.css` của nó (thường ở `max-width: 640px` hoặc `900px`).
-- **Ngôn ngữ thiết kế "vàng đồng" (`--color-accent`)**: dùng CHỈ cho chi tiết trang trí — vạch chia kiểu *line–dot–line* (`SectionTitle`), khung hoạ tiết góc (`CornerFlourish`, dùng ở `SplashScreen` + `Hero`), quầng sáng khi hover (`Button`). KHÔNG dùng accent cho nút/link tương tác chính — `--color-primary` (xanh) vẫn đảm nhiệm việc đó, để người dùng luôn phân biệt được "cái gì bấm được" (xanh) và "cái gì chỉ trang trí" (vàng đồng).
-
-## 5. Testing
-
-Dùng **Vitest** (chạy nhanh, tích hợp sẵn với Vite) + **React Testing Library** (test theo hành vi người dùng thấy được, không test chi tiết cài đặt bên trong).
-
-- Cấu hình ở `vite.config.js` (mục `test`), file setup dùng chung ở `src/test/setup.js`.
-- Test đặt cạnh file component, hậu tố `.test.jsx` — VD: `Navbar.jsx` + `Navbar.test.jsx`.
-- Chạy `npm test` (chạy 1 lần) hoặc `npm run test:watch` (tự chạy lại khi sửa code).
-- **Không dùng `globals: true`** của Vitest (để tránh ESLint báo lỗi `no-undef` với `describe/it/expect`) — mọi test đều `import { describe, it, expect } from "vitest"` tường minh. Vì vậy React Testing Library cũng không tự nhận diện được `afterEach` để tự dọn DOM, nên `src/test/setup.js` phải tự gọi `cleanup()` thủ công sau mỗi test.
-- Coverage report: `npm run test:coverage` (provider `v8`, loại trừ `src/data`, CSS, ảnh — những phần không có logic để test).
-- File mock data (VD: `Projects.empty.test.jsx` mock `data/projects.js` rỗng) tách file riêng, không chung với test dùng data thật, vì `vi.mock()` áp dụng cho toàn bộ file.
-
-## 6. Performance & Độ ổn định
-
-- **Code-splitting**: `routes/AppRoutes.jsx` dùng `React.lazy()` cho mọi trang trừ Home (Home tải ngay vì luôn là điểm vào đầu tiên). Bọc trong `<Suspense fallback={<PageLoader />}>`.
-- **Error Boundary**: `App.jsx` bọc `<AppRoutes />` trong `<ErrorBoundary>` (bắt buộc là class component — React chưa có hook tương đương cho `getDerivedStateFromError`/`componentDidCatch`).
-- `public/sitemap.xml` + `public/robots.txt` (có tham chiếu sitemap) + `public/manifest.json` (cho phép "Thêm vào Màn hình chính" trên mobile).
-
-## 7. CI/CD
-
-`.github/workflows/ci.yml` — GitHub Actions tự chạy `lint` → `test` → `build` mỗi khi push/PR vào `main`.
-
-## 8. Accessibility
-
-- Skip-to-content link (`MainLayout.jsx`) — ẩn bằng `transform: translateY(-100%)` (không dùng `display:none` để trình đọc màn hình vẫn nhận diện được), hiện ra khi focus.
-- `role="status"` / `role="alert"` cho kết quả gửi `ContactForm`.
-- `prefers-reduced-motion` được tôn trọng ở `Background`, `SplashScreen`, `globals.css`.
-
-## 9. Việc còn dang dở
-
-- `data/projects.js` đang là **dữ liệu mẫu** (3 dự án giả) — cần thay bằng dự án thật, kèm ảnh (`image`), link demo/source khi có.
-- `data/certificates.js` đang thiếu ảnh chứng chỉ thật (`image: null`) — UI đã có sẵn khung chờ, chỉ cần import ảnh và gán vào field `image`.
-- `data/education.js` — trường `period` đang để "Đang cập nhật", cần điền thời gian học chính xác.
+- Dự án: `data/projects.js` (`completed` / `inProgress`).
+- Chứng chỉ, học vấn, kinh nghiệm: file tương ứng trong `data/`.
+- Chuỗi giao diện mới: thêm key `{ vi, en }` vào `i18n/uiText.js`.

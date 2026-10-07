@@ -1,9 +1,9 @@
-// Nguồn thông tin cá nhân DUY NHẤT của toàn site — Hero, trang About, Navbar (alt logo)
-// đều import từ đây. Muốn đổi tên/vai trò/mô tả/CV... chỉ cần sửa file này.
+// Nguồn thông tin cá nhân DUY NHẤT của toàn site — Hero, Trust, Header,
+// Footer, MenuOverlay đều import từ đây. Muốn đổi tên/vai trò/mô tả/CV... chỉ cần sửa file này.
 //
 // Các field văn bản có thể hiện cả 2 ngôn ngữ dùng dạng { vi: "...", en: "..." }
 // và đọc qua tr() (xem hooks/useLanguage.js) ở component. Field không đổi
-// theo ngôn ngữ (email, ngày sinh, ảnh, CV...) vẫn để nguyên dạng chuỗi/giá
+// theo ngôn ngữ (email, ảnh, CV...) vẫn để nguyên dạng chuỗi/giá
 // trị đơn như cũ.
 import avatar from "../assets/images/avatar.jpg";
 import resume from "../assets/resume/cv.pdf";
@@ -13,19 +13,11 @@ const profile = {
 
   role: { vi: "Lập Trình Viên Full Stack", en: "Full Stack Developer" },
 
-  birthday: "14/10/2004",
-
   email: "pduy14102004@gmail.com",
 
   location: { vi: "Việt Nam", en: "Vietnam" },
 
   avatar,
-
-  // Câu quote cá nhân, hiện ở Hero (trang Home) dưới dạng trích dẫn.
-  quote: {
-    vi: "Không thể trốn chạy khỏi con người mình đã tự tạo ra — chỉ có thể đối diện, bởi đó là điều mình từng tự nguyện.",
-    en: "You can't run from the person you've made yourself into — only face it, because that was always your own choice.",
-  },
 
   // Mô tả NGẮN — dùng ở Hero (trang Home).
   description: {
@@ -33,8 +25,8 @@ const profile = {
     en: "I build complete products — from smooth, intuitive interfaces to solid backend systems underneath, ensuring a seamless experience across every platform.",
   },
 
-  // Bio ĐẦY ĐỦ (nhiều đoạn) — chỉ dùng ở trang "/about", không hiện ở Home
-  // để tránh trùng lặp nội dung giữa 2 nơi. Mỗi đoạn là 1 cặp { vi, en }.
+  // Bio ĐẦY ĐỦ (nhiều đoạn) — dùng ở section Giới thiệu (Trust), mỗi slide
+  // lấy 1 đoạn theo bioIndex trong data/landing.js. Mỗi đoạn là 1 cặp { vi, en }.
   bio: [
     {
       vi: "Mình là Phạm Đức Duy, lập trình viên theo hướng Full Stack — có thể đảm nhận cả phần giao diện người dùng lẫn hệ thống backend đứng sau một sản phẩm.",
@@ -50,7 +42,7 @@ const profile = {
     },
   ],
 
-  // File CV thật (src/assets/resume/cv.pdf) — dùng cho nút "Xem CV" ở trang About.
+  // File CV thật (src/assets/resume/cv.pdf) — dùng cho nút "Xem CV".
   resume,
 };
 

@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import ZoneLock from "./ZoneLock";
+import {
+  getAudioCtx,
+  playCopyTick,
+  playDenied,
+  playGranted,
+  playKeypress,
+  playLockAgain,
+  playTick,
+} from "./zoneAudio";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 
 import "./Zone.css";
@@ -106,130 +115,6 @@ function saveEntries(entries) {
   } catch {
     // bỏ qua nếu không lưu được (VD: chế độ ẩn danh nghiêm ngặt)
   }
-}
-
-// ===== Âm thanh tổng hợp bằng Web Audio API — cùng kỹ thuật với
-// ParticleIntro.jsx (oscillator/noise buffer thuần, không dùng file audio). =====
-
-function getAudioCtx(ref) {
-  if (typeof window === "undefined") return null;
-  const Ctx = window.AudioContext || window.webkitAudioContext;
-  if (!Ctx) return null;
-  if (!ref.current) {
-    try {
-      ref.current = new Ctx();
-    } catch {
-      return null;
-    }
-  }
-  if (ref.current.state === "suspended") ref.current.resume().catch(() => {});
-  return ref.current;
-}
-
-function playTick(ctx, freq = 1400) {
-  if (!ctx) return;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  const t0 = ctx.currentTime;
-  osc.type = "square";
-  osc.frequency.setValueAtTime(freq, t0);
-  gain.gain.setValueAtTime(0.05, t0);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.03);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(t0);
-  osc.stop(t0 + 0.04);
-}
-
-function playKeypress(ctx) {
-  if (!ctx) return;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  const t0 = ctx.currentTime;
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(320 + Math.random() * 60, t0);
-  gain.gain.setValueAtTime(0.06, t0);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(t0);
-  osc.stop(t0 + 0.06);
-}
-
-function playDenied(ctx) {
-  if (!ctx) return;
-  [0, 130].forEach((delay) => {
-    setTimeout(() => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime;
-      osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(160, t0);
-      gain.gain.setValueAtTime(0.09, t0);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.2);
-    }, delay);
-  });
-}
-
-function playGranted(ctx) {
-  if (!ctx) return;
-  [520, 780, 1040].forEach((freq, i) => {
-    setTimeout(() => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime;
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, t0);
-      gain.gain.setValueAtTime(0.08, t0);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.16);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.18);
-    }, i * 90);
-  });
-}
-
-function playCopyTick(ctx) {
-  if (!ctx) return;
-  [880, 1180].forEach((freq, i) => {
-    setTimeout(() => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime;
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, t0);
-      gain.gain.setValueAtTime(0.06, t0);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.06);
-    }, i * 40);
-  });
-}
-
-function playLockAgain(ctx) {
-  if (!ctx) return;
-  [900, 500].forEach((freq, i) => {
-    setTimeout(() => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime;
-      osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(freq, t0);
-      gain.gain.setValueAtTime(0.07, t0);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.1);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.12);
-    }, i * 70);
-  });
 }
 
 // "Giải mã" chữ kiểu terminal — hiện từng ký tự một thay vì hiện nguyên cả
@@ -421,6 +306,8 @@ function Zone() {
   useEffect(() => {
     return () => {
       if (audioCtxRef.current) {
+        // Cố ý đọc ref lúc unmount để đóng đúng AudioContext mới nhất
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         audioCtxRef.current.close().catch(() => {});
       }
       clearTimeout(undoTimerRef.current);

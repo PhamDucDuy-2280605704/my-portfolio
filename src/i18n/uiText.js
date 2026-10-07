@@ -5,21 +5,12 @@
 // Thêm chuỗi mới: thêm 1 key vào object bên dưới với đủ 2 field vi/en, rồi
 // dùng t("tenKey") ở component.
 const uiText = {
-  // Hero
-
-  // Navbar / BottomDock
+  // Header / MenuOverlay / Lightbox
   closeLabel: { vi: "Đóng", en: "Close" },
   logoZoom: { vi: "Phóng to logo", en: "Enlarge logo" },
   avatarZoom: { vi: "Phóng to ảnh đại diện", en: "Enlarge profile photo" },
   skipToContent: { vi: "Bỏ qua đến nội dung chính", en: "Skip to main content" },
 
-  // SectionTitle / About
-
-  // Skills
-  skillsIntro: {
-    vi: "Mình theo hướng Full Stack — làm việc được cả ở Frontend, Backend lẫn Mobile, tuỳ theo yêu cầu của dự án.",
-    en: "I work as a Full Stack developer — comfortable across Frontend, Backend, and Mobile depending on what a project needs.",
-  },
 
   // Projects
   projectsTabCompleted: { vi: "Đã hoàn thành", en: "Completed" },
@@ -32,24 +23,11 @@ const uiText = {
   statusInProgress: { vi: "Đang học", en: "In Progress" },
 
   // Journal
-  journalIntro: {
-    vi: "Nơi mình ghi lại quá trình học tập, những dự án đã và đang làm, cùng vài suy nghĩ trên chặng đường trở thành Full Stack Developer.",
-    en: "Where I write down what I'm learning, the projects I've worked on, and a few thoughts along the way to becoming a Full Stack Developer.",
-  },
   journalReadMore: { vi: "Đọc tiếp", en: "Read more" },
   journalCollapse: { vi: "Thu gọn", en: "Collapse" },
 
-  // Contact
-  contactIntro: {
-    vi: "Mọi trao đổi về công việc hay ý tưởng hợp tác, đừng ngần ngại liên hệ với mình qua các kênh dưới đây.",
-    en: "For work opportunities or collaboration ideas, feel free to reach out through any of the channels below.",
-  },
 
-  // ContactForm
-  contactFormSubtitle: {
-    vi: "Điền vài thông tin bên dưới, mình sẽ đọc và phản hồi sớm nhất có thể.",
-    en: "Fill in a few details below and I'll get back to you as soon as I can.",
-  },
+  // ContactModal
   contactFormName: { vi: "Họ tên", en: "Full name" },
   contactFormNamePlaceholder: { vi: "Tên của bạn", en: "Your name" },
   contactFormEmail: { vi: "Email", en: "Email" },
@@ -57,10 +35,6 @@ const uiText = {
   contactFormMessagePlaceholder: { vi: "Bạn muốn trao đổi điều gì?", en: "What would you like to talk about?" },
   contactFormSending: { vi: "Đang gửi...", en: "Sending..." },
   contactFormSubmit: { vi: "Gửi Tin Nhắn", en: "Send Message" },
-  contactFormNote: {
-    vi: "✉️ Tin nhắn được gửi thẳng đến email của mình qua Formspree — không lưu trữ hay chia sẻ cho bên thứ ba nào khác.",
-    en: "✉️ Your message goes straight to my email via Formspree — never stored or shared with any third party.",
-  },
   contactFormError: {
     vi: "Gửi thất bại — có thể do mất kết nối mạng. Bạn thử lại hoặc liên hệ qua các kênh phía trên nhé.",
     en: "Failed to send — possibly a network issue. Please try again or reach out via the channels above.",

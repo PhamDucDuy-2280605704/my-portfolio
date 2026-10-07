@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import useInViewOnce from "../../hooks/useInViewOnce";
 import useSpring from "../../hooks/useSpring";
 
 // Reveal khi cuộn tới ("Inview"): phần tử ẩn sẵn ở trạng thái `from` và chỉ hiện
@@ -23,31 +24,16 @@ function Inview({
   ...rest
 }) {
   const { ref, start } = useSpring(from, { config });
+  // Theo dõi phần tử vào viewport bằng hook dùng chung (dùng chung ref với spring).
+  // `seen` chuyển true đúng 1 lần; nếu trình duyệt không có IntersectionObserver
+  // thì hook coi như đã thấy ngay khi enabled -> khối không bị kẹt ở trạng thái ẩn.
+  const [, seen] = useInViewOnce(enabled, { ref });
 
   useEffect(() => {
-    if (!enabled) return undefined;
-    const el = ref.current;
-    if (!el) return undefined;
-
-    if (typeof IntersectionObserver === "undefined") {
-      start(to, config, delay);
-      return undefined;
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          start(to, config, delay);
-          io.disconnect();
-        }
-      },
-      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-    // from/to là object literal mới mỗi lần render -> chỉ phụ thuộc enabled
+    if (seen) start(to, config, delay);
+    // from/to/config là object literal mới mỗi lần render -> chỉ chạy khi `seen` đổi
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled]);
+  }, [seen]);
 
   return (
     <Tag

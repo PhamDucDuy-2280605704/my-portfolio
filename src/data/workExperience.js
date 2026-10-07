@@ -1,10 +1,10 @@
-// Kinh nghiệm làm việc thực tế, hiển thị dạng timeline ở trang "/experience"
+// Kinh nghiệm làm việc thực tế, hiển thị dạng timeline ở section Kinh nghiệm (Stats)
 // (giống cấu trúc data/education.js). Nội dung tóm tắt từ báo cáo thực tập
 // tốt nghiệp thật tại HUTECH (Phòng thí nghiệm/Công ty LOT Software,
 // 20/04 – 19/07/2026), GVHD: Phan Đức Trí.
 //
 // company/role/highlights song ngữ hoá dạng { vi, en } — đọc qua tr() ở
-// Experience.jsx. period/score/tech giữ nguyên (số liệu, không cần dịch).
+// Stats.jsx. period/score/tech giữ nguyên (số liệu, không cần dịch).
 import reportPdf from "../assets/documents/bao-cao-thuc-tap-lot-software.pdf";
 
 const workExperience = [
@@ -37,7 +37,7 @@ const workExperience = [
     tech: ["Laravel", "NestJS", "React", "PostgreSQL", "MySQL", "JWT"],
     score: "9.5/10",
     // Báo cáo thực tập tốt nghiệp đầy đủ (PDF) — xem trực tiếp, không ép tải về
-    // (xem cách dùng ở Experience.jsx: không có thuộc tính download).
+    // (xem cách dùng ở Stats.jsx: không có thuộc tính download).
     report: reportPdf,
   },
 ];
